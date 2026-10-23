@@ -145,7 +145,7 @@
     function setTitle() {
       const page = location.hash.slice(1);
       const names = page === 'biz-kimiz' ? ['Biz Kimiz?','About us'] : page === 'amacimiz' ? ['Amacımız','Our purpose'] : ['Biyosensör Teknolojileri','Biosensor Technologies'];
-      document.title = names[language === 'en' ? 1 : 0] + ' | Bakircay Lab';
+      document.title = names[language === 'en' ? 1 : 0] + (language === 'en' ? ' | Bakircay Lab' : ' | Bakırçay Lab');
     }
     window.addEventListener('hashchange', setTitle);
     group.addEventListener('click', event => {
