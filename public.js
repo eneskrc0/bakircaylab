@@ -38,6 +38,7 @@ let resumeHome = () => {};
 const initHome = () => {
   const video = document.querySelector('#background-video');
   const toggle = document.querySelector('#video-toggle');
+  const projectLink = document.querySelector('#hero-project-link');
   const slides = [
     [mp4('media/bakir-background.mp4'), webm('media/bakir-background.webm')],
     [mp4('media/milk-background.mp4'), webm('media/milk-background.webm')]
@@ -79,8 +80,21 @@ const initHome = () => {
     active = (index + slides.length) % slides.length;
     clearSources(video);
     document.querySelectorAll('[data-project]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.project) === active)));
+    projectLink.setAttribute('href', active === 0 ? '#stress-project' : '#milk-project');
     if (playbackRequested) play(); else update();
   };
+  document.querySelector('.hero-prev').addEventListener('click', () => { playbackRequested = !motion.matches; select(active - 1); });
+  document.querySelector('.hero-next').addEventListener('click', () => { playbackRequested = !motion.matches; select(active + 1); });
+  // Horizontal swipe on the hero switches projects on touch screens.
+  const hero = document.querySelector('.hero');
+  let touchX = null, touchY = null;
+  hero.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; }, {passive: true});
+  hero.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX, dy = e.changedTouches[0].clientY - touchY;
+    touchX = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { playbackRequested = !motion.matches; select(active + (dx < 0 ? 1 : -1)); }
+  }, {passive: true});
   document.querySelectorAll('[data-project]').forEach(button => button.addEventListener('click', () => {
     playbackRequested = true;
     select(Number(button.dataset.project));

@@ -58,6 +58,10 @@
   <section class="hero on-dark" aria-label="Bakırçay Lab" >
     <div class="hero-media"><video id="background-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video></div>
     <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-nav">
+      <button type="button" class="hero-arrow hero-prev" aria-label="Önceki proje" data-en-aria-label="Previous project"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="hero-arrow hero-next" aria-label="Sonraki proje" data-en-aria-label="Next project"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
     <div class="container hero-body">
       <div class="hero-copy">
         <span class="label" data-en="Bakırçay Lab · Biosensor technologies">Bakırçay Lab · Biyosensör teknolojileri</span>
@@ -84,6 +88,7 @@
           </button>
         </div>
         <div class="hero-controls">
+          <a class="hero-project-link" id="hero-project-link" href="#stress-project" data-en="View project <span aria-hidden=&quot;true&quot;>→</span>">Projeyi incele <span aria-hidden="true">→</span></a>
           <button type="button" class="icon-btn" id="video-toggle" aria-label="Arka plan videosunu oynat">▶</button>
         </div>
       </div>
@@ -103,7 +108,9 @@
           <div class="card-body">
             <div class="card-meta"><span class="card-num" data-en="01 / Saliva-based measurement">01 / Saliva temelli ölçüm</span><span class="badge" data-en="In R&amp;D">Ar-Ge aşamasında</span></div>
             <h3 data-en="Stress monitoring">Stres takibi</h3>
-            <p data-en="We aim to make stress measurement using a saliva sample accessible to everyone.">Saliva örneğiyle stres ölçümünü herkes için erişilebilir kılmayı hedefliyoruz.</p>
+            <p data-en="Stress affects sleep, focus and overall health, yet it is usually judged only by how we feel. We aim to make stress measurement using a saliva sample accessible to everyone.">Stres; uyku düzenini, odaklanmayı ve genel sağlığı etkileyebilir, ancak çoğu zaman yalnızca hissedilerek değerlendirilir. Saliva örneğiyle stres ölçümünü herkes için erişilebilir kılmayı hedefliyoruz.</p>
+            <p data-en="We are developing a portable, easy-to-use sensor system that measures stress-related biomarkers such as cortisol in saliva. Because a saliva sample can be collected without needles, painlessly and in a short time, it is well suited to regular, everyday monitoring.">Kortizol gibi stresle ilişkili biyobelirteçleri saliva örneğinden ölçen, taşınabilir ve kolay kullanılan bir sensör sistemi geliştiriyoruz. Saliva örneği iğne gerektirmeden, ağrısız ve kısa sürede alınabildiği için düzenli ve günlük takibe uygun bir yöntem sunuyor.</p>
+            <p class="card-note" data-en="Sensor design, calibration and validation studies are ongoing to verify the measurement approach.">Ölçüm yaklaşımını doğrulamak için sensör tasarımı, kalibrasyon ve doğrulama çalışmaları sürdürülmektedir.</p>
             <div class="card-foot"><a href="#amacimiz" class="text-link" data-en="Discover our purpose <span aria-hidden=&quot;true&quot;>↗</span>">Amacımızı keşfedin <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
