@@ -3,280 +3,1566 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://bakircaylab.goatcounter.com; media-src 'self'; connect-src 'self' https://bakircaylab.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://bakircaylab.goatcounter.com; media-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://bakircaylab.goatcounter.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>Bakırçay Lab | Biyosensör Teknolojileri</title>
-<meta name="description" content="Bakırçay Lab (Bakircay Lab); saliva temelli stres takibi ve sütte antibiyotik kalıntılarının yerinde taranması için sensör sistemleri geliştiren bir araştırma ve geliştirme projesidir.">
+<title>Bakırçay Lab | Biyosensör Araştırma Projeleri</title>
+<meta name="description" content="Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.">
 <link rel="canonical" href="https://bakircaylab.com/">
-<meta property="og:title" content="Bakırçay Lab | Biyosensör Teknolojileri">
-<meta property="og:description" content="Saliva temelli stres takibi ve sütte antibiyotik kalıntılarının yerinde taranması için sensör sistemleri geliştiren bir araştırma ve geliştirme projesi.">
+<meta property="og:title" content="Bakırçay Lab | Biyosensör Araştırma Projeleri">
+<meta property="og:description" content="Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.">
 <meta property="og:site_name" content="Bakırçay Lab">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bakircaylab.com/">
 <meta property="og:image" content="https://bakircaylab.com/media/logo-animation-end.jpg">
-<meta name="theme-color" content="#081429">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Bakırçay Lab", "alternateName": ["Bakircay Lab", "BakircayLab", "Bakırçay Laboratuvarı"], "url": "https://bakircaylab.com/", "logo": "https://bakircaylab.com/bakir-mark.png", "description": "Saliva temelli stres takibi ve sütte antibiyotik kalıntılarının yerinde taranması için biyosensör sistemleri geliştiren araştırma ve geliştirme ekibi.", "knowsAbout": ["biyosensör", "stres takibi", "kortizol", "tetrasiklin", "süt analizi"]}</script>
+<meta name="theme-color" content="#003135">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Bakırçay Lab", "alternateName": ["Bakircay Lab", "BakircayLab", "Bakırçay Laboratuvarı"], "url": "https://bakircaylab.com/", "logo": "https://bakircaylab.com/bakir-mark.png", "description": "Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.", "knowsAbout": ["biyosensör", "kortizol", "tükürük analizi", "anne sütü", "elektrokimyasal sensör"]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Bakırçay Lab", "alternateName": "Bakircay Lab", "url": "https://bakircaylab.com/", "inLanguage": ["tr", "en"]}</script>
-<link rel="icon" href="favicon.svg">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&amp;display=swap">
-<link rel="stylesheet" href="site.css">
-<script src="theme.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Palette: #003135 / #024950 petrol for ink and UI, #0FA4AF turquoise for the molecule and its data,
+   #AFDDE5 aqua for fills and the ground tint, #964734 copper (the "bakır" in Bakırçay) in small doses.
+   Layout: a pinned full-screen WebGL stage carries a scroll-scrubbed story (droplet → sensor → molecules → signal → two samples);
+   calm editorial sections follow on the same deep-navy ground. Single light look by choice: a bright lab/studio stage. */
+:root {
+  color-scheme: light;
+  --ink-0: #f2f9fa;          /* ground: a whisper of #AFDDE5 */
+  --ink-1: #003135;          /* deep petrol ink */
+  --ink-2: #ffffff;          /* raised surfaces */
+  --line: rgba(2, 73, 80, .14);
+  --text: #003135;
+  --muted: #4c6a6d;
+  --accent: #024950;         /* petrol: UI and links */
+  --signal: #0fa4af;         /* turquoise: cortisol, binding, data */
+  --sage: #964734;           /* copper (Bakırçay = copper): small labels only */
+  --sky: #afdde5;            /* pale aqua: fills */
+  --gold: #964734;           /* copper status dot */
+  --ground-rgb: 242, 249, 250;
+  --ink-rgb: 0, 49, 53;
+  --stage-bg: linear-gradient(#8fcbd3, #cbe8ec 45%, #e7f4f6 75%, #f2f9fa);
+  --veil-bg: radial-gradient(60% 60% at 50% 50%, #ffffff 0%, #dff1f3 70%);
+  --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --gutter-l: max(20px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(20px, env(safe-area-inset-right, 0px));
+  --max: 1200px;
+  --header-h: 64px;
+}
+/* Dark mode (toggle in the header) */
+html.dark {
+  color-scheme: dark;
+  --ink-0: #021b1e; --ink-2: #072a2e; --text: #e2f2f4; --muted: #8fb1b5; --accent: #4cc8d0; --signal: #2fd0da; --sage: #d4866c;
+  --line: rgba(175, 221, 229, .14); --gold: #d4866c;
+  --ground-rgb: 2, 27, 30; --ink-rgb: 0, 0, 0;
+  --stage-bg: linear-gradient(#0d3d43, #072d31 45%, #04221f 75%, #021b1e);
+  --veil-bg: radial-gradient(60% 60% at 50% 50%, #0d4249 0%, #021b1e 70%);
+}
+html.dark .brand img { filter: brightness(0) invert(1); }
+html.dark .beat.hero p { color: #b9d4d7; }
+html.dark .project-body > p, html.dark .about-copy p, html.dark .frame-row dd { color: #c6dcdf; }
+* { box-sizing: border-box; }
+html { background: var(--ink-0); scroll-behavior: auto; }
+body { background: var(--ink-0); color: var(--text); font: 400 16px/1.65 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink-0); }
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -.03em; font-weight: 650; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { width: 100%; max-width: calc(var(--max) + 40px); margin-inline: auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+
+/* ---------- Header ---------- */
+.site-header { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20; height: var(--header-h);
+  background: rgba(var(--ground-rgb), .95); border-bottom: 1px solid rgba(var(--ink-rgb), .08); }
+.project, .section { scroll-margin-top: calc(var(--header-h) + 24px); }
+.site-header .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand img { height: 30px; width: auto; }
+.brand b { font: 700 15px/1 var(--font-display); letter-spacing: .14em; }
+.brand b span { font-weight: 300; }
+.nav { display: flex; gap: 6px; }
+.nav a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 8px 12px; border-radius: 999px; transition: color .2s, background .2s; }
+.site-header .wrap { justify-content: flex-start; }
+.nav { margin-left: auto; }
+.tools { display: flex; align-items: center; gap: 8px; }
+.lang { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 999px; }
+.lang button, .theme-btn { font: 600 12px/1 var(--font-body); letter-spacing: .04em; color: var(--muted); background: none; border: 0; cursor: pointer; }
+.lang button { padding: 7px 10px; border-radius: 999px; }
+.lang button[aria-pressed="true"] { background: var(--accent); color: var(--ink-0); }
+.theme-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); font-size: 16px; display: grid; place-items: center; color: var(--text); }
+.theme-btn:hover, .lang button:hover { color: var(--text); }
+.nav a:hover { color: var(--text); background: rgba(2, 73, 80, .08); }
+
+/* ---------- Story stage ---------- */
+.story { position: relative; height: 820vh; }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate;
+  background: var(--stage-bg); }
+#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+.stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(var(--ground-rgb), .82) 0%, rgba(var(--ground-rgb), .35) 32%, rgba(var(--ground-rgb), 0) 50%),
+              linear-gradient(0deg, rgba(var(--ground-rgb), .55) 0%, rgba(var(--ground-rgb), 0) 22%); }
+.veil { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+  background: var(--veil-bg); }
+
+.beats { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.beat { position: absolute; left: var(--gutter-l); max-width: min(520px, 44vw); top: 50%; transform: translateY(-50%);
+  display: grid; gap: 18px; opacity: 0; will-change: opacity, transform; }
+.beat .mono { color: var(--sage); display: flex; align-items: center; gap: 12px; }
+.beat .mono::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+.beat h2 { font-size: clamp(34px, 4.6vw, 64px); line-height: 1.02; }
+.beat p { color: var(--muted); font-size: clamp(16px, 1.3vw, 18px); max-width: 44ch; }
+.beat p strong { color: var(--text); font-weight: 600; }
+.beat.hero { opacity: 1; }
+.beat.hero h1 { font-size: clamp(44px, 6.8vw, 104px); line-height: .98; font-weight: 700; letter-spacing: -.04em; }
+.beat.hero h1 em { font-style: normal; color: var(--signal); }
+.beat.hero p { color: #2c4f52; font-size: clamp(17px, 1.45vw, 20px); }
+.scroll-cue { display: inline-flex; align-items: center; gap: 12px; color: var(--muted); }
+.scroll-cue i { width: 1px; height: 38px; background: linear-gradient(var(--accent), transparent); display: block; animation: cue 2.4s ease-in-out infinite; transform-origin: top; }
+@keyframes cue { 0%, 100% { transform: scaleY(.35); opacity: .5; } 50% { transform: scaleY(1); opacity: 1; } }
+.note { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--muted); border-left: 1px solid var(--line); padding-left: 12px; }
+
+/* Representative calibration chart (scene 5) */
+.chart { position: absolute; z-index: 3; right: max(var(--gutter-r), 5vw); top: 50%; transform: translateY(-50%);
+  width: min(480px, 40vw); opacity: 0; pointer-events: none; padding: 18px 18px 10px; border: 1px solid var(--line); border-radius: 6px;
+  background: rgba(255, 255, 255, .94); box-shadow: 0 20px 50px -30px rgba(var(--ink-rgb), .35); }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .axis { stroke: rgba(var(--ink-rgb), .45); stroke-width: 1; fill: none; }
+.chart .grid { stroke: rgba(var(--ink-rgb), .08); stroke-width: 1; fill: none; }
+.chart .curve { stroke: var(--signal); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.chart .band { fill: rgba(15, 164, 175, .16); stroke: none; }
+.chart text { fill: var(--muted); font: 500 11px var(--font-mono); letter-spacing: .06em; }
+.chart .tag { fill: var(--text); }
+.chart .dot { fill: var(--signal); }
+
+/* Sample labels pinned to the two droplets (scene 6) */
+.sample { position: absolute; z-index: 3; left: 0; top: 0; opacity: 0; width: 220px; margin-left: -110px; text-align: center;
+  display: grid; gap: 6px; pointer-events: none; }
+.sample .mono { color: var(--accent); font-size: 11px; }
+.sample b { font: 650 20px/1.2 var(--font-display); letter-spacing: -.02em; }
+.sample small { color: var(--muted); font-size: 13px; }
+.sample a { pointer-events: auto; color: var(--muted); font-size: 13.5px; text-decoration: none; }
+.sample a:hover { color: var(--text); }
+
+/* Scene rail */
+.rail { position: absolute; z-index: 4; right: max(var(--gutter-r), 22px); top: 50%; transform: translateY(-50%); display: grid; gap: 14px; }
+.rail li { list-style: none; display: flex; align-items: center; justify-content: flex-end; gap: 10px; color: rgba(85, 102, 94, .5); transition: color .3s; }
+.rail li span { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: opacity .3s; }
+.rail li i { width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: width .3s, background .3s; }
+.rail li.on { color: var(--text); }
+.rail li.on span { opacity: 1; }
+.rail li.on i { width: 34px; background: var(--accent); }
+.rail ol { margin: 0; padding: 0; display: grid; gap: 14px; }
+.stage.chart-on .rail { opacity: 0; }
+/* Phone scene progress */
+.mprog { display: none; position: absolute; z-index: 4; left: var(--gutter-l); right: var(--gutter-r); top: calc(var(--header-h) + 14px + env(safe-area-inset-top, 0px));
+  grid-template-columns: auto 1fr; align-items: center; gap: 6px 14px; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.mprog .count { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; color: var(--muted); }
+.mprog .count b { color: var(--text); font-weight: 500; }
+.mprog .name { justify-self: end; font: 500 11px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.mprog .bars { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.mprog .bars i { height: 2px; border-radius: 2px; background: rgba(var(--ink-rgb), .12); overflow: hidden; position: relative; }
+.mprog .bars i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(var(--f, 0)); }
+
+/* ---------- Content sections ---------- */
+.section { padding-block: clamp(80px, 11vw, 150px); border-top: 1px solid var(--line); background: var(--ink-0); position: relative; }
+.section-head { display: grid; gap: 16px; max-width: 760px; margin-bottom: clamp(44px, 6vw, 72px); }
+.section-head .mono { color: var(--sage); }
+.section-head h2 { font-size: clamp(36px, 5vw, 68px); line-height: 1.02; }
+.section-head p { color: var(--muted); font-size: 18px; max-width: 58ch; }
+
+.project { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.project + .project { margin-top: clamp(80px, 10vw, 140px); }
+.project:nth-of-type(even) .project-visual { order: 2; }
+.project-visual { position: relative; margin: 0; max-width: 100%; display: grid; gap: 16px; min-width: 0; }
+.device { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; overflow: hidden; background: #1c2124;
+  box-shadow: 0 0 0 1px var(--line), 0 34px 70px -38px rgba(var(--ink-rgb), .55); }
+.device video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s ease; }
+.project:hover .device video { transform: scale(1.025); }
+.device-tag { position: absolute; left: 14px; top: 14px; padding: 7px 11px; border-radius: 999px; background: rgba(255, 255, 255, .9); color: var(--ink-1); font-size: 10.5px; }
+.project-visual figcaption { color: var(--muted); font-size: 14px; max-width: 52ch; }
+.project-body { display: grid; gap: 22px; min-width: 0; }
+.project-body .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; color: var(--accent); }
+.status { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); font: 500 12px/1 var(--font-mono); letter-spacing: .06em; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(150, 71, 52, .16); }
+.project-body h3 { font-size: clamp(32px, 3.8vw, 52px); line-height: 1.04; }
+.project-body > p { color: #24474a; font-size: 18px; max-width: 54ch; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+.facts h4 { margin: 0 0 12px; color: var(--muted); }
+.facts ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.facts li { position: relative; padding-left: 18px; color: var(--text); font-size: 15px; line-height: 1.55; }
+.facts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 7px; height: 1px; background: var(--accent); }
+.facts .caution li::before { background: var(--gold); }
+
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.about-media { position: relative; margin: 0; border-radius: 10px; overflow: hidden; background: #f3f4f6; aspect-ratio: 16 / 9; max-width: 100%;
+  box-shadow: 0 0 0 1px var(--line), 0 30px 70px -36px rgba(var(--ink-rgb), .45); }
+.about-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.replay { position: absolute; right: 14px; bottom: 14px; border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+  background: rgba(0, 49, 53, .82); color: #fff; font: 500 13px/1 var(--font-body); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.replay:hover { background: var(--accent); }
+.about-copy { display: grid; gap: 20px; min-width: 0; }
+.about-copy .mono { color: var(--sage); }
+.about-copy h2 { font-size: clamp(34px, 4.2vw, 58px); line-height: 1.04; }
+.about-copy p { color: #24474a; font-size: 17px; max-width: 56ch; }
+.principles { margin: clamp(56px, 8vw, 96px) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 4vw, 56px); counter-reset: pr; }
+.principles > div { display: grid; gap: 12px; align-content: start; padding-top: 22px; border-top: 1px solid var(--line); counter-increment: pr; }
+.principles dt { font: 650 20px/1.25 var(--font-display); letter-spacing: -.015em; }
+.principles dt::before { content: counter(pr, decimal-leading-zero); display: block; margin-bottom: 14px; font: 500 12px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); }
+.principles dd { margin: 0; color: var(--muted); font-size: 15.5px; }
+.frame { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 80px); }
+.frame-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 20px; padding-block: 26px; border-top: 1px solid var(--line); }
+.frame-row dt { color: var(--accent); padding-top: 4px; }
+.frame-row dd { margin: 0; color: #24474a; font-size: 16.5px; }
+
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); counter-reset: step; }
+.steps li { position: relative; padding: 28px 22px 0 0; display: grid; gap: 12px; align-content: start; counter-increment: step; }
+.steps li::before { content: counter(step, decimal-leading-zero); font: 500 12px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); }
+.steps li::after { content: ""; position: absolute; top: -4px; left: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--ink-0); border: 1px solid var(--accent); }
+.steps b { font: 650 18px/1.25 var(--font-display); letter-spacing: -.01em; }
+.steps p { color: var(--muted); font-size: 14.5px; }
+.disclaimer { margin-top: clamp(48px, 6vw, 72px); max-width: 760px; color: var(--muted); font-size: 15px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 6px; background: var(--ink-2); }
+.disclaimer strong { color: var(--text); }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 40px calc(40px + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 14px; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; }
+
+/* No WebGL: the story still reads over a quiet gradient */
+.no-gl #gl { display: none; }
+.no-gl .stage { background: radial-gradient(70% 60% at 68% 45%, #ffffff 0%, #e2f2f4 45%, #c9e6ea 80%); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .project, .frame, .about { grid-template-columns: 1fr; }
+  .principles { grid-template-columns: 1fr; }
+  .project:nth-of-type(even) .project-visual { order: 0; }
+  .project-visual { max-width: 640px; }
+  .steps { grid-template-columns: 1fr; }
+  .steps li { padding: 22px 0 22px 26px; border-left: 1px solid var(--line); margin-left: 3px; }
+  .steps li::after { top: 26px; left: -4px; }
+}
+@media (max-width: 760px) {
+  :root { --header-h: 56px; --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px)); }
+  .nav a:not(.nav-key) { display: none; }
+  .nav { gap: 0; }
+  .nav a { padding: 8px 9px; font-size: 13.5px; }
+  .site-header .wrap { gap: 10px; }
+  .brand b { display: none; }
+  .lang button { padding: 6px 8px; }
+  .theme-btn { width: 32px; height: 32px; }
+  .brand b { font-size: 13.5px; }
+  .story { height: 680vh; }
+  /* Phone: the scene owns the upper screen, copy sits on a solid panel below */
+  .stage::after { background: linear-gradient(0deg, var(--ink-0) 0%, var(--ink-0) 30%, rgba(var(--ground-rgb), .86) 40%, rgba(var(--ground-rgb), 0) 54%); }
+  .beat { top: auto; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); transform: none; max-width: 460px; right: var(--gutter-r); gap: 10px; }
+  .beat:not(.hero) .mono { display: none; }
+  .beat h2 { font-size: clamp(26px, 7.4vw, 34px); line-height: 1.06; letter-spacing: -.025em; }
+  .beat.hero { gap: 14px; }
+  .beat.hero .mono { font-size: 10.5px; letter-spacing: .1em; white-space: nowrap; }
+  .beat.hero h1 { font-size: clamp(40px, 11.6vw, 56px); }
+  .beat.hero p { font-size: 15.5px; }
+  .beat p { font-size: 15px; line-height: 1.6; }
+  .beat .scroll-cue { display: none; }
+  .chart { left: var(--gutter-l); right: var(--gutter-r); width: auto; margin-inline: auto; top: calc(var(--header-h) + 64px + env(safe-area-inset-top, 0px)); transform: none; max-width: 420px; }
+  .stage.chart-on #gl { opacity: .28; }
+  #gl { transition: opacity .35s ease; }
+  .mprog { display: grid; }
+  .rail { display: none; }
+  .sample { width: 140px; margin-left: -70px; }
+  .sample b { font-size: 16px; }
+  .facts { grid-template-columns: 1fr; }
+  .project-visual figcaption { padding-right: 0; }
+  .frame-row { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue i { animation: none; }
+}
+</style>
 </head>
 <body>
-<a class="skip-link" href="#main" data-en="Skip to content">İçeriğe geç</a>
 
-<header class="site-header" id="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="#" aria-label="Bakırçay Lab ana sayfa" data-en-aria-label="Bakırçay Lab home">
-      <img src="bakir-mark.png" alt="" width="160" height="200">
-      <span class="brand-text"><span class="brand-name">BAKIRCAY <b>LAB</b></span><span class="brand-sub" data-en="Biosensor technologies">Biyosensör teknolojileri</span></span>
-    </a>
-    <nav class="main-nav" id="main-nav" aria-label="Ana menü" data-en-aria-label="Main menu">
-      <a href="#" data-page="home" data-en="Home">Ana sayfa</a>
-      <a href="#projects" data-en="Projects">Projelerimiz</a>
-      <a href="#biz-kimiz" data-page="about" data-en="About us">Biz kimiz?</a>
-      <a href="#amacimiz" data-page="purpose" data-en="Our purpose">Amacımız</a>
-      <button type="button" class="theme-toggle nav-theme" data-with-label aria-label="Koyu temaya geç">☾ Koyu tema</button>
+
+<script>
+try { if (localStorage.getItem('bakircay-theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {}
+try { if (localStorage.getItem('bakircay-language') === 'en') document.documentElement.lang = 'en'; } catch (e) {}
+</script>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Bakırçay Lab, başa dön"><img src="data:image/png;base64,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" alt="" width="24" height="30"><b>BAKIRÇAY <span>LAB</span></b></a>
+    <nav class="nav" aria-label="Sayfa bölümleri">
+      <a href="#projeler" class="nav-key">Projeler</a>
+      <a href="#biz-kimiz" class="nav-key">Biz kimiz?</a>
+      <a href="#cerceve">Bilimsel çerçeve</a>
+      <a href="#durum">Proje durumu</a>
     </nav>
-    <div class="header-tools">
-      <div class="lang-switch" role="group" aria-label="Dil" data-en-aria-label="Language">
-        <button type="button" data-language="tr" lang="tr" aria-label="Türkçe">TR</button>
-        <button type="button" data-language="en" lang="en" aria-label="English">EN</button>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Dil">
+        <button type="button" data-lang="tr" aria-pressed="true">TR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <button type="button" class="icon-btn theme-toggle" aria-label="Koyu temaya geç">☾</button>
-      <button type="button" class="icon-btn menu-btn" aria-controls="main-nav" aria-expanded="false" aria-label="Menüyü aç" data-en-aria-label="Open menu"><span class="bars"></span></button>
+      <button type="button" class="theme-btn" id="theme-btn" aria-label="Koyu temaya geç">☾</button>
     </div>
   </div>
 </header>
 
-<main id="main">
-<!-- Home -->
-<div id="home-view" hidden>
-  <section class="hero on-dark" aria-label="Bakırçay Lab" >
-    <div class="hero-media"><video id="background-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video></div>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-nav">
-      <button type="button" class="hero-arrow hero-prev" aria-label="Önceki proje" data-en-aria-label="Previous project"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button type="button" class="hero-arrow hero-next" aria-label="Sonraki proje" data-en-aria-label="Next project"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    </div>
-    <div class="container hero-body">
-      <div class="hero-copy">
-        <span class="label" data-en="Bakırçay Lab · Biosensor technologies">Bakırçay Lab · Biyosensör teknolojileri</span>
-        <h1 data-en="Measure with science.<br>Understand life better.">Bilimle ölç.<br>Hayatı daha iyi tanı.</h1>
-        <p class="hero-lead" data-en="We develop portable sensor systems for saliva-based stress monitoring and on-site screening of antibiotic residues in milk.">Saliva temelli stres takibi ve sütte antibiyotik kalıntılarının yerinde taranması için taşınabilir sensör sistemleri geliştiriyoruz.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#projects" data-en="Explore our projects <span aria-hidden=&quot;true&quot;>→</span>">Projelerimizi inceleyin <span aria-hidden="true">→</span></a>
-          <a class="btn btn-ghost" href="#biz-kimiz" data-en="About us">Biz kimiz?</a>
+<main id="top">
+  <section class="story" id="story" aria-label="Bir damladan ölçüme: sensörün çalışma fikri">
+    <div class="stage" id="stage">
+      <canvas id="gl" aria-hidden="true"></canvas>
+      <div class="veil" id="veil"></div>
+
+      <div class="beats">
+        <div class="beat hero" data-a="-1" data-b=".105">
+          <span class="mono">Bakırçay Lab · Biyosensör Ar-Ge</span>
+          <h1>Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.</h1>
+          <p>Tükürükte ve anne sütünde kortizolün ölçülmesine yönelik iki biyosensör araştırma projesi.</p>
+          <span class="scroll-cue mono"><i></i>Kaydırın</span>
+        </div>
+        <div class="beat" data-a=".125" data-b=".31">
+          <span class="mono">01 · Örnek</span>
+          <h2>Örnek, sensör yüzeyine ulaşır.</h2>
+          <p>Bu canlandırmada örnek, bir damla anne sütü. Damla çalışma elektrodunun üzerine bırakılır ve yüzeye yayılır. Ölçüm, örneğin elektrotla temas ettiği bu küçük alanda başlar.</p>
+        </div>
+        <div class="beat" data-a=".335" data-b=".44">
+          <span class="mono">02 · Ölçek</span>
+          <h2>Yüzeye yaklaştıkça ölçek değişir.</h2>
+          <p>Elektrodun üzerinde, kortizolü tanımak üzere seçilen <strong>tanıma molekülleri</strong> bulunur. Sensörün seçiciliği bu katmandan gelir.</p>
+        </div>
+        <div class="beat" data-a=".46" data-b=".615">
+          <span class="mono">03 · Tanıma</span>
+          <h2>Kortizol bağlanır. Diğerleri geçip gider.</h2>
+          <p>Kortizol molekülleri tanıma bölgelerine tutunur. Sütteki yağ damlacıkları ve proteinlerin yüzeye bağlanmaması hedeflenir. Bu <strong>seçicilik</strong>, deneylerle doğrulanması gereken temel özelliklerden biridir.</p>
+        </div>
+        <div class="beat" data-a=".635" data-b=".785">
+          <span class="mono">04 · Sinyal</span>
+          <h2>Bağlanma, ölçülebilir bir sinyale dönüşür.</h2>
+          <p>Yüzeydeki bağlanma olayları elektriksel bir değişim oluşturur. Bu değişim okunur ve bir <strong>kalibrasyon eğrisi</strong> yardımıyla derişime çevrilir.</p>
+        </div>
+        <div class="beat" data-a=".83" data-b="9">
+          <span class="mono">05 · İki örnek</span>
+          <h2>Aynı yaklaşım, iki farklı örnek.</h2>
+          <p>Tükürük ve anne sütü çok farklı bileşimlere sahiptir. Her biri için sensör yüzeyi ve ölçüm koşulları ayrı ayrı geliştiriliyor.</p>
         </div>
       </div>
-    </div>
-    <div class="hero-bar">
-      <div class="container">
-        <div class="slide-tabs" role="group" aria-label="Proje videosu seç" data-en-aria-label="Choose a project video">
-          <button type="button" class="slide-tab" data-project="0" aria-pressed="true">
-            <span class="num">01</span>
-            <span class="name" data-en="Stress monitoring">Stres takibi</span>
-            <span class="sub" data-en="Saliva-based measurement technology">Saliva temelli ölçüm teknolojisi</span>
-          </button>
-          <button type="button" class="slide-tab" data-project="1" aria-pressed="false">
-            <span class="num">02</span>
-            <span class="name" data-en="Antibiotic screening in milk">Sütte antibiyotik taraması</span>
-            <span class="sub" data-en="A portable sensor system for on-site screening">Yerinde tarama için taşınabilir sensör sistemi</span>
-          </button>
-        </div>
-        <div class="hero-controls">
-          <a class="hero-project-link" id="hero-project-link" href="#stress-project" data-en="View project <span aria-hidden=&quot;true&quot;>→</span>">Projeyi incele <span aria-hidden="true">→</span></a>
-          <button type="button" class="icon-btn" id="video-toggle" aria-label="Arka plan videosunu oynat">▶</button>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="projects" class="section section-alt">
-    <div class="container">
-      <div class="section-head">
-        <span class="label" data-en="Research and development">Araştırma ve geliştirme</span>
-        <h2 data-en="Our projects">Projelerimiz</h2>
-        <p data-en="Research and development at Bakırçay Lab.">Bakırçay Lab bünyesinde geliştirdiğimiz çalışmalar.</p>
-      </div>
-      <div class="project-grid">
-        <article id="stress-project" class="project-card">
-          <img src="media/stress-card.webp" alt="Saliva temelli stres ölçüm cihazı konsepti" data-en-alt="Concept of the saliva-based stress measurement device" width="1120" height="630" loading="lazy">
-          <div class="card-body">
-            <div class="card-meta"><span class="card-num" data-en="01 / Saliva-based measurement">01 / Saliva temelli ölçüm</span><span class="badge" data-en="In R&amp;D">Ar-Ge aşamasında</span></div>
-            <h3 data-en="Stress monitoring">Stres takibi</h3>
-            <p data-en="Stress affects sleep, focus and overall health, yet it is usually judged only by how we feel. We aim to make stress measurement using a saliva sample accessible to everyone.">Stres; uyku düzenini, odaklanmayı ve genel sağlığı etkileyebilir, ancak çoğu zaman yalnızca hissedilerek değerlendirilir. Saliva örneğiyle stres ölçümünü herkes için erişilebilir kılmayı hedefliyoruz.</p>
-            <p data-en="We are developing a portable, easy-to-use sensor system that measures stress-related biomarkers such as cortisol in saliva. Because a saliva sample can be collected without needles, painlessly and in a short time, it is well suited to regular, everyday monitoring.">Kortizol gibi stresle ilişkili biyobelirteçleri saliva örneğinden ölçen, taşınabilir ve kolay kullanılan bir sensör sistemi geliştiriyoruz. Saliva örneği iğne gerektirmeden, ağrısız ve kısa sürede alınabildiği için düzenli ve günlük takibe uygun bir yöntem sunuyor.</p>
-            <p class="card-note" data-en="Sensor design, calibration and validation studies are ongoing to verify the measurement approach.">Ölçüm yaklaşımını doğrulamak için sensör tasarımı, kalibrasyon ve doğrulama çalışmaları sürdürülmektedir.</p>
-            <div class="card-foot"><a href="#amacimiz" class="text-link" data-en="Discover our purpose <span aria-hidden=&quot;true&quot;>↗</span>">Amacımızı keşfedin <span aria-hidden="true">↗</span></a></div>
-          </div>
-        </article>
-        <article id="milk-project" class="project-card">
-          <img src="media/milk-card.webp" alt="Sütte antibiyotik taraması için pipet biçimli cihaz konsepti" data-en-alt="Concept of the pipette-shaped device for antibiotic screening in milk" width="1120" height="630" loading="lazy">
-          <div class="card-body">
-            <div class="card-meta"><span class="card-num" data-en="02 / Food safety">02 / Gıda güvenliği</span><span class="badge" data-en="In R&amp;D">Ar-Ge aşamasında</span></div>
-            <h3 data-en="Antibiotic screening in milk">Sütte antibiyotik taraması</h3>
-            <p data-en="We are developing a compact, portable sensor system for on-site screening of antibiotic residues, such as tetracycline, in milk samples.">Tetrasiklin gibi antibiyotik kalıntılarının süt numunelerinde yerinde taranmasına yönelik, kompakt ve taşınabilir bir sensör sistemi geliştiriyoruz.</p>
-            <p data-en="Our pipette-shaped device concept combines a disposable sampling tip with a reusable electronic reader.">Pipet biçimindeki cihaz konseptimiz, tek kullanımlık numune ucunu tekrar kullanılabilen bir elektronik okuyucuyla birleştiriyor.</p>
-            <p class="card-note" data-en="Calibration, selectivity and repeatability studies are planned to validate the measurement approach.">Kalibrasyon, seçicilik ve tekrarlanabilirlik çalışmalarıyla ölçüm yaklaşımının doğrulanması hedeflenmektedir.</p>
-            <div class="card-foot"><button type="button" class="text-link project-preview" data-en="Watch the project video <span aria-hidden=&quot;true&quot;>↗</span>">Proje videosunu izleyin <span aria-hidden="true">↗</span></button></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
+      <figure class="chart" id="chart" aria-label="Temsili kalibrasyon eğrisi">
+        <svg viewBox="0 0 460 330" role="img" aria-labelledby="chart-t">
+          <title id="chart-t">Temsili kalibrasyon eğrisi: kortizol derişimi arttıkça sinyal değişimi artar ve doygunluğa yaklaşır.</title>
+          <g class="grid">
+            <path d="M60 60 H440 M60 120 H440 M60 180 H440 M60 240 H440"/>
+          </g>
+          <path class="axis" d="M60 24 V280 H440"/>
+          <path class="band" id="band" d=""/>
+          <path class="curve" id="curve" d=""/>
+          <circle class="dot" id="dot" r="5" cx="60" cy="270"/>
+          <text x="60" y="306">DÜŞÜK</text>
+          <text x="440" y="306" text-anchor="end">YÜKSEK</text>
+          <text x="250" y="326" text-anchor="middle">KORTİZOL DERİŞİMİ (LOG ÖLÇEK)</text>
+          <text x="48" y="150" text-anchor="middle" transform="rotate(-90 48 150)">SİNYAL DEĞİŞİMİ</text>
+          <text class="tag" x="440" y="16" text-anchor="end">TEMSİLİ · ÖLÇÜM VERİSİ DEĞİLDİR</text>
+        </svg>
+      </figure>
 
-  <section id="home-intro" class="section">
-    <div class="container statement">
-      <div>
-        <span class="label" data-en="People at the heart of science">Bilimin odağında insan</span>
-        <h2 data-en="From science to life,<br><em>new solutions.</em>">Bilimden hayata,<br><em>yeni çözümler.</em></h2>
+      <div class="sample" id="sample-a">
+        <span class="mono">01 · Tükürük</span>
+        <b>Tükürükte kortizol</b>
+        <small>Berrak, sulu bir örnek</small>
+        <a href="#tukuruk">Projeyi inceleyin ↓</a>
       </div>
-      <div class="statement-copy">
-        <p data-en="At Bakırçay Lab, we bring together projects in saliva-based stress monitoring and antibiotic residue screening in milk. Our research and development focuses on creating accessible, easy-to-use solutions.">Saliva temelli stres takibi ve sütte antibiyotik kalıntılarının taranmasına yönelik projelerimizi Bakırçay Lab çatısı altında bir araya getiriyoruz. Araştırma ve geliştirme çalışmalarımızı, kolay kullanılabilir ve erişilebilir çözümler üretme hedefiyle sürdürüyoruz.</p>
+      <div class="sample" id="sample-b">
+        <span class="mono">02 · Anne sütü</span>
+        <b>Anne sütünde kortizol</b>
+        <small>Opak; yağ ve protein içerir</small>
+        <a href="#anne-sutu">Projeyi inceleyin ↓</a>
       </div>
-    </div>
-    <div class="container home-links">
-      <div class="link-grid" id="home-links">
-        <a class="link-card" href="#biz-kimiz">
-          <span class="label" data-en="About us">Biz kimiz?</span>
-          <h3 data-en="Ideas born from science">Bilimden doğan fikirler</h3>
-          <p data-en="A research and development team working on biosensors and measurement technologies for health and food applications.">Sağlık ve gıda alanlarındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibi.</p>
-          <span class="text-link" data-en="Meet Bakırçay Lab <span aria-hidden=&quot;true&quot;>→</span>">Bakırçay Lab’ı tanıyın <span aria-hidden="true">→</span></span>
-        </a>
-        <a class="link-card" href="#amacimiz">
-          <span class="label" data-en="Our purpose">Amacımız</span>
-          <h3 data-en="Bringing measurement closer to life">Ölçümü hayata yaklaştırmak</h3>
-          <p data-en="Making measurement and screening more accessible, portable and practical with biosensor technologies.">Biyosensör teknolojileriyle ölçüm ve tarama işlemlerini daha erişilebilir, taşınabilir ve uygulanabilir hâle getirmek.</p>
-          <span class="text-link" data-en="See our purpose <span aria-hidden=&quot;true&quot;>→</span>">Amacımızı görün <span aria-hidden="true">→</span></span>
-        </a>
-      </div>
-    </div>
-  </section>
-</div>
 
-<!-- About -->
-<div id="about-view" hidden>
-  <section class="page-head">
-    <div class="container inner">
-      <span class="label" data-en="About us">Biz kimiz?</span>
-      <h1 data-en="Ideas born from science,<br>solutions that <em>touch lives.</em>">Bilimden doğan fikirler,<br>hayata dokunan <em>çözümler.</em></h1>
-      <p data-en="Bakırçay Lab is a research and development team working on biosensors and measurement technologies for health and food applications. We combine scientific research with portable device design and digital monitoring to develop easy-to-use solutions.">Bakırçay Lab, sağlık ve gıda alanlarındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı, taşınabilir cihaz tasarımı ve dijital takip olanaklarıyla bir araya getirerek kolay kullanılabilir çözümler geliştirmeyi hedefliyoruz.</p>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container about-grid">
-      <div class="about-media">
-        <video id="about-video" class="about-video" poster="media/logo-animation-end.jpg" muted playsinline preload="metadata" aria-label="Bakırçay Lab logo animasyonu" data-en-aria-label="Bakırçay Lab logo animation"></video>
-        <button type="button" class="replay-btn" data-en="↻ Watch again">↻ Tekrar izle</button>
+      <div class="mprog" id="mprog" aria-hidden="true">
+        <span class="count"><b id="mprog-n">01</b> / 05</span><span class="name" id="mprog-l">Örnek</span>
+        <span class="bars"><i></i><i></i><i></i><i></i><i></i></span>
       </div>
-      <div class="about-copy">
-        <span class="label" data-en="Our approach">Yaklaşımımız</span>
-        <h2 data-en="Understanding needs.<br>Developing through science.">İhtiyacı anlayan,<br>bilimle geliştiren.</h2>
-        <p data-en="We begin by identifying a real need, considering sensor development, experimental evaluation and user experience together. We investigate measurement performance and operating conditions to turn ideas into practical solutions.">Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. Bir fikrin uygulanabilir bir çözüme dönüşmesi için ölçüm performansını ve kullanım koşullarını araştırıyoruz.</p>
-        <p data-en="Saliva-based stress monitoring and on-site screening of antibiotic residues in milk are current examples of this approach. Each project has its own requirements, but our focus remains the same: clear, accessible measurement technologies supported by scientific evidence.">Saliva temelli stres takibi ve sütte antibiyotik kalıntılarının yerinde taranması, bu yaklaşımın güncel örnekleri. Her projeyi kendi gereksinimleri doğrultusunda geliştirirken ortak odağımızı koruyoruz: anlaşılır, erişilebilir ve bilimsel verilerle desteklenen ölçüm teknolojileri.</p>
-        <div><a class="text-link" href="#projects" data-en="Explore our projects <span aria-hidden=&quot;true&quot;>→</span>">Projelerimizi inceleyin <span aria-hidden="true">→</span></a></div>
-      </div>
-    </div>
-  </section>
-  <section class="section section-alt">
-    <div class="container">
-      <div class="section-head">
-        <span class="label" data-en="What guides us">Bizi yönlendirenler</span>
-        <h2 data-en="Three principles">Üç ilkemiz</h2>
-      </div>
-      <div class="card-grid-3">
-        <article class="info-card"><span class="num">01</span><h3 data-en="A scientific approach">Bilimsel yaklaşım</h3><p data-en="We evaluate design decisions through experimental data, with attention to reproducibility and the limitations of each measurement.">Tasarım kararlarımızı deneysel verilerle değerlendirmeyi, sonuçların tekrarlanabilirliğini ve ölçümlerin sınırlarını ortaya koymayı önemsiyoruz.</p></article>
-        <article class="info-card"><span class="num">02</span><h3 data-en="User-centred design">Kullanıcı odaklı tasarım</h3><p data-en="From sample collection to viewing results, we design a simple, clear experience suited to its intended use.">Numunenin alınmasından sonucun görüntülenmesine kadar sade, anlaşılır ve kullanım amacına uygun bir deneyim tasarlıyoruz.</p></article>
-        <article class="info-card"><span class="num">03</span><h3 data-en="Benefits across fields">Farklı alanlarda fayda</h3><p data-en="We aim to help translate research into practice through sensor solutions that address different needs in health and food applications.">Sağlık ve gıda alanlarındaki farklı ihtiyaçlara yanıt verebilecek sensör çözümleriyle araştırmanın uygulamaya dönüşmesine katkı sunmayı hedefliyoruz.</p></article>
-      </div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <div class="cta-band on-dark">
-        <div><h2 data-en="See what we are developing.">Neler geliştirdiğimize göz atın.</h2><p data-en="Two projects, one shared research approach.">İki proje, ortak bir araştırma yaklaşımı.</p></div>
-        <a class="btn btn-primary" href="#projects" data-en="Our projects <span aria-hidden=&quot;true&quot;>→</span>">Projelerimiz <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- Purpose -->
-<div id="purpose-view" hidden>
-  <section class="page-head">
-    <div class="container inner">
-      <span class="label" data-en="Our purpose">Amacımız</span>
-      <h1 data-en="Bringing measurement<br>closer to <em>everyday life.</em>">Ölçüm teknolojilerini<br>hayata <em>yaklaştırmak.</em></h1>
-      <p data-en="Our purpose is to use biosensor technologies to make measurement and screening more accessible, portable and practical. From health monitoring to food analysis, we aim to develop solutions that give people access to understandable data.">Amacımız, biyosensör teknolojilerinden yararlanarak ihtiyaç duyulan ölçüm ve tarama işlemlerini daha erişilebilir, taşınabilir ve kolay uygulanabilir hâle getirmektir. Sağlık takibinden gıda alanındaki analiz ihtiyaçlarına kadar farklı kullanım alanlarında, kullanıcıların anlaşılır verilere ulaşmasını sağlayacak çözümler geliştirmeyi hedefliyoruz.</p>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container purpose-grid">
-      <div class="callout on-dark">
-        <span class="label" data-en="Our focus">Odak noktamız</span>
-        <h2 data-en="Scientific.<br>Accessible.<br><em>Practical.</em>">Bilimsel.<br>Erişilebilir.<br><em>Uygulanabilir.</em></h2>
-        <p data-en="We work to turn ideas at the research stage into measurement solutions that respond to real needs.">Araştırma aşamasındaki fikirleri, gerçek ihtiyaçlara karşılık veren ölçüm çözümlerine dönüştürmek için çalışıyoruz.</p>
-      </div>
-      <div>
-        <ol class="steps">
-          <li class="step"><span class="num">01</span><div><h3 data-en="Taking measurement where it is needed">Ölçümü ihtiyaç duyulan yere taşımak</h3><p data-en="Developing approaches to on-site measurement and preliminary screening using compact sensors and portable devices.">Kompakt sensörler ve taşınabilir cihazlarla, kullanım yerinde ölçüm ve ön tarama yapılmasına yönelik yaklaşımlar geliştirmek.</p></div></li>
-          <li class="step"><span class="num">02</span><div><h3 data-en="Making results understandable">Sonuçları anlaşılır kılmak</h3><p data-en="Presenting measurement data through simple interfaces that help users review results, follow their records and see changes over time.">Ölçüm verilerini sade arayüzlerle sunarak kullanıcıların sonuçları incelemesini, kayıtlarını takip etmesini ve değişimleri görmesini kolaylaştırmak.</p></div></li>
-          <li class="step"><span class="num">03</span><div><h3 data-en="Guiding development with scientific evidence">Gelişimi bilimsel verilerle yönlendirmek</h3><p data-en="Planning calibration, selectivity and repeatability studies around each project, and using the findings to evaluate performance and operating limits.">Kalibrasyon, seçicilik ve tekrarlanabilirlik çalışmalarını projenin ihtiyaçlarına göre planlamak; performansı ve kullanım sınırlarını elde edilen verilerle değerlendirmek.</p></div></li>
+      <nav class="rail" aria-label="Hikâye sahneleri">
+        <ol id="rail">
+          <li data-p=".02"><span>Başlangıç</span><i></i></li>
+          <li data-p=".2"><span>Örnek</span><i></i></li>
+          <li data-p=".39"><span>Ölçek</span><i></i></li>
+          <li data-p=".54"><span>Tanıma</span><i></i></li>
+          <li data-p=".71"><span>Sinyal</span><i></i></li>
+          <li data-p=".93"><span>İki örnek</span><i></i></li>
         </ol>
-        <p class="scope-note" data-en="Our projects are in the research and development stage. Their intended scope and performance targets are shaped by the validation studies carried out for each project.">Projelerimiz araştırma ve geliştirme aşamasındadır. Kullanım kapsamı ve performans hedefleri, her proje için yürütülen doğrulama çalışmalarına göre şekillenir.</p>
-      </div>
+      </nav>
     </div>
   </section>
-  <section class="section section-alt">
-    <div class="container">
-      <div class="cta-band on-dark">
-        <div><h2 data-en="Different needs. A shared research approach.">Farklı ihtiyaçlar, ortak bir araştırma yaklaşımı.</h2><p data-en="Discover the projects we are developing at Bakırçay Lab.">Bakırçay Lab bünyesinde geliştirdiğimiz projeleri tanıyın.</p></div>
-        <a class="btn btn-primary" href="#projects" data-en="Explore our projects <span aria-hidden=&quot;true&quot;>→</span>">Projelerimizi keşfedin <span aria-hidden="true">→</span></a>
+
+  <section class="section" id="projeler" aria-labelledby="projeler-h">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Projeler</span>
+        <h2 id="projeler-h">Kortizolü iki farklı örnekte ölçmek.</h2>
+        <p>Kortizol, stres yanıtıyla ilişkili bir biyobelirteçtir. İki projemiz de bu molekülü, laboratuvar dışına taşınabilecek bir sensör yaklaşımıyla ölçmeyi araştırıyor.</p>
       </div>
+
+      <article class="project" id="tukuruk" aria-labelledby="p1-h">
+        <figure class="project-visual">
+          <div class="device">
+            <video class="device-video" muted loop playsinline preload="none" poster="media/stress-card.webp" aria-label="Stres ölçümü için taşınabilir okuyucu konsepti">
+              <source src="media/bakir-background.mp4" type="video/mp4">
+            </video>
+            <span class="device-tag mono">Konsept tasarım</span>
+          </div>
+          <figcaption>Cihaz konsepti: tükürük örneğiyle çalışacak taşınabilir bir okuyucu. Görsel bir tasarım çalışmasıdır.</figcaption>
+        </figure>
+        <div class="project-body">
+          <div class="meta"><span class="mono">01 · Tükürük</span><span class="status">Ar-Ge aşamasında</span></div>
+          <h3 id="p1-h">Tükürükte kortizol tespitine yönelik biyosensör</h3>
+          <p>Tükürük, iğne gerektirmeden toplanabilen bir örnek türüdür. Bu proje, stresle ilişkili bir biyobelirteç olan kortizolün tükürükte ölçülmesine yönelik bir biyosensör yaklaşımını araştırıyor.</p>
+          <div class="facts">
+            <div>
+              <h4 class="mono">Araştırdığımız</h4>
+              <ul>
+                <li>Tükürükteki kortizolü seçici olarak tanıyan bir sensör yüzeyi</li>
+                <li>Küçük örnek hacmiyle çalışabilen, taşınabilir bir ölçüm düzeni</li>
+              </ul>
+            </div>
+            <div class="caution">
+              <h4 class="mono">Yorumlarken</h4>
+              <ul>
+                <li>Kortizol gün içinde doğal bir ritimle değişir. Örneğin alındığı saat sonucu doğrudan etkiler.</li>
+                <li>Uyku, yemek, fiziksel aktivite ve kişiden kişiye biyolojik değişkenlik ölçümü etkileyebilir.</li>
+                <li>Tek bir ölçüm, bir kişinin stres durumunu tek başına belirlemez.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project" id="anne-sutu" aria-labelledby="p2-h">
+        <figure class="project-visual">
+          <div class="device">
+            <video class="device-video" muted loop playsinline preload="none" poster="media/milk-card.webp" aria-label="Süt örneği için pipet biçimli cihaz konsepti">
+              <source src="media/milk-background.mp4" type="video/mp4">
+            </video>
+            <span class="device-tag mono">Konsept tasarım</span>
+          </div>
+          <figcaption>Cihaz konsepti: tek kullanımlık numune ucu ve tekrar kullanılabilen bir okuyucu. Görsel bir tasarım çalışmasıdır.</figcaption>
+        </figure>
+        <div class="project-body">
+          <div class="meta"><span class="mono">02 · Anne sütü</span><span class="status">Ar-Ge aşamasında</span></div>
+          <h3 id="p2-h">Anne sütünde kortizol tespitine yönelik biyosensör</h3>
+          <p>Anne sütü, kortizol dahil çeşitli hormonlar içerir. Bu proje, anne sütü örneklerindeki kortizol düzeylerinin incelenmesine yönelik bir biyosensör yaklaşımını araştırıyor.</p>
+          <div class="facts">
+            <div>
+              <h4 class="mono">Araştırdığımız</h4>
+              <ul>
+                <li>Yağ ve protein içeriği yüksek, karmaşık bir örnekte ölçüm yapabilen bir sensör yüzeyi</li>
+                <li>Örnek hazırlığını en aza indiren bir ölçüm akışı</li>
+              </ul>
+            </div>
+            <div class="caution">
+              <h4 class="mono">Yorumlarken</h4>
+              <ul>
+                <li>Sütteki kortizol düzeyi günün saatine, emzirme dönemine ve örnekleme koşullarına göre değişebilir.</li>
+                <li>Bu ölçümden bebeğin sağlığı, annenin psikolojik durumu ya da sütün niteliği hakkında doğrudan sonuç çıkarılmaz.</li>
+                <li>Ölçüm sonuçları, sütü değerlendiren bir etiket olarak kullanılmaz.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
-</div>
+
+  <section class="section" id="biz-kimiz" aria-labelledby="biz-h">
+    <div class="wrap">
+      <div class="about">
+        <figure class="about-media">
+          <video id="about-video" poster="media/logo-animation-end.jpg" muted playsinline preload="metadata" aria-label="Bakırçay Lab logo animasyonu">
+            <source src="media/logo-animation.mp4" type="video/mp4">
+            <source src="media/logo-animation.webm" type="video/webm">
+          </video>
+          <button type="button" class="replay" id="about-replay">↻ Tekrar izle</button>
+        </figure>
+        <div class="about-copy">
+          <span class="mono">Biz kimiz?</span>
+          <h2 id="biz-h">Bilimden doğan fikirler, hayata dokunan çözümler.</h2>
+          <p>Bakırçay Lab, sağlık alanındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.</p>
+          <p>Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. Tükürükte ve anne sütünde kortizol ölçümüne yönelik projelerimiz bu yaklaşımın güncel örnekleri.</p>
+        </div>
+      </div>
+      <dl class="principles">
+        <div><dt>Bilimsel yaklaşım</dt><dd>Tasarım kararlarımızı deneysel verilerle değerlendiriyor, sonuçların tekrarlanabilirliğini ve ölçümlerin sınırlarını açıkça ortaya koymayı önemsiyoruz.</dd></div>
+        <div><dt>Kullanıcı odaklı tasarım</dt><dd>Örneğin alınmasından sonucun görüntülenmesine kadar sade, anlaşılır ve kullanım amacına uygun bir deneyim tasarlıyoruz.</dd></div>
+        <div><dt>Araştırmadan uygulamaya</dt><dd>Sağlık alanındaki farklı ihtiyaçlara yanıt verebilecek sensör çözümleriyle araştırmanın uygulamaya dönüşmesine katkı sunmayı hedefliyoruz.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="cerceve" aria-labelledby="cerceve-h">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Bilimsel çerçeve</span>
+        <h2 id="cerceve-h">Bir ölçüm sonucu, bağlamıyla anlam kazanır.</h2>
+        <p>Kortizol ölçümünü doğru yorumlamak için örneğin ne zaman, nasıl ve kimden alındığını bilmek gerekir.</p>
+      </div>
+      <dl class="frame">
+        <div class="frame-row"><dt class="mono">Biyobelirteç</dt><dd>Kortizol, stres yanıtıyla ilişkili bir hormondur. Stresin kendisi değil, onunla ilişkili biyolojik süreçlerin bir göstergesidir.</dd></div>
+        <div class="frame-row"><dt class="mono">Örnekleme zamanı</dt><dd>Kortizol düzeyi uyandıktan sonra yükselir ve gün boyunca azalır. Farklı saatlerde alınan örnekler doğrudan karşılaştırılamaz.</dd></div>
+        <div class="frame-row"><dt class="mono">Biyolojik değişkenlik</dt><dd>Düzeyler kişiden kişiye ve aynı kişide günden güne değişir. Anlamlı bir değerlendirme, genellikle birden fazla ölçüm gerektirir.</dd></div>
+        <div class="frame-row"><dt class="mono">Tek ölçümün sınırı</dt><dd>Tek bir kortizol değeri, bir kişinin stres durumunu kesin olarak belirlemez.</dd></div>
+        <div class="frame-row"><dt class="mono">Örnek matrisi</dt><dd>Tükürük ve anne sütü farklı bileşenler içerir. Sensör performansının her örnek türünde ayrı ayrı gösterilmesi gerekir.</dd></div>
+        <div class="frame-row"><dt class="mono">Doğrulama</dt><dd>Kalibrasyon, seçicilik ve tekrarlanabilirlik testleri ile gerçek örneklerde kabul görmüş referans yöntemlerle karşılaştırma yapılması gerekir.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="durum" aria-labelledby="durum-h">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Proje durumu</span>
+        <h2 id="durum-h">Araştırma ve geliştirme aşamasında.</h2>
+        <p>Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Çalışma planımız bu adımları izliyor.</p>
+      </div>
+      <ol class="steps">
+        <li><b>Tanıma katmanı</b><p>Kortizolü tanıyacak molekülün seçilmesi ve elektrot yüzeyine bağlanması.</p></li>
+        <li><b>Sinyal okuma</b><p>Bağlanmanın oluşturduğu elektriksel değişimin kararlı biçimde ölçülmesi.</p></li>
+        <li><b>Kalibrasyon</b><p>Bilinen derişimlerle kalibrasyon eğrisinin ve tayin sınırının belirlenmesi.</p></li>
+        <li><b>Seçicilik ve tekrar</b><p>Benzer moleküllere karşı seçiciliğin ve ölçümlerin tekrarlanabilirliğinin test edilmesi.</p></li>
+        <li><b>Gerçek örnekler</b><p>Tükürük ve anne sütü örneklerinde, referans yöntemlerle karşılaştırmalı değerlendirme.</p></li>
+      </ol>
+      <p class="disclaimer"><strong>Bu projeler araştırma aşamasındadır.</strong> Klinik kullanım için doğrulanmış bir test ya da satışta olan bir ürün değildir. Sayfadaki görseller sensörün çalışma fikrini anlatan şematik canlandırmalardır.</p>
+    </div>
+  </section>
 </main>
 
-<footer class="site-footer on-dark">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a class="brand" href="#" aria-label="Bakırçay Lab ana sayfa" data-en-aria-label="Bakırçay Lab home">
-          <img src="bakir-mark.png" alt="" width="160" height="200">
-          <span class="brand-text"><span class="brand-name">BAKIRCAY <b>LAB</b></span><span class="brand-sub" data-en="Biosensor technologies">Biyosensör teknolojileri</span></span>
-        </a>
-        <p data-en="Biosensors for a healthier tomorrow. Measurement technologies for health and food, at the research and development stage.">Daha sağlıklı bir yarın için biyosensörler. Sağlık ve gıda alanında, araştırma ve geliştirme aşamasındaki ölçüm teknolojileri.</p>
-      </div>
-      <div class="footer-col">
-        <h3 data-en="Site">Site</h3>
-        <ul>
-          <li><a href="#" data-en="Home">Ana sayfa</a></li>
-          <li><a href="#projects" data-en="Projects">Projelerimiz</a></li>
-          <li><a href="#biz-kimiz" data-en="About us">Biz kimiz?</a></li>
-          <li><a href="#amacimiz" data-en="Our purpose">Amacımız</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3 data-en="Projects">Projeler</h3>
-        <ul>
-          <li><a href="#stress-project" data-en="Stress monitoring">Stres takibi</a></li>
-          <li><a href="#milk-project" data-en="Antibiotic screening in milk">Sütte antibiyotik taraması</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Bakırçay Lab</span>
-      <span data-en="A research and development initiative">Araştırma ve geliştirme projesi</span>
-    </div>
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Bakırçay Lab, başa dön"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE0AAABgCAYAAABYO/9YAAAQ30lEQVR42u2deZQcVRXGf7XMZGdJwhqjxoCiiAYRUMEIygFXEASDRgwGV3aE4AIiYkQRRCWiEjcQgkeCikFQRDGCgBqCHlGEKEqQLYTVAElmurv8o77r3Hmp6m16Mo5MnVNnpnuqq9776i7f/d6tnoidd6Vgi4AM2Bx4DvBHIAZqjGzEDd6fD6wbgakxaAlQBU4FdgLu0HsjVqYtLQCxBkwHzgBmy1WjEajqW1oGfFW/36TXI1ZWApq54KuAfYEVwH0OyJGtjqV9UCD9C6i4TDqyBaBFCv5bA2/R6wedBY5sBYkgkVXtBWym9+4JeJsliXaSgrfWzL3OhjNots10k3o8SA7VDsa37P/B0gyQXZwl2c8aMBVYAEwusLZqgeVUHDi2x0CX9qeB9yjRDLuYmbpBjxM4tm3mQHsWcEAHr1tTiTZsQbNtNDDGvd7KHXOzgBvreFstiE9GgmuyNLMuT47tuLXAagfgsI1pafD6hYH73TeSNzcErRfoca9nAFMEVlwQ6wheN+ti2RBkTsv+1U6T26eBpxyAY4D9ArpR04X9XtFebXKvDQFgWacAM0uzOLNOVcBUN6l3Ad92GdPi1FYCNlU2JAAkBMYGnYjKVDdSArCbnQDvBBZ1IoaG5PZ3wCvdhGZKHvqzs8rrgD3kyiFoWeCqmXPfqo7/I7CnPj+YwKWaUxewWDX1ogKyPWByewNwgvP/FPiY7pJlxpWSjiiJE1mQYY23rdXN+ccgW1jsrjlFnrKvYvNY4MmB+3sudxvyE4G/i0N5M95LgJpAOSpIAFkBcN5FNwatiF0NbaHlHIWSGrAG2F5UZ0CWFrtJJsCjwOXBRGNVA4l7vV4xcJ1+7wn2XhfjakGWjQch0KcuSb0CuBq4WIBVdM1RjodGnTBlH4e+qEnHzv1eqvctmEcFe1qyx8GdrXXQshKdtyJeeTG5cPoGZ+lJCQ/tCGiWZf6qgBlrMJYkjgHe57JmFuyVkr3TFMPAMsuaCnwOuEUuaS4aViOpqp6OqxxGKU4B9lf9WXOx7AJgFbBEWanXlWB7q36tOm5XAZaKZgw0U4YxazvgSGAusKnL0EkdDTAaDNAMoPtlWYsETJcGnSl9HyLguvX35yqOFG2fJF+kSZz6MRCwXgCcSL7oM9aBFZeAZbSnovjbcdA8n7oU2B041gGHfv4IOAK4UMeuIFd8dwriXhX4QSA/tVv6zACOA2a5gF4PrHDrGGhRnRV2G/CFwBwHXOaO+QT5gnKnt8SB9XzgNIGVBmA1425maY/KpR/rFOWghGfFwOHAd10M8wz/08C3nBWOLsieUYvjsZs1CTgLWC5XTF3VkbRwXgPn8U4Q20acySuuc4CFAqcalF5zVVpNp6+FwRfyWQvWZbxuLnArcDIwPrhmq8Hcrv8PR6WywQItBO4DwJlBvLL6bk/VrQcHAmQrsbVK3mzzI1nvs925kjoKcLOg3dcpch23cNFuUZFDFBfM0lLnTotFgkdpQmmTgFVEcW4B3ur4XZl7Z23cmLs6Xdw2I6+YQHm5VI5bHWCxk3+OB64XQ680cCkD7Hjgx+QLN1VXSVCS3Y20LhdvrCeC2rX/urFAs5puCvAV4HluAHuK7CZOATHr2418XeG9QfAuAuwUWWfNnaMebUiAh8X9HnDiQtRgjnd1qoyLm3CbPYAbgaMU8F+hv60jb2F4r1Tf0F03Bb4hvre5sxB/7o+IslQczamXzVPg55KqZgJvdsS7Ht14APhbi7J8y6DZpN4N/FIBeq1+XqXyyor0bwnYZc4yvbu+Q1Y3U5/p0rkPU83YyIV9WXaa9L6vSq6qNsimZlW3im4kgwWaAXYscJESQI9Y+D0K1I+6It2rsV9wpNNcrUelzzdd2bWHxMFqE4AlwBOqbRerlt3Ogd1MEruuzdozKuKccQlgRwFfdnyrG7hdA7+BDVfTY4FzEvA24BHnrjaxeXLpzVXTptRvGLTP3km+8n+/susWLlk0y/1+2kY8iwrUmwyIwv60CnCggr6JiF3AbcBrRRDTAhOvubvyQ8W93+h1IqB/rGPny80rdcKDWfBN0vbX6/dxzvoabea6twn4qAXQDLBuxc9zRPAnAFkaaP07qGQyS+oiX1TZB3hIJ6k0IJvdksz3Vsw6EfiUBvIS4P0NJm6AXSOynInCTGoBMO+ai1wSqTRRwkWOly6Rsdh15wH7xoHyerHKFhv47eRrnw/pRD0Ur336Nc0ed6dPEng3ahIfp/+yYRlgP5fFP6k4tmOTMYxAvl8PXNaEa/p2il7txwmwObphszWOhalzy3nAy/WBRPHnYMWSSBRiWjDZxMWNinPTe1xcW6pjdwQO0oTSEitNZdmHKlt/VtJ1pUWp2mLeT8hXz5I60lTiSriTVc1kumlL5Xkmlb0eOMw41RSl85pL72eJxCZC+k76OokabWvIu4yWKuuuFcVISwAwK1it7PwY8Cbgoy1amHe1TKA3I0FNAX4t4Hqd541zHgCwCVAxVzlKbmma2SpHH2qa9BUugHc7Odt3C5nrjhXxvVkWm4iIltEcc6e5Yu5bSlXJWtDNQppyrcqssh4OA2wb4GfkXVFvVAIzTD4nanSpeOEBwKJUGWF2kBHPl7WYZawhb8JrR0zMgBerFi0qsm2SX5E7ISvftg239Oc8tQ43M8C2FId7gcLANe6YsyWAznVzvxo4KlWd+GyXLXuVccIU3Sqb9sF+D2eZaeCWseTyk/TefhI+2wGs4qqU35fEMntvskDagXwF/lpXrdjcj9AN3J68cXu5kdm93AW7NIG7HUD12qwa8RzbXl4H2FiZar1CxPlt6l5WgdyjgF70AJy56hYCbIbCxrX0X13zc1+h/b/zT4GXBQf+k/7LdgOp1QzkHQpAN7e8TDEFxcHpbViZL+gPU5kXPs9lII5XGNhZ17sqAIwCT/ASP6kCoZ/QY8EHZ5A/X+DbQsN+L2tCTuhblF3lqoJJwTV8G+mp+vymoj1ZG1ZmXnKyiHBIZA2wsUpou6m2vkDH9jZR9PerNScE7z3hUJ2pVNzOdqtqxvH0LeaGbVffcZLNBxSYW2H9uIy/QMG7DLAxAux1UkoWNFEllEpA4V0d52jEncB5Tr6OSlwwctZm5cgtrhwZVUAv1gHn6tjNpd5mLa4ymYV9W5aTFHiAAbZE5eAxytRtAWaghcta093gVylIM8C4Fhew9cucmnokfR0+aZNB37L9+cDRLoZlAcEdrcWafVQHDwgwA21VkK1eJHd6wllNO0tmBHVpKNd8SYCOI2+saTaWeWBPI197jUsA69LN2U+y+rl1gn7RjfakvZ/53hZMcjLwaud2ra5fRoFO9pSzZuNANwJ/cDXeVJepGgXkVLRifwGWBvpe7I5bTN4uMZ98+bEZC/Oqc6VoXLF0qpBbHVoAUpXydqqyHcWuNcG5vu6uf3QTNyRz1rRQNOlKJzZkAbg1xbn9ZdGfoP8KfSO1Y6z422wR237xPFV2fMTRgkzq63wlAguu+2iwXQrsvovSYqBv+LtLCyuZzm/XWy0lNZJYuVvJKpTv3UXWebpTTSipKUcrbr1LGfKEBpwzCW7KDsqyz3fHfFgrZjFQS7UctkT1lSE6WuZ8kAPhItWDzW5rRCkqwL3uTi5xXPCDAYn0RDUJkshOkmnGqXpY747zjxxNUIi52GXUssZCX8zbzblIwsRsrWJ9TLHwRivNLKAukNjmu4UOVDwwN5gj3lZVIF0bxJJu7cgaVzv3WeEGuljXmShVAWdlvinvYfJWAosr1hz9aMD3fG9wIqu+UjckqgOYxbcjBFAsY9lV1nmpjrtFN/ntAi0yEfIPwPf04Yoz2QtVbN8B/EJ7qyoHUoCRy5r0sncgYdvPfwOfl2s/1AG6UwSYZdBjxEOf1E0a5ZIXBbV3v0wRS/B72E3UWuSvoe+5gTFs2ErVVbJ7vmUZ+mY3oEPp36+bqATaDfiMAyyqs8fBHgWxtczCTM4+j7zNYopU6emK42crEbwEuETn/r7hkrq4cK/i2pVuElXJRr+SK/3ZySfNUBCLRyvlzlaSbaXEEjk+tVjBu0duMlCxICmxvF7FqTN1zVmuSlkrif9q4YAj38ssdKUFmvo8IW01nXVQ/1o615UB+fNZLHLLdutcYnlawC9z+tqmAqhbGfEd7jyD+VU9Jwuw66SI+IQQyzBeJI1tMyWAO73UlBYw7XMEku+1rclVl4iKnK6LbKVY+FwBY3QkUfA8XPEyUny0LHqgW2C51wE2DfgQGz6MRgONLSTgica+3llsRt7Ac6QAO0B/97qbZfEntX4b1rCyjP49tz57LhDxrAZ0IFYwP05KxgzyloNd3DE9Am+Wyhif9sdI2dhWr18nSxtL3hj4YgZ3u0mrSmso/6auumVUUaOyXyg5hb5G5Cr9O4N6tNpzuv7+PH2m15VLD7kLWozcUwE/Eu+ao/N1KwmsdcmBgFLE7m/hI+F+kqFU74ny3QUW1mJKbtzdfYjKnon0b6WyQPtbWeTyJsSBiujEPN3pncifMU0dEBtjG7Tu7qorend3Kqx/2L+iUuhm0YTRjgclBbVrpDWJjLy3YyV9q/IDAayrgH6U7QN+xrTM0oosJJUUc6pTP5Kgblyu7HRd4JLmCs8iX4AeT74ovETJ5AS557oCITKqo6Vl5A93/H6gGlmnQfMkOJOlnCfXwoHi258uJO/beMARTetI+qHe31EZ9gypEO1uNQkMVzSpZDRaBMradc96WtZSues88gcakoLC+XBxsrc77hWTt00hzmcd4ucrk27j9q1lgX63v20rwj1VBHmllNnjnKXFLYYo/w02DZ9VaNbSQqZdddL42bKgogxrYsA8Zaxl5Gugc2WNSQdcakuVQq8GviZ+WWkyO/r4tol+X9MpSysK6KkK8IPIm5VXB4W3JZNjVOjv4jSq5Y4CRC0E8TCgp6I1+0nS+ZBKoC3oa0gse3i3W2PYWd7zmBSUhcHiUkcsrQj0mlzmbLkkBerFUyK2qyX0PU5nvi3BW9THlcWtr+7eBp8dI942QdL5WCW6K+Q9hdY60MeTQ91+lu70uQGvMwk5Im9BfZz6PWOtjsGs9UzFuEsUCq5yScgHewNjmsZpjymZeHqWFI4/FY2zI890uxhiCu/1Kq1eG+jrNZVdBysOdQo4zysXycIWSWBstD2i+tjGcrvON6mTMa3eHbeB/1OZ7cwgO0VyiUXAa2h9Nb2Zm5coO29Pvgg90e1bugw8WUX7JGmJVcUyEyr+EnhTx2JaM7FulqxufFBHPkD+LQyPlA2uQ3Gu0baYvjbZTTTOI5WJCz0hYZspgwFa5tz/NlUIB9H3/Wv2GNA0qSADfgaz4Pr11F5/Yy9XHJxI/hDJSVJpS4EfLEsr0uN3IW+pmuwUilSy8lUdjG+DbqnxRhiAfY/HcvLm47X0/wKn+XTomaUBKB6mNvtu9TrsfnDcsyhJdEkGWk2+8m0gbaN0v2IIwavRwpfhxRtxYMbZFkp3N0k6o70m6CH13Y21+bv4UUdPIpHLCTR+FPEZB5qXkX6j3Qr2ren74s54BLRyKeYSByT0fcfuiKXVCbrXu8wKG/b+joBWQHxXioUnw8XChhq0iFyU9A0uDwagjoBWQCghF/0gX426awS05jZzzTvIn0Zu5ZHpZyxoVqjfQOMvMnlGg2bW1E3eOGPC5bBwzaEEDXJBcBq5PL7sf0zl+J8lt7vr54kMs3/kMFQxzRaUv6QkMKz+OWE8BK5ZIV/ue5B8EXnY/Z+9oQAN8kXjz9L/+dFhs/0HVC6QKlznG8wAAAAASUVORK5CYII=" alt="" width="24" height="30"><b>BAKIRÇAY <span>LAB</span></b></a>
+    <span>Biyosensör araştırma projeleri</span>
   </div>
 </footer>
-<script src="public.js"></script>
-<script src="counter.js"></script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<script>
+/* ---------- Story driver (runs with or without WebGL) ---------- */
+(() => {
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const story = document.getElementById('story');
+  const stage = document.getElementById('stage');
+  const beats = [...document.querySelectorAll('.beat')].map(el => ({ el, a: +el.dataset.a, b: +el.dataset.b }));
+  const rail = [...document.querySelectorAll('#rail li')];
+  const mprog = document.getElementById('mprog'), mprogN = document.getElementById('mprog-n'), mprogL = document.getElementById('mprog-l');
+  const mprogBars = [...mprog.querySelectorAll('.bars i')];
+  const chart = document.getElementById('chart');
+  const veil = document.getElementById('veil');
+  const curve = document.getElementById('curve'), band = document.getElementById('band'), dot = document.getElementById('dot');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Representative sigmoid on a log-concentration axis (shape only, no data).
+  const X0 = 60, X1 = 440, Y0 = 270, Y1 = 50;
+  const sig = u => 1 / (1 + Math.exp(-(u - .5) * 9));
+  const pts = [], up = [], lo = [];
+  for (let i = 0; i <= 80; i++) {
+    const u = i / 80, s = (sig(u) - sig(0)) / (sig(1) - sig(0));
+    const x = X0 + u * (X1 - X0), y = Y0 + s * (Y1 - Y0), w = 10 + 8 * Math.sin(Math.PI * u);
+    pts.push([x, y]); up.push([x, y - w]); lo.push([x, y + w]);
+  }
+  const d = a => a.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  curve.setAttribute('d', d(pts));
+  band.setAttribute('d', d(up) + ' ' + d(lo.slice().reverse()).replace('M', 'L') + ' Z');
+  const len = curve.getTotalLength();
+  curve.style.strokeDasharray = len; curve.style.strokeDashoffset = len;
+
+  const state = { target: 0, p: 0, last: performance.now() };
+  window.__story = state;
+  // Layout is read only on resize/load; scrolling just reads scrollY (no forced reflow per frame).
+  let storyTop = 0, span = 1;
+  const layout = () => { const r = story.getBoundingClientRect(); storyTop = r.top + scrollY; span = Math.max(1, story.offsetHeight - stage.offsetHeight); measure(); };
+  const measure = () => { state.target = clamp((scrollY - storyTop) / span); };
+  addEventListener('scroll', measure, { passive: true });
+  addEventListener('resize', layout);
+  addEventListener('load', layout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  layout(); state.p = state.target;
+  const last = new Map();
+  const put = (el, prop, v) => { const k = el; let m = last.get(k); if (!m) { m = {}; last.set(k, m); } if (m[prop] !== v) { m[prop] = v; el.style[prop] = v; } };
+
+  let narrowCache = innerWidth <= 760; addEventListener('resize', () => { narrowCache = innerWidth <= 760; });
+  const isNarrow = () => narrowCache;
+  const frame = now => {
+    const dt = Math.min(.1, (now - state.last) / 1000); state.last = now;
+    state.p = reduce.matches ? state.target : state.p + (state.target - state.p) * (1 - Math.exp(-dt * 7));
+    if (Math.abs(state.target - state.p) < 1e-5) state.p = state.target;
+    const p = state.p;
+    const narrow = isNarrow(), lift = narrow ? 0 : 1;
+    for (const b of beats) {
+      const o = smooth(b.a, b.a + .03, p) * (1 - smooth(b.b - .03, b.b, p));
+      put(b.el, 'opacity', o.toFixed(3));
+      const y = ((1 - o) * 18 * (p < (b.a + b.b) / 2 ? 1 : -1)).toFixed(1);
+      put(b.el, 'transform', narrow ? `translateY(${y}px)` : `translateY(calc(-50% + ${y}px))`);
+      put(b.el, 'visibility', o < .005 ? 'hidden' : 'visible');
+    }
+    // Chart: draws during the signal scene
+    const co = smooth(.655, .69, p) * (1 - smooth(.765, .79, p));
+    chart.style.opacity = co.toFixed(3);
+    const draw = smooth(.665, .75, p);
+    curve.style.strokeDashoffset = (len * (1 - draw)).toFixed(1);
+    const pt = curve.getPointAtLength(len * draw);
+    dot.setAttribute('cx', pt.x.toFixed(1)); dot.setAttribute('cy', pt.y.toFixed(1));
+    band.style.opacity = (draw * .9).toFixed(3);
+    stage.classList.toggle('chart-on', co > .05 && isNarrow());
+    // Veil covers the two scale cuts
+    const v = Math.max(1 - Math.abs(p - .345) / .03, 1 - Math.abs(p - .80) / .03, 0);
+    veil.style.opacity = clamp(v * 1.15).toFixed(3);
+
+    // Rail
+    if (isNarrow()) {
+      const cuts = [.11, .30, .44, .62, .80, 1], names = document.documentElement.lang === 'en' ? ['Sample', 'Scale', 'Recognition', 'Signal', 'Two samples'] : ['Örnek', 'Ölçek', 'Tanıma', 'Sinyal', 'İki örnek'];
+      let k = 0; for (let i = 0; i < 5; i++) if (p >= cuts[i]) k = i;
+      mprogBars.forEach((b, i) => b.style.setProperty('--f', clamp((p - cuts[i]) / (cuts[i + 1] - cuts[i])).toFixed(3)));
+      mprogN.textContent = '0' + (k + 1); mprogL.textContent = names[k];
+      mprog.style.opacity = smooth(.09, .12, p).toFixed(3);
+    }
+    let on = 0; rail.forEach((li, i) => { if (p >= +li.dataset.p - .08) on = i; });
+    rail.forEach((li, i) => li.classList.toggle('on', i === on));
+    state.lift = lift;
+    if (window.__glFrame) window.__glFrame(p, now / 1000, dt);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+})();
+
+
+/* ---------- Language (TR/EN) and theme (light/dark) ---------- */
+(() => {
+  const EN = {"Projeler": "Projects", "Biz kimiz?": "About us", "Bilimsel çerçeve": "Scientific context", "Proje durumu": "Project status", "Bakırçay Lab · Biyosensör Ar-Ge": "Bakırçay Lab · Biosensor R&amp;D", "Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.": "One drop.<br>One <em>molecule</em>.<br>One measurement.", "Tükürükte ve anne sütünde kortizolün ölçülmesine yönelik iki biyosensör araştırma projesi.": "Two biosensor research projects for measuring cortisol in saliva and in breast milk.", "<i></i>Kaydırın": "<i></i>Scroll", "01 · Örnek": "01 · Sample", "Örnek, sensör yüzeyine ulaşır.": "The sample reaches the sensor surface.", "Bu canlandırmada örnek, bir damla anne sütü. Damla çalışma elektrodunun üzerine bırakılır ve yüzeye yayılır. Ölçüm, örneğin elektrotla temas ettiği bu küçük alanda başlar.": "In this animation the sample is a drop of breast milk. It is placed on the working electrode and spreads across the surface. The measurement starts in this small area where the sample touches the electrode.", "02 · Ölçek": "02 · Scale", "Yüzeye yaklaştıkça ölçek değişir.": "Closer to the surface, the scale changes.", "Elektrodun üzerinde, kortizolü tanımak üzere seçilen <strong>tanıma molekülleri</strong> bulunur. Sensörün seçiciliği bu katmandan gelir.": "The electrode carries <strong>recognition molecules</strong> chosen to recognise cortisol. The sensor's selectivity comes from this layer.", "03 · Tanıma": "03 · Recognition", "Kortizol bağlanır. Diğerleri geçip gider.": "Cortisol binds. Everything else drifts past.", "Kortizol molekülleri tanıma bölgelerine tutunur. Sütteki yağ damlacıkları ve proteinlerin yüzeye bağlanmaması hedeflenir. Bu <strong>seçicilik</strong>, deneylerle doğrulanması gereken temel özelliklerden biridir.": "Cortisol molecules attach to the recognition sites. The aim is that fat droplets and proteins in milk do not bind to the surface. This <strong>selectivity</strong> is one of the key properties that must be confirmed by experiment.", "04 · Sinyal": "04 · Signal", "Bağlanma, ölçülebilir bir sinyale dönüşür.": "Binding becomes a measurable signal.", "Yüzeydeki bağlanma olayları elektriksel bir değişim oluşturur. Bu değişim okunur ve bir <strong>kalibrasyon eğrisi</strong> yardımıyla derişime çevrilir.": "Binding events on the surface create an electrical change. That change is read and converted into a concentration using a <strong>calibration curve</strong>.", "05 · İki örnek": "05 · Two samples", "Aynı yaklaşım, iki farklı örnek.": "One approach, two very different samples.", "Tükürük ve anne sütü çok farklı bileşimlere sahiptir. Her biri için sensör yüzeyi ve ölçüm koşulları ayrı ayrı geliştiriliyor.": "Saliva and breast milk have very different compositions. The sensor surface and measurement conditions are being developed separately for each.", "DÜŞÜK": "LOW", "YÜKSEK": "HIGH", "KORTİZOL DERİŞİMİ (LOG ÖLÇEK)": "CORTISOL CONCENTRATION (LOG SCALE)", "SİNYAL DEĞİŞİMİ": "SIGNAL CHANGE", "TEMSİLİ · ÖLÇÜM VERİSİ DEĞİLDİR": "REPRESENTATIVE · NOT MEASURED DATA", "01 · Tükürük": "01 · Saliva", "Tükürükte kortizol": "Cortisol in saliva", "Berrak, sulu bir örnek": "A clear, watery sample", "Projeyi inceleyin ↓": "View the project ↓", "02 · Anne sütü": "02 · Breast milk", "Anne sütünde kortizol": "Cortisol in breast milk", "Opak; yağ ve protein içerir": "Opaque; contains fat and protein", "Başlangıç": "Start", "Örnek": "Sample", "Ölçek": "Scale", "Tanıma": "Recognition", "Sinyal": "Signal", "İki örnek": "Two samples", "Kortizolü iki farklı örnekte ölçmek.": "Measuring cortisol in two different samples.", "Kortizol, stres yanıtıyla ilişkili bir biyobelirteçtir. İki projemiz de bu molekülü, laboratuvar dışına taşınabilecek bir sensör yaklaşımıyla ölçmeyi araştırıyor.": "Cortisol is a biomarker associated with the stress response. Both of our projects explore measuring this molecule with a sensor approach that could work outside the laboratory.", "Konsept tasarım": "Concept design", "Cihaz konsepti: tükürük örneğiyle çalışacak taşınabilir bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a portable reader designed to work with a saliva sample. This image is a design study.", "Ar-Ge aşamasında": "In R&amp;D", "Tükürükte kortizol tespitine yönelik biyosensör": "A biosensor for detecting cortisol in saliva", "Tükürük, iğne gerektirmeden toplanabilen bir örnek türüdür. Bu proje, stresle ilişkili bir biyobelirteç olan kortizolün tükürükte ölçülmesine yönelik bir biyosensör yaklaşımını araştırıyor.": "Saliva can be collected without needles. This project explores a biosensor approach for measuring cortisol, a stress-related biomarker, in saliva.", "Araştırdığımız": "What we are exploring", "Tükürükteki kortizolü seçici olarak tanıyan bir sensör yüzeyi": "A sensor surface that selectively recognises cortisol in saliva", "Küçük örnek hacmiyle çalışabilen, taşınabilir bir ölçüm düzeni": "A portable measurement set-up that works with a small sample volume", "Yorumlarken": "When interpreting results", "Kortizol gün içinde doğal bir ritimle değişir. Örneğin alındığı saat sonucu doğrudan etkiler.": "Cortisol follows a natural daily rhythm. The time a sample is taken directly affects the result.", "Uyku, yemek, fiziksel aktivite ve kişiden kişiye biyolojik değişkenlik ölçümü etkileyebilir.": "Sleep, meals, physical activity and person-to-person biological variability can affect the measurement.", "Tek bir ölçüm, bir kişinin stres durumunu tek başına belirlemez.": "A single measurement does not, on its own, determine a person's stress state.", "Cihaz konsepti: tek kullanımlık numune ucu ve tekrar kullanılabilen bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a disposable sampling tip with a reusable reader. This image is a design study.", "Anne sütünde kortizol tespitine yönelik biyosensör": "A biosensor for detecting cortisol in breast milk", "Anne sütü, kortizol dahil çeşitli hormonlar içerir. Bu proje, anne sütü örneklerindeki kortizol düzeylerinin incelenmesine yönelik bir biyosensör yaklaşımını araştırıyor.": "Breast milk contains a range of hormones, including cortisol. This project explores a biosensor approach for studying cortisol levels in breast milk samples.", "Yağ ve protein içeriği yüksek, karmaşık bir örnekte ölçüm yapabilen bir sensör yüzeyi": "A sensor surface that can measure in a complex sample rich in fat and protein", "Örnek hazırlığını en aza indiren bir ölçüm akışı": "A measurement workflow that keeps sample preparation to a minimum", "Sütteki kortizol düzeyi günün saatine, emzirme dönemine ve örnekleme koşullarına göre değişebilir.": "Cortisol levels in milk can vary with the time of day, the stage of lactation and sampling conditions.", "Bu ölçümden bebeğin sağlığı, annenin psikolojik durumu ya da sütün niteliği hakkında doğrudan sonuç çıkarılmaz.": "No direct conclusion is drawn from this measurement about the baby's health, the mother's psychological state or the quality of the milk.", "Ölçüm sonuçları, sütü değerlendiren bir etiket olarak kullanılmaz.": "Results are not used as a label that rates the milk.", "↻ Tekrar izle": "↻ Watch again", "Bilimden doğan fikirler, hayata dokunan çözümler.": "Ideas born from science, solutions that touch lives.", "Bakırçay Lab, sağlık alanındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.": "Bakırçay Lab is a research and development team working on biosensors and measurement technologies for health needs. We combine scientific research with portable device design to develop easy-to-use measurement methods.", "Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. Tükürükte ve anne sütünde kortizol ölçümüne yönelik projelerimiz bu yaklaşımın güncel örnekleri.": "We begin by defining a real need, considering sensor development, experimental evaluation and user experience together. Our projects on measuring cortisol in saliva and in breast milk are current examples of this approach.", "Bilimsel yaklaşım": "A scientific approach", "Tasarım kararlarımızı deneysel verilerle değerlendiriyor, sonuçların tekrarlanabilirliğini ve ölçümlerin sınırlarını açıkça ortaya koymayı önemsiyoruz.": "We evaluate design decisions with experimental data and care about showing the reproducibility of results and the limits of each measurement clearly.", "Kullanıcı odaklı tasarım": "User-centred design", "Örneğin alınmasından sonucun görüntülenmesine kadar sade, anlaşılır ve kullanım amacına uygun bir deneyim tasarlıyoruz.": "From taking the sample to viewing the result, we design a simple, clear experience suited to its intended use.", "Araştırmadan uygulamaya": "From research to practice", "Sağlık alanındaki farklı ihtiyaçlara yanıt verebilecek sensör çözümleriyle araştırmanın uygulamaya dönüşmesine katkı sunmayı hedefliyoruz.": "We aim to help research become practice through sensor solutions that respond to different health needs.", "Bir ölçüm sonucu, bağlamıyla anlam kazanır.": "A measurement means something only in context.", "Kortizol ölçümünü doğru yorumlamak için örneğin ne zaman, nasıl ve kimden alındığını bilmek gerekir.": "To interpret a cortisol measurement correctly, you need to know when, how and from whom the sample was taken.", "Biyobelirteç": "Biomarker", "Kortizol, stres yanıtıyla ilişkili bir hormondur. Stresin kendisi değil, onunla ilişkili biyolojik süreçlerin bir göstergesidir.": "Cortisol is a hormone associated with the stress response. It indicates related biological processes, not stress itself.", "Örnekleme zamanı": "Sampling time", "Kortizol düzeyi uyandıktan sonra yükselir ve gün boyunca azalır. Farklı saatlerde alınan örnekler doğrudan karşılaştırılamaz.": "Cortisol rises after waking and falls through the day. Samples taken at different times cannot be compared directly.", "Biyolojik değişkenlik": "Biological variability", "Düzeyler kişiden kişiye ve aynı kişide günden güne değişir. Anlamlı bir değerlendirme, genellikle birden fazla ölçüm gerektirir.": "Levels vary between people and from day to day in the same person. A meaningful assessment usually needs more than one measurement.", "Tek ölçümün sınırı": "Limits of one measurement", "Tek bir kortizol değeri, bir kişinin stres durumunu kesin olarak belirlemez.": "A single cortisol value does not definitively determine a person's stress state.", "Örnek matrisi": "Sample matrix", "Tükürük ve anne sütü farklı bileşenler içerir. Sensör performansının her örnek türünde ayrı ayrı gösterilmesi gerekir.": "Saliva and breast milk contain different components. Sensor performance has to be shown separately for each sample type.", "Doğrulama": "Validation", "Kalibrasyon, seçicilik ve tekrarlanabilirlik testleri ile gerçek örneklerde kabul görmüş referans yöntemlerle karşılaştırma yapılması gerekir.": "Calibration, selectivity and reproducibility tests are needed, along with comparison against accepted reference methods in real samples.", "Araştırma ve geliştirme aşamasında.": "In research and development.", "Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Çalışma planımız bu adımları izliyor.": "The path from a sensor idea to a reliable measurement is made of steps validated in sequence. Our work plan follows these steps.", "Tanıma katmanı": "Recognition layer", "Kortizolü tanıyacak molekülün seçilmesi ve elektrot yüzeyine bağlanması.": "Choosing the molecule that will recognise cortisol and attaching it to the electrode surface.", "Sinyal okuma": "Signal readout", "Bağlanmanın oluşturduğu elektriksel değişimin kararlı biçimde ölçülmesi.": "Measuring the electrical change caused by binding in a stable way.", "Kalibrasyon": "Calibration", "Bilinen derişimlerle kalibrasyon eğrisinin ve tayin sınırının belirlenmesi.": "Establishing the calibration curve and the limit of detection with known concentrations.", "Seçicilik ve tekrar": "Selectivity and repeatability", "Benzer moleküllere karşı seçiciliğin ve ölçümlerin tekrarlanabilirliğinin test edilmesi.": "Testing selectivity against similar molecules and the repeatability of measurements.", "Gerçek örnekler": "Real samples", "Tükürük ve anne sütü örneklerinde, referans yöntemlerle karşılaştırmalı değerlendirme.": "Comparative evaluation in saliva and breast milk samples against reference methods.", "<strong>Bu projeler araştırma aşamasındadır.</strong> Klinik kullanım için doğrulanmış bir test ya da satışta olan bir ürün değildir. Sayfadaki görseller sensörün çalışma fikrini anlatan şematik canlandırmalardır.": "<strong>These projects are in the research stage.</strong> They are not a test validated for clinical use or a product on sale. The visuals on this page are schematic animations that illustrate how the sensor works.", "Biyosensör araştırma projeleri": "Biosensor research projects"};
+  const norm = h => h.replace(/<br\s*\/?>/g, '<br>').replace(/\s+/g, ' ').trim();
+  const sel = 'nav a, .beat .mono, .beat h1, .beat h2, .beat p, .chart text, .sample .mono, .sample b, .sample small, .sample a, .rail span, .section-head .mono, h2, h3, h4, .section-head p, .project-body > p, li, dt, dd, .steps b, .steps p, figcaption, .status, .device-tag, .replay, .about-copy .mono, .about-copy p, .disclaimer, footer span';
+  const items = [];
+  document.querySelectorAll(sel).forEach(el => { const k = norm(el.innerHTML); if (EN[k]) items.push({ el, tr: el.innerHTML, en: EN[k] }); });
+  const ARIA = [
+    ['#story', 'Bir damladan ölçüme: sensörün çalışma fikri', 'From a drop to a measurement: how the sensor works'],
+    ['#chart', 'Temsili kalibrasyon eğrisi', 'Representative calibration curve'],
+    ['.nav', 'Sayfa bölümleri', 'Page sections'],
+    ['.lang', 'Dil', 'Language'],
+    ['.rail', 'Hikâye sahneleri', 'Story scenes'],
+    ['#about-video', 'Bakırçay Lab logo animasyonu', 'Bakırçay Lab logo animation'],
+    ['#tukuruk .device-video', 'Stres ölçümü için taşınabilir okuyucu konsepti', 'Concept of a portable reader for stress measurement'],
+    ['#anne-sutu .device-video', 'Süt örneği için pipet biçimli cihaz konsepti', 'Concept of a pipette-shaped device for milk samples']
+  ];
+  const chartTitle = document.getElementById('chart-t'), chartTr = chartTitle.textContent;
+  const chartEn = 'Representative calibration curve: as cortisol concentration rises, the signal change increases and approaches saturation.';
+  const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const themeBtn = document.getElementById('theme-btn');
+  const setLang = (lang, save) => {
+    const en = lang === 'en';
+    document.documentElement.lang = en ? 'en' : 'tr';
+    items.forEach(i => { i.el.innerHTML = en ? i.en : i.tr; });
+    ARIA.forEach(([q, tr, e]) => document.querySelectorAll(q).forEach(el => el.setAttribute('aria-label', en ? e : tr)));
+    chartTitle.textContent = en ? chartEn : chartTr;
+    document.title = en ? 'Bakırçay Lab | Biosensor Research Projects' : 'Bakırçay Lab | Biyosensör Araştırma Projeleri';
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === (en ? 'en' : 'tr'))));
+    setThemeLabel();
+    if (save) store('bakircay-language', en ? 'en' : 'tr');
+  };
+  const setThemeLabel = () => {
+    const dark = document.documentElement.classList.contains('dark'), en = document.documentElement.lang === 'en';
+    themeBtn.textContent = dark ? '☀' : '☾';
+    themeBtn.setAttribute('aria-label', dark ? (en ? 'Switch to light theme' : 'Açık temaya geç') : (en ? 'Switch to dark theme' : 'Koyu temaya geç'));
+  };
+  const setTheme = (dark, save) => {
+    document.documentElement.classList.toggle('dark', dark);
+    setThemeLabel();
+    if (window.__setSceneTheme) window.__setSceneTheme(dark);
+    if (save) store('bakircay-theme', dark ? 'dark' : 'light');
+  };
+  window.__isDark = () => document.documentElement.classList.contains('dark');
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
+  themeBtn.addEventListener('click', () => setTheme(!window.__isDark(), true));
+  setLang(document.documentElement.lang === 'en' ? 'en' : 'tr', false);
+  setTheme(window.__isDark(), false);
+})();
+
+/* ---------- About: logo animation plays once when it comes into view ---------- */
+(() => {
+  const v = document.getElementById('about-video'), btn = document.getElementById('about-replay');
+  const play = () => { try { v.currentTime = 0; } catch (e) {} const p = v.play(); if (p) p.catch(() => {}); };
+  btn.addEventListener('click', play);
+  let played = false;
+  new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting && !played && !matchMedia('(prefers-reduced-motion: reduce)').matches) { played = true; play(); } }); }, { threshold: .5 }).observe(v);
+})();
+
+/* ---------- Device concept videos play only while on screen ---------- */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting && !reduce.matches) { if (v.preload === 'none') v.preload = 'auto'; const p = v.play(); if (p) p.catch(() => {}); }
+    else v.pause();
+  }), { threshold: .35 });
+  document.querySelectorAll('.device-video').forEach(v => io.observe(v));
+})();
+
+/* ---------- Project sample visuals (2D canvas, schematic) ---------- */
+(() => {
+  const cortisolPath = (ctx, x, y, s, rot) => {
+    // Fused rings: three hexagons and a pentagon (steroid skeleton), drawn schematically.
+    const rings = window.__steroidRings || [];
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+    ctx.beginPath();
+    for (const ring of rings) { ring.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); }
+    ctx.restore();
+  };
+  // Build ring geometry in 2D (shared with WebGL).
+  const ringFromEdge = (a, b, n, away) => {
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, ex = b[0] - a[0], ey = b[1] - a[1];
+    const L = Math.hypot(ex, ey), apo = L / (2 * Math.tan(Math.PI / n));
+    let nx = -ey / L, ny = ex / L;
+    if ((nx * (mx - away[0]) + ny * (my - away[1])) < 0) { nx = -nx; ny = -ny; }
+    const cx = mx + nx * apo, cy = my + ny * apo, R = L / (2 * Math.sin(Math.PI / n));
+    const a0 = Math.atan2(a[1] - cy, a[0] - cx), dir = Math.sign((b[0] - cx) * (a[1] - cy) - (b[1] - cy) * (a[0] - cx)) || 1;
+    const pts = []; for (let i = 0; i < n; i++) { const t = a0 - dir * i * 2 * Math.PI / n; pts.push([cx + R * Math.cos(t), cy + R * Math.sin(t)]); }
+    return { pts, c: [cx, cy] };
+  };
+  const hexA = []; for (let i = 0; i < 6; i++) { const t = Math.PI / 6 + i * Math.PI / 3; hexA.push([Math.cos(t), Math.sin(t)]); }
+  const B = ringFromEdge(hexA[5], hexA[0], 6, [0, 0]);              // right edge of A
+  const Bp = B.pts; const iB = Bp.reduce((m, p, i) => p[1] > Bp[m][1] ? i : m, 0);
+  const C = ringFromEdge(Bp[iB], Bp[(iB + 5) % 6][1] > Bp[(iB + 1) % 6][1] ? Bp[(iB + 5) % 6] : Bp[(iB + 1) % 6], 6, B.c);
+  const Cp = C.pts; const iC = Cp.reduce((m, p, i) => p[0] > Cp[m][0] ? i : m, 0);
+  const nb = Cp[(iC + 1) % 6][0] > Cp[(iC + 5) % 6][0] ? Cp[(iC + 1) % 6] : Cp[(iC + 5) % 6];
+  const D = ringFromEdge(Cp[iC], nb, 5, C.c);
+  const all = [hexA, Bp, Cp, D.pts];
+  const cx = all.flat().reduce((s, p) => s + p[0], 0) / all.flat().length, cy = all.flat().reduce((s, p) => s + p[1], 0) / all.flat().length;
+  window.__steroidRings = all.map(r => r.map(p => [p[0] - cx, -(p[1] - cy)]));
+
+  const draw = (cv) => {
+    const kind = cv.dataset.sample, dpr = Math.min(2, devicePixelRatio || 1);
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    cv.width = w * dpr; cv.height = h * dpr;
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const small = w < 220, cx0 = w / 2, cy0 = h * .5, R = Math.min(w, h) * (small ? .4 : .33);
+    if (!small) {
+    // Measurement rings
+    ctx.strokeStyle = 'rgba(49,112,142,.22)'; ctx.lineWidth = 1;
+    for (const k of [1.18, 1.36]) { ctx.beginPath(); ctx.arc(cx0, cy0, R * k, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.save(); ctx.setLineDash([2, 6]); ctx.beginPath(); ctx.arc(cx0, cy0, R * 1.52, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    for (let i = 0; i < 72; i++) { const t = i / 72 * Math.PI * 2, r0 = R * 1.36, r1 = r0 + (i % 6 ? 5 : 11);
+      ctx.beginPath(); ctx.moveTo(cx0 + Math.cos(t) * r0, cy0 + Math.sin(t) * r0); ctx.lineTo(cx0 + Math.cos(t) * r1, cy0 + Math.sin(t) * r1); ctx.stroke(); }
+    }
+    // Droplet body
+    const g = ctx.createRadialGradient(cx0 - R * .35, cy0 - R * .4, R * .05, cx0, cy0, R);
+    if (kind === 'milk') { g.addColorStop(0, '#fffaf0'); g.addColorStop(.55, '#e9e1d2'); g.addColorStop(1, '#a99f8e'); }
+    else { g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.6, 'rgba(196,222,232,.45)'); g.addColorStop(1, 'rgba(120,170,190,.6)'); }
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx0, cy0, R, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx0, cy0, R, 0, Math.PI * 2); ctx.clip();
+    // Contents
+    let seed = kind === 'milk' ? 7 : 3; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    if (kind === 'milk') {
+      for (let i = 0; i < 90; i++) { const a = rnd() * 6.283, r = Math.sqrt(rnd()) * R, s = 2 + rnd() * R * .06;
+        ctx.fillStyle = `rgba(255,252,244,${.35 + rnd() * .4})`; ctx.beginPath(); ctx.arc(cx0 + Math.cos(a) * r, cy0 + Math.sin(a) * r, s, 0, 6.283); ctx.fill(); }
+    } else {
+      for (let i = 0; i < 26; i++) { const a = rnd() * 6.283, r = Math.sqrt(rnd()) * R;
+        ctx.fillStyle = 'rgba(70,110,120,.3)'; ctx.beginPath(); ctx.arc(cx0 + Math.cos(a) * r, cy0 + Math.sin(a) * r, 1.5 + rnd() * 3, 0, 6.283); ctx.fill(); }
+    }
+    ctx.lineWidth = 1.6; ctx.lineJoin = 'round';
+    for (let i = 0; i < (kind === 'milk' ? 6 : 8); i++) {
+      const a = rnd() * 6.283, r = Math.sqrt(rnd()) * R * .78;
+      cortisolPath(ctx, cx0 + Math.cos(a) * r, cy0 + Math.sin(a) * r, R * .055, rnd() * 6.283);
+      ctx.strokeStyle = '#31708e'; ctx.stroke();
+    }
+    // Specular highlight
+    const hl = ctx.createRadialGradient(cx0 - R * .42, cy0 - R * .48, 0, cx0 - R * .42, cy0 - R * .48, R * .45);
+    hl.addColorStop(0, 'rgba(255,255,255,.75)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = hl; ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+    ctx.strokeStyle = kind === 'milk' ? 'rgba(140,128,104,.55)' : 'rgba(70,120,140,.55)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(cx0, cy0, R, 0, Math.PI * 2); ctx.stroke();
+    if (w < 220) return;
+    // Callout to one molecule
+    ctx.strokeStyle = 'rgba(49,112,142,.7)'; ctx.lineWidth = 1;
+    const mx = cx0 + R * .28, my = cy0 + R * .18;
+    ctx.beginPath(); ctx.arc(mx, my, R * .14, 0, 6.283); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mx + R * .14, my); ctx.lineTo(cx0 + R * 1.1, my + R * .55); ctx.lineTo(w - 8, my + R * .55); ctx.stroke();
+    ctx.fillStyle = '#5a6f7c'; ctx.font = '500 11px "IBM Plex Mono", monospace'; ctx.textAlign = 'right';
+    ctx.fillText('KORTİZOL', w - 8, my + R * .55 - 8);
+  };
+  const cvs = [...document.querySelectorAll('canvas[data-sample]')];
+  const all2 = () => cvs.forEach(draw);
+  addEventListener('resize', all2);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(all2);
+  all2();
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+
+const canvas = document.getElementById('gl');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (e) { document.documentElement.classList.add('no-gl'); }
+
+if (renderer) {
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (p, a, b) => clamp((p - a) / (b - a));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeIn = t => t * t * t;
+const lerp = (a, b, t) => a + (b - a) * t;
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const mobile = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// Sharpness first: phones render at 2x (their screens are 3x), desktops at least 1.5x so 1x monitors
+// get supersampled edges. Adaptive drops are capped so it never falls to a visibly soft resolution.
+const DEV = devicePixelRatio || 1;
+const DPR_MAX = mobile ? Math.min(DEV, 2) : Math.min(Math.max(DEV, 1.5), 2);
+const DPR_MIN = Math.min(DPR_MAX, mobile ? 1.75 : 1.5);
+let dpr = DPR_MAX, dprDrops = 0;
+renderer.setPixelRatio(dpr);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = .95;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;  // refreshed every other frame below
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const makeBg = (stops, glow) => {
+  const c = document.createElement('canvas'); c.width = c.height = 1024; const g = c.getContext('2d');
+  const lin = g.createLinearGradient(0, 0, 0, 1024); stops.forEach(([o, col]) => lin.addColorStop(o, col));
+  g.fillStyle = lin; g.fillRect(0, 0, 1024, 1024);
+  const gr = g.createRadialGradient(660, 600, 20, 660, 600, 600); gr.addColorStop(0, glow); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 1024, 1024); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+};
+const bgLight = makeBg([[0, '#7fc1ca'], [.45, '#c6e6eb'], [.75, '#e5f3f5'], [1, '#f2f9fa']], 'rgba(255,255,255,.35)');
+const bgDark = makeBg([[0, '#0d3d43'], [.45, '#072d31'], [.75, '#04221f'], [1, '#021b1e']], 'rgba(120,220,230,.08)');
+scene.background = bgLight;
+const pmrem = new THREE.PMREMGenerator(renderer);
+// Product-photography studio: dark room, overhead softbox, two strip lights and a cool rim panel.
+// Reflection environment: a lab room seen as light sources (ceiling softbox, window strips, a warm desk lamp).
+const makeEnv = (room, dark) => {
+  const s = new THREE.Scene();
+  s.add(new THREE.Mesh(new THREE.SphereGeometry(30, 32, 16), new THREE.MeshBasicMaterial({ color: room, side: THREE.BackSide })));
+  const panel = (w, h, color, k, x, y, z) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(k), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m); };
+  panel(18, 10, 0xffffff, dark ? 3.2 : 2.6, 0, 14, -1);       // ceiling softbox
+  panel(3, 12, 0xcff6fa, dark ? 2.6 : 2.2, -11, 6, -10);      // window strip, left
+  panel(3, 12, 0xcff6fa, dark ? 2.2 : 2, -4, 6, -15);         // window strip, back
+  panel(3, 12, 0xcff6fa, dark ? 2.2 : 2, 5, 6, -15);          // window strip, back right
+  panel(26, 6, dark ? 0xffe6c4 : 0xfff3e2, dark ? 1.7 : 1.6, 0, 3, -15);  // what flat metal mirrors from the front: a warm wash keeps the gold golden
+  panel(4, 5, 0xffd6a6, dark ? 2.4 : 1.6, 12, 4, 4);          // warm lamp card (gold glints)
+  panel(10, 3, 0xffffff, dark ? .5 : 1, 0, 2, 14);            // low front fill
+  return pmrem.fromScene(s, .02).texture;
+};
+const envLight = makeEnv(0x9cb9bd, false);
+let envDark = null;
+scene.environment = envLight;
+const camera = new THREE.PerspectiveCamera(35, 1, .01, 200);
+
+scene.add(new THREE.AmbientLight(0x9fb4ff, .04));
+const hemi = new THREE.HemisphereLight(0xffffff, 0x9ab9bc, .45); scene.add(hemi);
+// Physically based area lights for the macro shot: soft overhead box, a thin back strip for rim light, a warm side card.
+RectAreaLightUniformsLib.init();
+const area = (color, intensity, w, h, pos, at, essential = true) => { const l = new THREE.RectAreaLight(color, intensity, w, h); l.position.copy(pos); l.lookAt(at); if (essential || !mobile) scene.add(l); return l; };
+const areaLights = [
+  area(0xf3fbff, 4.2, 5, 3, V(0, 5.6, -1.1), V(0, 0, -1.6)),       // softbox above the sensor
+  area(0xd2f8ff, 14, 1.2, 6, V(-1.4, 4.2, -5.6), V(0, 2.2, -1.6)), // tall rim strip behind the pipette
+  area(0xffd4a2, 3.2, 1.6, 2.2, V(3.4, 1.7, 0), V(0, .2, -1.6), false),    // warm card, right
+  area(0x6cd8e2, 1.6, 2, 3, V(-3.6, 2, -.6), V(0, .6, -1.6), false)       // cool fill, left
+];
+const key = new THREE.DirectionalLight(0xe6eeff, .9); key.position.set(4, 8, 5); scene.add(key); scene.add(key.target);
+key.castShadow = true; key.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
+key.shadow.bias = -.0004; key.shadow.normalBias = .02; key.shadow.radius = 4;
+let shadowMode = '';
+const setShadow = (mode) => {
+  if (mode === shadowMode) return; shadowMode = mode;
+  const c = key.shadow.camera, e = mode === 'micro' ? 13 : 4.5, cz = mode === 'macro' ? EZ : 0;
+  key.position.set(4, 9, 5 + cz); key.target.position.set(0, 0, cz);
+  c.left = -e; c.right = e; c.top = e; c.bottom = -e; c.near = .5; c.far = 30; c.updateProjectionMatrix();
+};
+const rim = new THREE.DirectionalLight(0xbfe8ec, .35); rim.position.set(-6, 3, -5); scene.add(rim);
+const warm = new THREE.PointLight(0xffd6a0, 1.2, 14, 1.6); warm.position.set(2.4, 2.2, 1.2); scene.add(warm);
+
+/* ---------- Shared helpers ---------- */
+const glowTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.25, 'rgba(255,255,255,.55)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+// Edge glint for glass: a view-dependent Fresnel rim drawn additively over transmissive parts.
+const fresnelMat = (color, power = 3, strength = 1) => new THREE.ShaderMaterial({
+  uniforms: { uColor: { value: new THREE.Color(color) }, uPower: { value: power }, uStrength: { value: strength } },
+  vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+  fragmentShader: 'uniform vec3 uColor; uniform float uPower; uniform float uStrength; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), uPower); gl_FragColor = vec4(uColor * f * uStrength, f * uStrength); }',
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide
+});
+function roundedRect(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s;
+}
+function ribbon(points, width, y) {
+  const pos = [], idx = [];
+  points.forEach((p, i) => {
+    const a = points[Math.max(0, i - 1)], b = points[Math.min(points.length - 1, i + 1)];
+    let dx = b[0] - a[0], dz = b[1] - a[1]; const L = Math.hypot(dx, dz) || 1; dx /= L; dz /= L;
+    const nx = -dz * width / 2, nz = dx * width / 2;
+    pos.push(p[0] + nx, y, p[1] + nz, p[0] - nx, y, p[1] - nz);
+    if (i) { const k = i * 2; idx.push(k - 2, k - 1, k, k - 1, k + 1, k); }
+  });
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  return g;
+}
+const inkTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), d = g.createImageData(256, 256);
+  for (let i = 0; i < d.data.length; i += 4) { const v = 118 + (rnd() - .5) * 70; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  g.putImageData(d, 0, 0); g.filter = 'blur(1px)'; g.drawImage(c, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(6, 6); return t;
+})();
+const gold = new THREE.MeshPhysicalMaterial({ color: 0xc98a2e, metalness: 1, roughness: .36, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: .6, envMapIntensity: 1.1, side: THREE.DoubleSide });
+const goldMatte = new THREE.MeshPhysicalMaterial({ color: 0xb4762a, metalness: 1, roughness: .46, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: .8, envMapIntensity: 1, side: THREE.DoubleSide });
+const silver = new THREE.MeshPhysicalMaterial({ color: 0xc8ced8, metalness: 1, roughness: .3, envMapIntensity: 1, side: THREE.DoubleSide });
+
+/* ---------- Macro: floor ---------- */
+const macro = new THREE.Group(); scene.add(macro);
+const floorTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 1024; const g = c.getContext('2d');
+  g.strokeStyle = 'rgba(143,182,255,.55)'; g.lineWidth = 1;
+  for (let i = 0; i <= 64; i++) { const v = i * 16; g.globalAlpha = i % 8 ? .22 : .6; g.beginPath(); g.moveTo(v, 0); g.lineTo(v, 1024); g.stroke(); g.beginPath(); g.moveTo(0, v); g.lineTo(1024, v); g.stroke(); }
+  g.globalAlpha = 1; g.globalCompositeOperation = 'destination-in';
+  const m = g.createRadialGradient(512, 512, 40, 512, 512, 512); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(.7, 'rgba(0,0,0,.25)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = m; g.fillRect(0, 0, 1024, 1024);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+})();
+// Bench: a tinted glossy top. On desktop a planar mirror sits just underneath, so the top shows soft real reflections.
+const benchMat = new THREE.MeshPhysicalMaterial({ color: 0xe3eff0, roughness: .32, clearcoat: .9, clearcoatRoughness: .18, envMapIntensity: .45 });
+const bench = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), benchMat);
+bench.rotation.x = -Math.PI / 2; bench.position.y = -.035; bench.receiveShadow = true; macro.add(bench);
+let mirror = null;  // planar mirror removed: it re-rendered the whole scene every frame
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshBasicMaterial({ map: floorTex, transparent: true, opacity: .32, depthWrite: false, color: 0x8fb6ff }));
+floor.rotation.x = -Math.PI / 2; floor.position.y = -.02;
+const macroFog = new THREE.FogExp2(0xd5e9ec, .012);
+
+/* ---------- Macro: sensor chip (screen-printed electrode style) ---------- */
+const chip = new THREE.Group(); macro.add(chip);
+const T = .14, SURF = T + .03, EZ = -1.6;
+const subGeo = new THREE.ExtrudeGeometry(roundedRect(3.6, 7.2, .3), { depth: T, bevelEnabled: true, bevelThickness: .03, bevelSize: .03, bevelSegments: 3, curveSegments: 14 });
+subGeo.rotateX(-Math.PI / 2);
+const LITE = mobile;  // phones: transparency instead of refraction
+const tr = (v) => LITE ? { transparent: true, opacity: v, depthWrite: false } : { transmission: 1 };
+const glassSub = new THREE.MeshPhysicalMaterial({ color: 0xf4fbfa, roughness: .03, ...tr(.82), thickness: .2, ior: 1.52,
+  attenuationColor: new THREE.Color(0x8fd6cc), attenuationDistance: .7, clearcoat: 1, clearcoatRoughness: .02, specularIntensity: 1, envMapIntensity: 1.5 });
+chip.add(new THREE.Mesh(subGeo, glassSub));
+const we = new THREE.Mesh(new THREE.CylinderGeometry(.85, .85, .02, 120), gold); we.receiveShadow = true; we.position.set(0, SURF + .01, EZ); chip.add(we);
+const ringGeo = (r0, r1, a0, len) => { const g = new THREE.RingGeometry(r0, r1, 120, 1, a0, len); g.rotateX(-Math.PI / 2); return g; };
+const platinum = new THREE.MeshPhysicalMaterial({ color: 0xe9ecee, metalness: 1, roughness: .38, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: .4, envMapIntensity: 1.2, side: THREE.DoubleSide });
+const ce = new THREE.Mesh(ringGeo(1.0, 1.3, 1.58 * Math.PI, 1.55 * Math.PI), platinum); ce.position.set(0, SURF + .006, EZ); chip.add(ce);
+const outer = new THREE.Mesh(ringGeo(1.36, 1.44, 1.62 * Math.PI, 1.42 * Math.PI), gold); outer.position.set(0, SURF + .007, EZ); chip.add(outer);
+const re = new THREE.Mesh(ringGeo(1.0, 1.3, 1.17 * Math.PI, .25 * Math.PI), silver); re.position.set(0, SURF + .006, EZ); chip.add(re);
+const ang = a => [Math.cos(a) * 1.185, EZ - Math.sin(a) * 1.185];
+const traces = [
+  { pts: [[0, EZ + .84], [0, 2.3]], m: gold },
+  { pts: [ang(1.58 * Math.PI), [ang(1.58 * Math.PI)[0], -.1], [.75, .6], [.75, 2.3]], m: goldMatte },
+  { pts: [ang(1.42 * Math.PI), [ang(1.42 * Math.PI)[0], -.1], [-.75, .6], [-.75, 2.3]], m: silver }
+];
+traces.forEach(t => chip.add(new THREE.Mesh(ribbon(t.pts, .13, SURF + .005), t.m)));
+[[-.75, silver], [0, gold], [.75, goldMatte]].forEach(([x, m]) => {
+  const g = new THREE.ShapeGeometry(roundedRect(.48, .95, .06)); g.rotateX(-Math.PI / 2);
+  const pad = new THREE.Mesh(g, m); pad.position.set(x, SURF + .006, 2.75); chip.add(pad);
+});
+const labelTex = (() => {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = 'rgba(215,226,245,.55)'; g.font = '600 64px "Plus Jakarta Sans", sans-serif'; g.textAlign = 'center';
+  g.letterSpacing = '18px'; g.fillText('BAKIRÇAY LAB', 512, 120);
+  g.font = '500 34px "IBM Plex Mono", monospace'; g.fillStyle = 'rgba(215,226,245,.35)'; g.fillText('WE · CE · RE', 512, 190);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const label = new THREE.Mesh(new THREE.PlaneGeometry(2.6, .65), new THREE.MeshBasicMaterial({ map: labelTex, transparent: true, depthWrite: false }));
+label.rotation.x = -Math.PI / 2; label.position.set(0, SURF + .008, 1.05);
+// Insulation window: a translucent dielectric layer over the traces between electrode and pads
+const insul = new THREE.Mesh((() => {
+  // Dielectric print: covers the tracks, leaves a round window over the three electrodes and the contact pads bare.
+  const sh = new THREE.Shape(), x0 = -1.62, x1 = 1.62, y0 = -2.15, y1 = 3.42, r = .16;
+  sh.moveTo(x0 + r, y0); sh.lineTo(x1 - r, y0); sh.quadraticCurveTo(x1, y0, x1, y0 + r); sh.lineTo(x1, y1 - r); sh.quadraticCurveTo(x1, y1, x1 - r, y1);
+  sh.lineTo(x0 + r, y1); sh.quadraticCurveTo(x0, y1, x0, y1 - r); sh.lineTo(x0, y0 + r); sh.quadraticCurveTo(x0, y0, x0 + r, y0);
+  const hole = new THREE.Path(); hole.absarc(0, -EZ, 1.46, 0, Math.PI * 2, true); sh.holes.push(hole);
+  const g = new THREE.ExtrudeGeometry(sh, { depth: .018, bevelEnabled: true, bevelThickness: .006, bevelSize: .012, bevelSegments: 2, curveSegments: 96 });
+  g.rotateX(-Math.PI / 2); return g; })(),
+  new THREE.MeshPhysicalMaterial({ color: 0x24363a, roughness: .3, transparent: true, opacity: .5, clearcoat: .8, clearcoatRoughness: .2, envMapIntensity: .8, depthWrite: false }));
+insul.position.set(0, SURF, 0);
+label.position.y = SURF + .032;
+chip.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = o.material !== glassSub; } });
+
+/* ---------- Droplet ---------- */
+const dropMat = new THREE.MeshPhysicalMaterial({
+  color: 0xe6f6f8, metalness: 0, roughness: .03, transparent: true, opacity: .42, depthWrite: false, clearcoat: 1, clearcoatRoughness: .03,
+  specularIntensity: 1, envMapIntensity: 1.8
+});
+const R = .62, RD = .38;
+const milkMat = new THREE.MeshPhysicalMaterial({ color: 0xf6f2ea, emissive: 0x0d0c0a, roughness: .025, transmission: LITE ? 0 : .28, thickness: 1, ior: 1.345, attenuationColor: new THREE.Color(0xeee3d0), attenuationDistance: .12, clearcoat: 1, clearcoatRoughness: .02, sheen: .35, sheenRoughness: .5, sheenColor: new THREE.Color(0xdfe9ff), specularIntensity: 1, envMapIntensity: 1.4 });
+// The opening sample is a drop of breast milk. Its mesh is reshaped every frame: a hanging drop that
+// elongates as it falls, then a sessile drop (spherical cap) that spreads, overshoots and settles on the electrode.
+const dropGeo = new THREE.SphereGeometry(1, mobile ? 56 : 88, mobile ? 42 : 66);
+const basePos = dropGeo.attributes.position.array.slice();
+const drop = new THREE.Mesh(dropGeo, milkMat); drop.castShadow = true; macro.add(drop);
+const V0 = 4 / 3 * Math.PI * RD * RD * RD;
+const capH = a => { let h = RD; for (let i = 0; i < 24; i++) { const f = h * h * h + 3 * a * a * h - 6 * V0 / Math.PI; h -= f / (3 * h * h + 3 * a * a); } return h; };
+let lastShape = '';
+function shapeDrop(stretch, k, a) {
+  const key = stretch.toFixed(4) + '|' + k.toFixed(3) + '|' + a.toFixed(4);
+  if (key === lastShape) return; lastShape = key;
+  const pos = dropGeo.attributes.position.array;
+  const h = capH(a), Rc = (a * a + h * h) / (2 * h), yc = h - Rc, alpha = Math.acos(Math.min(1, Math.max(-1, -yc / Rc)));
+  const PHI_C = .9 * Math.PI;
+  for (let i = 0; i < pos.length; i += 3) {
+    const x = basePos[i], y = basePos[i + 1], z = basePos[i + 2];
+    let sx = x * RD * (1 - stretch * .5), sy = y * RD * (1 + stretch) + RD * (1 + stretch), sz = z * RD * (1 - stretch * .5);
+    if (y > 0) { const tp = 1 - stretch * 1.6 * y * y; sx *= tp; sz *= tp; }
+    if (k > 0) {
+      const phi = Math.acos(Math.min(1, Math.max(-1, y))), rxz = Math.hypot(x, z), dx = rxz > 1e-6 ? x / rxz : 0, dz = rxz > 1e-6 ? z / rxz : 0;
+      let cr, cy;
+      if (phi <= PHI_C) { const psi = phi / PHI_C * alpha; cr = Rc * Math.sin(psi); cy = yc + Rc * Math.cos(psi); }
+      else { cr = a * (Math.PI - phi) / (Math.PI - PHI_C); cy = 0; }
+      sx += (dx * cr - sx) * k; sy += (cy - sy) * k; sz += (dz * cr - sz) * k;
+    }
+    pos[i] = sx; pos[i + 1] = sy; pos[i + 2] = sz;
+  }
+  dropGeo.attributes.position.needsUpdate = true; dropGeo.computeVertexNormals(); dropGeo.computeBoundingSphere();
+}
+shapeDrop(0, 0, .3);
+const molGeo = new THREE.SphereGeometry(.03, 16, 12);
+const cyanMat = new THREE.MeshStandardMaterial({ color: 0x8eefff, emissive: 0x2fc3ea, emissiveIntensity: 1.4, roughness: .3 });
+const greyMat = new THREE.MeshStandardMaterial({ color: 0x8394b2, roughness: .5 });
+function contents(n, mat, spread = .78) {
+  const im = new THREE.InstancedMesh(molGeo, mat, n); const data = [];
+  for (let i = 0; i < n; i++) { const v = new THREE.Vector3(rnd() * 2 - 1, rnd() * 2 - 1, rnd() * 2 - 1); v.setLength(Math.cbrt(rnd()) * spread * R); data.push({ v, ph: rnd() * 6.28, s: .6 + rnd() * .9 }); }
+  im.userData.data = data; return im;
+}
+// Pipette tip: clear polypropylene with a refracting wall, a column of milk inside, and printed graduation rings.
+const pipette = (() => {
+  const g = new THREE.Group();
+  const out = [[.034, 0], [.046, .08], [.08, .7], [.14, 1.9], [.2, 3.0], [.225, 3.8], [.262, 3.86], [.262, 4.8]];
+  const pts = out.map(([r, y]) => new THREE.Vector2(r, y)).concat(out.slice().reverse().map(([r, y]) => new THREE.Vector2(Math.max(.016, r - .02), y)));
+  const wall = new THREE.Mesh(new THREE.LatheGeometry(pts, 96), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .03, ...tr(.22), thickness: .04, ior: 1.49,
+    clearcoat: 1, clearcoatRoughness: .03, specularIntensity: 1.2, envMapIntensity: 2.6, side: THREE.DoubleSide }));
+  wall.castShadow = true; g.add(wall);
+  const rimG = new THREE.LatheGeometry(out.map(([r, y]) => new THREE.Vector2(r + .002, y)), 96);
+  g.add(new THREE.Mesh(rimG, fresnelMat(0xe2fcff, 1.7, 1.9)));
+  const fill = out.filter(p => p[1] <= 1.35).map(([r, y]) => new THREE.Vector2(Math.max(.012, r - .024), y)); fill.push(new THREE.Vector2(.078, 1.38), new THREE.Vector2(0, 1.4));
+  fill.unshift(new THREE.Vector2(0, 0));
+  g.add(new THREE.Mesh(new THREE.LatheGeometry(fill, 96), milkMat));
+  [1.9, 2.4].forEach(y => { const r = 0.14 + (y - 1.9) * .055; const ring = new THREE.Mesh(new THREE.TorusGeometry(r + .002, .0035, 8, 128), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .5 })); ring.rotation.x = Math.PI / 2; ring.position.y = y; g.add(ring); });
+  return g;
+})();
+macro.add(pipette);
+const splash = new THREE.Mesh(new THREE.RingGeometry(.94, 1, 96), new THREE.MeshBasicMaterial({ color: 0xfff3dc, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+splash.rotation.x = -Math.PI / 2; splash.position.set(0, SURF + .02, EZ); macro.add(splash);
+
+const dust = (n, spread) => {
+  const g = new THREE.BufferGeometry(), a = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { a[i * 3] = (rnd() - .5) * spread; a[i * 3 + 1] = rnd() * spread * .45; a[i * 3 + 2] = (rnd() - .5) * spread - 2; }
+  g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+  return new THREE.Points(g, new THREE.PointsMaterial({ size: .07, map: glowTex, color: 0xb9d0ff, transparent: true, opacity: .45, depthWrite: false, blending: THREE.AdditiveBlending }));
+};
+const macroDust = dust(mobile ? 50 : 110, 14); macroDust.visible = false;
+
+/* ---------- Micro: electrode surface at molecular scale ---------- */
+const micro = new THREE.Group(); scene.add(micro);
+const grainTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 512; const g = c.getContext('2d');
+  g.fillStyle = '#808080'; g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 900; i++) { const x = rnd() * 512, y = rnd() * 512, r = 6 + rnd() * 22, v = 90 + rnd() * 90 | 0;
+    const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgb(${v},${v},${v})`); gr.addColorStop(1, 'rgba(128,128,128,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(5, 5); return t;
+})();
+const surfMat = new THREE.MeshPhysicalMaterial({ color: 0xd9ad5f, metalness: 1, roughness: .34, bumpMap: grainTex, bumpScale: 2.2, roughnessMap: grainTex, envMapIntensity: .95, emissive: 0x000000 });
+const surface = new THREE.Mesh(new THREE.PlaneGeometry(60, 60, 1, 1), surfMat); surface.rotation.x = -Math.PI / 2; surface.receiveShadow = true; micro.add(surface);
+
+// Linker monolayer
+const NL = mobile ? 320 : 700;
+const linkers = new THREE.InstancedMesh(new THREE.CylinderGeometry(.028, .028, .5, 12), new THREE.MeshStandardMaterial({ color: 0x9fb0cc, roughness: .55 }), NL);
+const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), e4 = new THREE.Euler(), s4 = new THREE.Vector3(1, 1, 1);
+for (let i = 0; i < NL; i++) {
+  e4.set((rnd() - .5) * .7, rnd() * 6.28, (rnd() - .5) * .7); q4.setFromEuler(e4);
+  m4.compose(V((rnd() - .5) * 22, .24, (rnd() - .5) * 22), q4, s4); linkers.setMatrixAt(i, m4);
+}
+micro.add(linkers);
+
+// Recognition molecules (Y-shaped, antibody-like schematic)
+const ARM = .62 * Math.PI / 3;
+const yGeo = (() => {
+  // Globular domains (two chains side by side), slightly lumpy like a protein surface.
+  const parts = [];
+  const bead = (x, y, z, r) => {
+    const g = new THREE.SphereGeometry(r, 20, 14), p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const vx = p.getX(i) + x, vy = p.getY(i) + y, vz = p.getZ(i) + z;
+      const n = 1 + .13 * Math.sin(vx * 37.1 + vz * 11.3) * Math.sin(vy * 29.7 + vx * 7.1) * Math.sin(vz * 33.3 + vy * 5.7);
+      p.setXYZ(i, x + (vx - x) * n, y + (vy - y) * n, z + (vz - z) * n); }
+    g.computeVertexNormals(); parts.push(g);
+  };
+  [[.5, .13], [.7, .14], [.9, .13], [1.08, .12]].forEach(([y, r], i) => { bead(-.065, y, (i % 2 ? .03 : -.03), r); bead(.065, y + .04, (i % 2 ? -.03 : .03), r * .95); });
+  for (const sgn of [-1, 1]) {
+    const dx = sgn * Math.sin(ARM), dy = Math.cos(ARM), px = -dy, py = dx;
+    [[.14, .13], [.33, .135], [.52, .125], [.68, .115]].forEach(([d, r], i) => {
+      const off = (i % 2 ? .055 : -.055);
+      bead(dx * d + px * off, 1.22 + dy * d + py * off, (i % 2 ? .04 : -.04), r);
+    });
+  }
+  bead(0, 1.2, 0, .1);
+  return mergeGeometries(parts);
+})();
+const GRID = mobile ? 6 : 7, SP = 1.95;
+const recs = [];
+for (let i = 0; i < GRID; i++) for (let j = 0; j < GRID; j++) {
+  recs.push({ x: (i - (GRID - 1) / 2) * SP + (rnd() - .5) * .5, z: (j - (GRID - 1) / 2) * SP + (rnd() - .5) * .5, yaw: rnd() * 6.28, tilt: (rnd() - .5) * .2 });
+}
+const recMesh = new THREE.InstancedMesh(yGeo, new THREE.MeshPhysicalMaterial({ color: 0xc8b4a6, roughness: .58, clearcoat: .2, clearcoatRoughness: .5, envMapIntensity: .75, sheen: .8, sheenRoughness: .5, sheenColor: new THREE.Color(0xf4e7de) }), recs.length);
+const sites = [];
+recs.forEach((r, i) => {
+  e4.set(r.tilt, r.yaw, r.tilt * .6); q4.setFromEuler(e4); m4.compose(V(r.x, 0, r.z), q4, s4); recMesh.setMatrixAt(i, m4);
+  r.q = q4.clone(); r.ph = rnd() * 6.28;
+  for (const sgn of [-1, 1]) {
+    const local = V(sgn * Math.sin(ARM) * .7, 1.22 + Math.cos(ARM) * .7, 0);
+    const outL = V(sgn * Math.sin(ARM), Math.cos(ARM), 0);
+    sites.push({ ri: i, local, outL, pos: local.clone().applyMatrix4(m4), dir: outL.clone().applyQuaternion(q4).normalize(), bound: 0 });
+  }
+});
+recMesh.castShadow = !mobile; micro.add(recMesh);
+const siteMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(.105, 24, 18), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .45, emissive: 0x05140f }), sites.length);
+const siteBase = new THREE.Color(0xb39b8c), siteOn = new THREE.Color(0x0fa4af), tmpC = new THREE.Color();
+sites.forEach((s, i) => { m4.compose(s.pos, new THREE.Quaternion(), s4); siteMesh.setMatrixAt(i, m4); siteMesh.setColorAt(i, siteBase); });
+micro.add(siteMesh);
+const halo = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 1.5, map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true, sizeAttenuation: true }));
+halo.geometry.setAttribute('position', new THREE.Float32BufferAttribute(sites.flatMap(s => [s.pos.x, s.pos.y, s.pos.z]), 3));
+halo.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(sites.length * 3), 3));
+halo.visible = false; micro.add(halo);
+
+// Cortisol (steroid skeleton schematic: tubes along fused rings + oxygen atoms)
+const cortGeo = (() => {
+  const rings = window.__steroidRings, parts = [], S = .2;
+  const tube = (a, b, r, col) => {
+    const A = V(a[0] * S, a[1] * S, 0), B = V(b[0] * S, b[1] * S, 0), L = A.distanceTo(B);
+    const g = new THREE.CylinderGeometry(r, r, L, 14); g.rotateZ(Math.PI / 2);
+    const ang = Math.atan2(B.y - A.y, B.x - A.x); g.rotateZ(ang); g.translate((A.x + B.x) / 2, (A.y + B.y) / 2, 0);
+    paint(g, col); parts.push(g);
+  };
+  const atom = (p, r, col) => { const g = new THREE.SphereGeometry(r, 20, 14); g.translate(p[0] * S, p[1] * S, 0); paint(g, col); parts.push(g); };
+  const paint = (g, col) => { const c = new THREE.Color(col), n = g.attributes.position.count, arr = new Float32Array(n * 3); for (let i = 0; i < n; i++) { arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(arr, 3)); };
+  const seen = new Set();
+  rings.forEach(r => r.forEach((p, i) => {
+    const q = r[(i + 1) % r.length], k = [p, q].map(v => v.map(n => n.toFixed(2)).join(',')).sort().join('|');
+    if (!seen.has(k)) { seen.add(k); tube(p, q, .045, 0x0e8f99); }
+    atom(p, .068, 0x0fa4af);
+  }));
+  // Oxygen substituents (keto on ring A, hydroxyls on rings C and D): placed outward from ring centres.
+  const out = (ring, pick, dist) => { const c = ring.reduce((s, p) => [s[0] + p[0] / ring.length, s[1] + p[1] / ring.length], [0, 0]); const p = ring[pick]; const d = [p[0] - c[0], p[1] - c[1]], L = Math.hypot(...d); return [p, [p[0] + d[0] / L * dist, p[1] + d[1] / L * dist]]; };
+  const A = rings[0], C = rings[2], D = rings[3];
+  const leftA = A.reduce((m, p, i) => p[0] < A[m][0] ? i : m, 0);
+  const topC = C.reduce((m, p, i) => p[1] > C[m][1] ? i : m, 0);
+  const farD = D.reduce((m, p, i) => p[0] > D[m][0] ? i : m, 0);
+  for (const [ring, pick] of [[A, leftA], [C, topC], [D, farD]]) { const [p, q] = out(ring, pick, 1); tube(p, q, .04, 0xafdde5); atom(q, .11, 0xd9574c); }
+  const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
+})();
+const NC = mobile ? 22 : 40;
+const cortMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, emissive: 0x003135, emissiveIntensity: .4, roughness: .3, clearcoat: .6, clearcoatRoughness: .2, envMapIntensity: .9 });
+const cort = new THREE.InstancedMesh(cortGeo, cortMat, NC);
+const freeSites = sites.map((_, i) => i).sort(() => rnd() - .5);
+const cortData = [];
+for (let i = 0; i < NC; i++) {
+  const si = freeSites[i], s = sites[si];
+  const start = V((rnd() - .5) * 16, 5 + rnd() * 7, (rnd() - .5) * 16);
+  const end = s.pos.clone().addScaledVector(s.dir, .32);
+  const ctrl = end.clone().add(V((rnd() - .5) * 2, 2.6 + rnd() * 1.5, (rnd() - .5) * 2));
+  const dock = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), s.dir).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)));
+  const spin = new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * 6, rnd() * 6, rnd() * 6));
+  cortData.push({ si, start, end, ctrl, dock, spin, d: rnd() * .58, ph: rnd() * 6.28 });
+}
+cort.castShadow = !mobile; micro.add(cort);
+// Milk components that should not bind: fat globules (large, smooth) and casein micelles (small, knobbly).
+const brown = (t, ph, out) => out.set(
+  Math.sin(t * .71 + ph) * .6 + Math.sin(t * 1.93 + ph * 2.1) * .25 + Math.sin(t * 4.1 + ph * 3.7) * .08,
+  Math.sin(t * .53 + ph * 1.3) * .4 + Math.sin(t * 2.37 + ph * .7) * .18 + Math.sin(t * 5.3 + ph) * .06,
+  Math.sin(t * .67 + ph * 2.7) * .6 + Math.sin(t * 1.71 + ph * 1.1) * .25 + Math.sin(t * 3.9 + ph * .3) * .08);
+const NFAT = mobile ? 7 : 13, NCAS = mobile ? 12 : 26;
+const fat = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 40, 28), new THREE.MeshPhysicalMaterial({ color: 0xfff4df, roughness: .28, clearcoat: .8, clearcoatRoughness: .2, sheen: .6, sheenColor: new THREE.Color(0xfffaf0), envMapIntensity: .9 }), NFAT);
+const caseinGeo = (() => { const g = new THREE.SphereGeometry(.32, 36, 26), p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) { const v = V(p.getX(i), p.getY(i), p.getZ(i)); const n = Math.sin(v.x * 23.1) * Math.sin(v.y * 19.7) * Math.sin(v.z * 21.3); v.multiplyScalar(1 + .16 * n); p.setXYZ(i, v.x, v.y, v.z); }
+  g.computeVertexNormals(); return g; })();
+const casein = new THREE.InstancedMesh(caseinGeo, new THREE.MeshStandardMaterial({ color: 0xe6d6b8, roughness: .78, envMapIntensity: .7 }), NCAS);
+const fatData = [], casData = [];
+for (let i = 0; i < NFAT; i++) { const r = .32 + rnd() * .38; fatData.push({ p: V((rnd() - .5) * 18, 3.6 + r + rnd() * 6, (rnd() - .5) * 18), r, ph: rnd() * 6.28 }); }
+for (let i = 0; i < NCAS; i++) casData.push({ p: V((rnd() - .5) * 18, 2.6 + rnd() * 7, (rnd() - .5) * 18), s: .7 + rnd() * .6, ph: rnd() * 6.28, q: new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * 6, rnd() * 6, rnd() * 6)) });
+fat.castShadow = !mobile; casein.castShadow = !mobile;
+micro.add(fat, casein);
+// Signal columns rising from bound sites
+const cols = new THREE.InstancedMesh(new THREE.CylinderGeometry(.035, .035, 1, 14, 1, true), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .55, depthWrite: false }), NC);
+micro.add(cols);
+
+/* ---------- Lab room: what a macro lens sees behind the sensor, softened by depth of field ---------- */
+const labRoom = new THREE.Group(); scene.add(labRoom);
+const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .04, ...tr(.16), thickness: .08, ior: 1.5, clearcoat: 1, specularIntensity: 1, envMapIntensity: 1.8, side: THREE.DoubleSide });
+const liquid = (c, dist = .7) => new THREE.MeshPhysicalMaterial({ color: LITE ? c : 0xffffff, roughness: .06, ...tr(.55), thickness: 1.2, ior: 1.34, attenuationColor: new THREE.Color(c), attenuationDistance: dist, clearcoat: 1, envMapIntensity: 1.2 });
+const glassRim = fresnelMat(0xcff8ff, 2.6, .9);
+const lathe = (pts, seg = 96) => new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg);
+const P = {
+  flask: [[0, 0], [.85, 0], [.9, .06], [.52, 1.05], [.2, 1.55], [.2, 2.05], [.25, 2.1]],
+  beaker: [[0, 0], [.58, 0], [.6, .04], [.6, 1.15], [.66, 1.2]],
+  bottle: [[0, 0], [.42, 0], [.45, .05], [.45, 1.05], [.36, 1.25], [.17, 1.33], [.17, 1.55], [.2, 1.6]],
+  cylinder: [[0, 0], [.38, 0], [.38, .06], [.16, .08], [.16, 2.3], [.2, 2.36]],
+  vial: [[0, 0], [.12, 0], [.14, .03], [.14, .9]],
+  dish: [[0, 0], [1.0, 0], [1.02, .02], [1.02, .2], [1.04, .21]]
+};
+const vessel = (kind, x, y, z, s = 1, fill = null, fillH = .4) => {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(lathe(P[kind]), glass));
+  g.add(new THREE.Mesh(lathe(P[kind].map(([r, y]) => [r + .006, y])), glassRim));
+  if (fill) {
+    const top = P[kind][P[kind].length - 1][1] * fillH;
+    const pts = P[kind].filter(p => p[1] <= top).map(([r, yy]) => [Math.max(0, r - .03), yy + .01]);
+    if (pts.length > 1) { pts.push([0, pts[pts.length - 1][1]]); g.add(new THREE.Mesh(lathe(pts, 40), fill)); }
+  }
+  g.position.set(x, y, z); g.scale.setScalar(s); labRoom.add(g); return g;
+};
+// Back wall with tall windows: their bright strips become the bokeh in the out-of-focus background.
+const wallMat = new THREE.MeshStandardMaterial({ color: 0xa7c2c6, roughness: .9 });
+const wall = new THREE.Mesh(new THREE.PlaneGeometry(80, 30), wallMat); wall.position.set(0, 12, -14); labRoom.add(wall);
+const winMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xe8fbff).multiplyScalar(1.6), fog: false });
+[-7.2, -.6, 5.8].forEach(x => { const w = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 9), winMat); w.position.set(x, 7.6, -13.95); labRoom.add(w); });
+const shelfMat = new THREE.MeshStandardMaterial({ color: 0xe9f1f2, roughness: .45, metalness: .2 });
+[2.6, 4.6].forEach(y => { const sh = new THREE.Mesh(new THREE.BoxGeometry(18, .1, 1.2), shelfMat); sh.position.set(-1, y, -12.6); labRoom.add(sh); });
+const amber = new THREE.MeshPhysicalMaterial({ color: 0x8a4a28, roughness: .08, ...(LITE ? { transparent: true, opacity: .85 } : { transmission: .6 }), thickness: .4, attenuationColor: new THREE.Color(0x6a2f12), attenuationDistance: .5, clearcoat: 1, envMapIntensity: 1.3 });
+const bottle = (x, y, z, s) => { const m = new THREE.Mesh(lathe(P.bottle), amber); m.position.set(x, y, z); m.scale.setScalar(s); labRoom.add(m); };
+// shelves
+vessel('flask', -8.6, 2.65, -12.6, .55, liquid(0x0fa4af, .5), .35); bottle(-7.2, 2.65, -12.5, .6); vessel('beaker', -5.8, 2.65, -12.7, .6, liquid(0x5ecbd3), .5);
+vessel('cylinder', -4.4, 2.65, -12.6, .65, liquid(0xafdde5), .55); bottle(-3, 2.65, -12.5, .55); vessel('flask', -1.2, 2.65, -12.6, .6);
+bottle(1.4, 2.65, -12.6, .62); vessel('beaker', 3.2, 2.65, -12.6, .55, liquid(0x0fa4af, .5), .45); vessel('flask', 5.4, 2.65, -12.6, .5, liquid(0x0fa4af, .6), .3);
+vessel('cylinder', -7.6, 4.65, -12.6, .55); bottle(-5.6, 4.65, -12.6, .5); vessel('beaker', -3.4, 4.65, -12.6, .5); bottle(2.6, 4.65, -12.6, .5); vessel('flask', 4.4, 4.65, -12.6, .5);
+// bench: flask left of frame, petri dish right, vial rack behind
+vessel('beaker', -4.2, 0, -6.2, .9, liquid(0x0fa4af, .45), .55);
+vessel('beaker', -4.6, 0, -7.4, .95, liquid(0x5ecbd3, .6), .45);
+vessel('cylinder', -3.2, 0, -10.2, 1.1, liquid(0xafdde5), .5);
+const dish = vessel('dish', 3.6, 0, -4.4, .8, liquid(0x37b8c2, .6), .5);
+const lid = new THREE.Mesh(lathe([[0, .2], [1.04, .2], [1.06, .22], [1.06, .32]].map(([r, y]) => [r, y])), glass); lid.position.set(3.6 + .2, .02, -4.4 - .08); lid.scale.setScalar(.8); lid.rotation.z = .02; labRoom.add(lid);
+const rack = new THREE.Group(); rack.position.set(3.2, 0, -7.0); rack.rotation.y = -.18; labRoom.add(rack);
+const rackMat = new THREE.MeshStandardMaterial({ color: 0xdfe8ea, roughness: .35, metalness: .4 });
+[.42, .78].forEach(y => { const b = new THREE.Mesh(new THREE.BoxGeometry(3.2, .05, .6), rackMat); b.position.y = y; rack.add(b); });
+[-1.55, 1.55].forEach(x => { const b = new THREE.Mesh(new THREE.BoxGeometry(.05, .8, .6), rackMat); b.position.set(x, .4, 0); rack.add(b); });
+const capMat = new THREE.MeshPhysicalMaterial({ color: 0x0fa4af, roughness: .35, clearcoat: .5 });
+for (let r = 0; r < 2; r++) for (let i = 0; i < 7; i++) {
+  const tg = new THREE.Group(); tg.position.set(-1.32 + i * .44, .02, -.14 + r * .28); rack.add(tg);
+  tg.add(new THREE.Mesh(lathe(P.vial, 24), glass));
+  const f = new THREE.Mesh(new THREE.CylinderGeometry(.115, .115, .5, 40), liquid(i % 3 === 0 ? 0xf2ece0 : 0x58c7cf, .5)); f.position.y = .27; tg.add(f);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(.155, .155, .2, 48), capMat); cap.position.y = 1.0; tg.add(cap);
+}
+
+/* ---------- Duo: saliva and breast-milk droplets ---------- */
+const duo = new THREE.Group(); scene.add(duo);
+const duoBenchMat = new THREE.MeshPhysicalMaterial({ color: 0xe6f0f1, roughness: .32, clearcoat: .9, clearcoatRoughness: .18, envMapIntensity: .45 });
+const duoBench = new THREE.Mesh(bench.geometry, duoBenchMat); duoBench.rotation.x = -Math.PI / 2; duoBench.position.y = -.035; duoBench.receiveShadow = true; duo.add(duoBench);
+const duoGeo = new THREE.SphereGeometry(R, mobile ? 64 : 112, mobile ? 48 : 80);
+const salivaMat = new THREE.MeshPhysicalMaterial({ color: LITE ? 0xdff4f6 : 0xffffff, roughness: .02, ...tr(.35), thickness: .9, ior: 1.333,
+  attenuationColor: new THREE.Color(0xbfe8ec), attenuationDistance: 3, clearcoat: 1, clearcoatRoughness: .02, specularIntensity: 1, envMapIntensity: 1.6 });
+const milkDuoMat = new THREE.MeshPhysicalMaterial({ color: 0xf6ead4, roughness: .14, clearcoat: .9, clearcoatRoughness: .08, sheen: .5, sheenRoughness: .5, sheenColor: new THREE.Color(0xfff6e8), envMapIntensity: 1 });
+const dropA = new THREE.Mesh(duoGeo, salivaMat);
+const dropB = new THREE.Mesh(duoGeo, milkDuoMat);
+
+duo.add(dropA, dropB);
+const aCyan = contents(12, cyanMat, .7), aGrey = contents(26, greyMat, .78);
+const fatMat = new THREE.MeshStandardMaterial({ color: 0xfffaf0, roughness: .6, emissive: 0x2a241a });
+const bFat = contents(46, fatMat, .8), bCyan = contents(9, cyanMat, .62);
+duo.add(aCyan, aGrey, bFat, bCyan);
+const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(0,49,53,.26)'); gr.addColorStop(1, 'rgba(0,49,53,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
+const pools = [0, 1].map(() => { const m = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.2), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.y = .005; duo.add(m); return m; });
+
+/* ---------- Camera paths ---------- */
+const keys = (list) => (p) => {
+  if (p <= list[0][0]) return list[0];
+  for (let i = 1; i < list.length; i++) if (p <= list[i][0]) {
+    const a = list[i - 1], b = list[i], t = ease(seg(p, a[0], b[0]));
+    return [p, a[1].clone().lerp(b[1], t), a[2].clone().lerp(b[2], t), lerp(a[3], b[3], t)];
+  }
+  return list[list.length - 1];
+};
+const macroCam = keys([
+  [0,    V(0, 4.2, EZ + 7.4),    V(0, 1.1, EZ), 30],
+  [.11,  V(.35, 3.6, EZ + 6.2),  V(0, .9, EZ),  30],
+  [.27,  V(1.25, 2.1, EZ + 3.4), V(0, .25, EZ), 30],
+  [.345, V(1.05, .62, EZ + .55), V(.72, SURF + .02, EZ + .1), 22]
+]);
+const microCam = keys([
+  [.345, V(0, 17, 11),    V(0, 0, 0),   42],
+  [.43,  V(5.2, 5.6, 9.6), V(0, 1, 0),  38],
+  [.6,   V(-4.4, 3.6, 8.2), V(0, 1.1, 0), 38],
+  [.665, V(-.6, 2.5, 5.4), V(0, 1.3, 0), 40],
+  [.8,   V(0, 9.5, 13.5), V(0, 1.2, 0), 40]
+]);
+const duoCam = keys([
+  [.8,  V(0, 2.4, 9.5), V(0, 1.15, 0), 34],
+  [1,   V(0, 1.7, 7.4), V(0, 1.15, 0), 34]
+]);
+
+const microFog = new THREE.FogExp2(0xdcedf0, .02);
+window.__setSceneTheme = (dark) => {
+  if (dark && !envDark) envDark = makeEnv(0x0a2226, true);
+  scene.background = dark ? bgDark : bgLight;
+  scene.environment = dark ? envDark : envLight;
+  macroFog.color.set(dark ? 0x062a2e : 0xd5e9ec); microFog.color.set(dark ? 0x0a2a2d : 0xdcedf0);
+  hemi.color.set(dark ? 0x9fdde4 : 0xffffff); hemi.groundColor.set(dark ? 0x02171a : 0x9ab9bc); hemi.intensity = dark ? .32 : .45;
+  benchMat.color.set(dark ? 0x061d20 : 0xe6f0f1); 
+  benchMat.clearcoat = dark ? .35 : .9; benchMat.envMapIntensity = dark ? .15 : .45; duoBenchMat.color.set(dark ? 0x061d20 : 0xe6f0f1);
+  wallMat.color.set(dark ? 0x174a50 : 0xa7c2c6); shelfMat.color.set(dark ? 0x173b40 : 0xe9f1f2);
+  winMat.color.set(0xe8fbff).multiplyScalar(dark ? 1.5 : 1.6);
+  areaLights[0].intensity = areaLights[0].userData.i = dark ? 4.6 : 3.6; areaLights[1].intensity = areaLights[1].userData.i = dark ? 16 : 9;
+  bloom.threshold = dark ? .97 : .99; bloom.strength = dark ? .14 : .1;
+  glassSub.attenuationColor.set(dark ? 0x0d3f42 : 0x8fd6cc); glassSub.attenuationDistance = dark ? .22 : .7; glassSub.color.set(dark ? 0xbfd6d4 : 0xf4fbfa);
+  grade.uniforms.uDark.value = dark ? 1 : 0;
+  renderer.toneMappingExposure = dark ? 1.08 : .95;
+};
+let cx0Duo = 0;
+
+/* ---------- Resize ---------- */
+let W = 1, H = 1;
+const resize = () => {
+  const r = canvas.getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height);
+  renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+  if (typeof composer !== 'undefined') { composer.setPixelRatio(dpr); composer.setSize(W, H); bokeh.uniforms.aspect.value = W / H; bloom.resolution.set(W / 2, H / 2); }
+};
+const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+const composer = new EffectComposer(renderer, rt);
+composer.addPass(new RenderPass(scene, camera));
+const bokeh = new BokehPass(scene, camera, { focus: 8, aperture: .002, maxblur: .013 });
+bokeh.setSize = function (w, h) { this.materialBokeh.uniforms.aspect.value = w / h; this.renderTargetDepth.setSize(w, h); };
+const bloom = new UnrealBloomPass(new THREE.Vector2(128, 128), .3, .45, .8);
+if (!mobile) { composer.addPass(bokeh); composer.addPass(bloom); }
+composer.addPass(new OutputPass());
+const grade = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uGrain: { value: mobile ? .006 : .008 }, uDark: { value: 0 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime; uniform float uGrain; uniform float uDark; varying vec2 vUv;
+    float h(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+    void main(){
+      vec2 d = vUv - .5;
+      float ca = dot(d, d) * .003;                       // faint lens chromatic aberration toward the edges
+      vec3 c = vec3(texture2D(tDiffuse, vUv + d * ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - d * ca).b);
+      // Filmic split tone: teal in the shadows, a touch of warmth in the highlights.
+      float l = dot(c, vec3(.2126, .7152, .0722));
+      c = mix(c, c * vec3(.9, 1.03, 1.06), (1.0 - l) * mix(.18, .4, uDark));
+      c = mix(c, c * vec3(1.04, 1.0, .95), smoothstep(.5, 1.0, l) * .25);
+      c = (c - .5) * mix(1.02, 1.08, uDark) + .5;
+      float v = smoothstep(.95, .2, length(d * vec2(1.0, 1.15)));
+      c *= mix(mix(.86, .62, uDark), 1.0, v);
+      c += (h(gl_FragCoord.xy + uTime * 61.0) - .5) * uGrain;
+      gl_FragColor = vec4(c, 1.0);
+    }`
+});
+composer.addPass(grade);
+window.__setSceneTheme(window.__isDark ? window.__isDark() : false);
+addEventListener('resize', resize); resize();
+
+/* ---------- Frame ---------- */
+const story = document.getElementById('story');
+let visible = true;
+new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { rootMargin: '100px' }).observe(story);
+const sampleA = document.getElementById('sample-a'), sampleB = document.getElementById('sample-b');
+const tmpM = new THREE.Matrix4(), tmpQ = new THREE.Quaternion(), tmpV = new THREE.Vector3(), tmpS = new THREE.Vector3();
+const tmpQ2 = new THREE.Quaternion(), tmpE = new THREE.Euler(), tmpP = new THREE.Vector3(), tmpS2 = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0), WHITE = new THREE.Color(1, 1, 1);
+const place = (im, data, matrix, t, scale = 1) => {
+  data.forEach((d, i) => {
+    tmpV.copy(d.v); if (!reduce.matches) { tmpV.x += Math.sin(t * .5 + d.ph) * .05; tmpV.y += Math.cos(t * .4 + d.ph) * .05; }
+    tmpV.applyMatrix4(matrix); tmpS.setScalar(d.s * scale); tmpQ.identity(); tmpM.compose(tmpV, tmpQ, tmpS); im.setMatrixAt(i, tmpM);
+  });
+  im.instanceMatrix.needsUpdate = true;
+};
+const bezier = (a, c, b, t, out) => out.set(0, 0, 0).addScaledVector(a, (1 - t) * (1 - t)).addScaledVector(c, 2 * (1 - t) * t).addScaledVector(b, t * t);
+
+let frameN = 0, slow = 0, fast = 0, lastT = 0, lastShadowP = -1;
+const idle = reduce.matches ? 0 : 1;
+// Scene switching keeps every light in the scene (intensity 0 instead of hidden): changing the light
+// count would force every shader to recompile at the cut, which is the freeze people notice.
+areaLights.forEach(l => { if (l.userData.i === undefined) l.userData.i = l.intensity; });
+const setScene = (a, b, c) => {
+  macro.visible = a; micro.visible = b; duo.visible = c; labRoom.visible = !b;
+  areaLights.forEach(l => { l.intensity = b ? 0 : l.userData.i; });
+  scene.fog = b ? microFog : macroFog;
+};
+// Compile all three scenes up front so the first cut to each one does not stall.
+try {
+  for (const st of [[0, 1, 0], [0, 0, 1], [1, 0, 0]]) { setScene(...st.map(Boolean)); renderer.compile(scene, camera); }
+} catch (e) {}
+window.__glFrame = (p, t) => {
+  // Adaptive resolution: drop pixel ratio when frames run long, recover when there is headroom.
+  const ft = lastT ? t - lastT : 1 / 60; lastT = t; frameN++;
+  if (ft > 1 / 30) { slow++; fast = 0; } else if (ft < 1 / 55) { fast++; slow = 0; }
+  // Resizing render targets is itself a hitch, so change resolution rarely and never ping-pong.
+  if (slow > 120 && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
+  if (fast > 900 && dpr < DPR_MAX && dprDrops < 2) { dpr = Math.min(DPR_MAX, dpr + .25); renderer.setPixelRatio(dpr); resize(); fast = 0; }
+  if (!visible) return;
+  const portrait = W / H < .9;
+  const showMacro = p < .345, showMicro = p >= .345 && p < .8, showDuo = p >= .8;
+  setScene(showMacro, showMicro, showDuo);
+  // Shadows are re-rendered only when something that casts them is actually moving.
+  const shadowMoving = showMicro ? !mobile && idle : Math.abs(p - lastShadowP) > 1e-4;
+  renderer.shadowMap.needsUpdate = frameN < 3 || (frameN % 3 === 0 && shadowMoving);
+  if (renderer.shadowMap.needsUpdate) lastShadowP = p;
+  let cam;
+
+  if (showMacro) {
+    cam = macroCam(p);
+    // Droplet: hover → fall → land and spread over the working electrode
+    setShadow('macro');
+    const base = SURF + .022, hover = base + 1.0 + Math.sin(t * 1.1) * .05 * idle;
+    const f = seg(p, .125, .235), l = seg(p, .235, .32);
+    let bottom, stretch = 0, k = 0, a = .3;
+    const hang = .07 + (idle ? Math.sin(t * 5.4) * .012 : 0);     // pendant drop sags under its own weight
+    const tipY = hover + RD * 2 * (1 + .07) - .07;            // tip end sits just inside the pendant drop
+    pipette.position.set(0, tipY + ease(clamp(f * 1.6)) * 1.1, EZ);  // tip withdraws after release
+    if (f < 1) {
+      bottom = lerp(hover, base, f * f);                       // accelerates under gravity
+      stretch = lerp(hang, .1, f) * (f > .85 ? (1 - f) / .15 * .6 + .4 : 1); // neck snaps, drop rounds as it nears contact
+    } else {
+      bottom = base;
+      k = clamp(l * 7);                                         // contact: sphere → sessile cap
+      const af = .78;                                            // final wetted radius, inside the working electrode
+      a = Math.max(.14, af * (1 - Math.exp(-6.5 * l) * Math.cos(12 * l)));
+      a = Math.min(a, .86);
+    }
+    shapeDrop(stretch, k, a);
+    drop.position.set(0, bottom, EZ);
+    // Faint contact ring as the drop wets the electrode
+    splash.material.opacity = f >= 1 ? Math.sin(Math.PI * clamp(l * 2.2)) * .22 : 0; const sr = a * 1.02; splash.scale.set(sr, sr, 1);
+    macroDust.rotation.y = t * .01 * idle; macroDust.position.y = Math.sin(t * .2) * .08 * idle;
+    chip.rotation.y = Math.sin(t * .15) * .03 * idle;
+  }
+
+  if (showMicro) {
+    cam = microCam(p);
+    setShadow('micro');
+    const q = seg(p, .42, .62), sig = seg(p, .62, .78);
+    // Recognition molecules flex slightly; binding sites follow them.
+    recs.forEach((r, i) => {
+      tmpQ.setFromEuler(tmpE.set(Math.sin(t * .7 + r.ph) * .05 * idle, 0, Math.cos(t * .6 + r.ph) * .05 * idle));
+      tmpQ.premultiply(r.q); tmpM.compose(tmpP.set(r.x, 0, r.z), tmpQ, s4); recMesh.setMatrixAt(i, tmpM); r.m = r.m || new THREE.Matrix4(); r.m.copy(tmpM); r.qq = (r.qq || new THREE.Quaternion()).copy(tmpQ);
+    });
+    recMesh.instanceMatrix.needsUpdate = true;
+    const hp = halo.geometry.attributes.position;
+    sites.forEach((s, i) => { const r = recs[s.ri]; s.pos.copy(s.local).applyMatrix4(r.m); s.dir.copy(s.outL).applyQuaternion(r.qq).normalize(); hp.setXYZ(i, s.pos.x, s.pos.y, s.pos.z); s.bound = 0; });
+    hp.needsUpdate = true;
+    cortData.forEach((d, i) => {
+      const k = clamp((q - d.d) / .36), e = ease(k);
+      d.end.copy(sites[d.si].pos).addScaledVector(sites[d.si].dir, .32);
+      if (k <= 0) tmpV.copy(d.start); else bezier(d.start, d.ctrl, d.end, e, tmpV);
+      // Brownian jitter that fades out as the molecule docks
+      if (idle && k < 1) tmpV.addScaledVector(brown(t * 1.3, d.ph, tmpS), .32 * (1 - e));
+      tmpQ.copy(d.spin); if (idle && k < 1) tmpQ.multiply(tmpQ2.setFromAxisAngle(UP, t * .3 + d.ph));
+      tmpQ.slerp(d.dock, e);
+      tmpM.compose(tmpV, tmpQ, s4); cort.setMatrixAt(i, tmpM);
+      if (k >= 1) sites[d.si].bound = 1;
+      // Signal columns
+      const h = sig * (2.5 + Math.sin(d.ph) * 1.2) * (k >= 1 ? 1 : 0);
+      tmpM.compose(tmpP.set(d.end.x, d.end.y + h / 2, d.end.z), tmpQ2.identity(), tmpS2.set(1, Math.max(.0001, h), 1)); cols.setMatrixAt(i, tmpM);
+      const pulse = .55 + .45 * Math.sin(t * 3 + d.ph * 2) * idle;
+      cols.setColorAt(i, tmpC.setRGB(.06, .64, .69).lerp(WHITE, .35 * (1 - pulse)));
+    });
+    cort.instanceMatrix.needsUpdate = true; cols.instanceMatrix.needsUpdate = true; if (cols.instanceColor) cols.instanceColor.needsUpdate = true;
+    const hc = halo.geometry.attributes.color;
+    sites.forEach((s, i) => {
+      if (s.bound && s.tb === undefined) s.tb = t; if (!s.bound) s.tb = undefined;
+      const flash = s.tb === undefined ? 0 : Math.exp(-(t - s.tb) * 2.2);
+      s.glow = lerp(s.glow || 0, s.bound, .2);
+      siteMesh.setColorAt(i, tmpC.copy(siteBase).lerp(siteOn, s.glow));
+      tmpM.compose(s.pos, tmpQ.identity(), tmpS.setScalar(1 + flash * .7)); siteMesh.setMatrixAt(i, tmpM);
+      const g = s.glow * (.5 + .45 * sig) * (1 + .25 * Math.sin(t * 2.4 + i) * idle * sig) + flash * 1.6;
+      hc.setXYZ(i, .3 * g, .8 * g, 1 * g);
+    });
+    siteMesh.instanceColor.needsUpdate = true; siteMesh.instanceMatrix.needsUpdate = true; hc.needsUpdate = true;
+    fatData.forEach((d, i) => {
+      tmpV.copy(d.p).addScaledVector(brown(t * .35, d.ph, tmpS), idle ? .9 : 0); tmpV.x += q * 1.5;
+      tmpV.y = Math.max(2.3 + d.r, tmpV.y);
+      tmpM.compose(tmpV, tmpQ.identity(), tmpS.setScalar(d.r)); fat.setMatrixAt(i, tmpM);
+    });
+    casData.forEach((d, i) => {
+      tmpV.copy(d.p).addScaledVector(brown(t * .8, d.ph, tmpS), idle ? .7 : 0); tmpV.z += q * 1.2;
+      tmpV.y = Math.max(2.2, tmpV.y);
+      tmpQ.copy(d.q).multiply(tmpQ2.setFromEuler(tmpE.set(t * .4 * idle + d.ph, t * .3 * idle, 0)));
+      tmpM.compose(tmpV, tmpQ, tmpS.setScalar(d.s)); casein.setMatrixAt(i, tmpM);
+    });
+    fat.instanceMatrix.needsUpdate = true; casein.instanceMatrix.needsUpdate = true;
+    surfMat.emissive.setRGB(.02 * sig, .07 * sig, .16 * sig);
+    micro.rotation.y = Math.sin(t * .08) * .04 * idle;
+  }
+
+  if (showDuo) {
+    cam = duoCam(p); setShadow('duo');
+    const s5 = ease(seg(p, .8, .93));
+    const sep = portrait ? .98 : 1.2;
+    const yA = 1.15 + Math.sin(t * .9) * .05 * idle, yB = 1.15 + Math.sin(t * .9 + 1.7) * .05 * idle;
+    const scl = 1.1, cx = portrait ? 0 : 1.5; cx0Duo = cx;
+    dropA.position.set(-sep * s5, yA, 0); dropB.position.set(sep * s5, yB, 0);
+    dropA.position.x += cx; dropB.position.x += cx;
+    dropB.scale.setScalar(scl * (1 - .12 * s5)); dropA.scale.setScalar(scl * Math.max(.001, s5) * .88);
+    dropA.rotation.y = t * .1 * idle; dropB.rotation.y = -t * .1 * idle;
+    dropA.updateMatrix(); dropB.updateMatrix();
+    place(aCyan, aCyan.userData.data, dropA.matrix, t); place(aGrey, aGrey.userData.data, dropA.matrix, t);
+    place(bFat, bFat.userData.data, dropB.matrix, t, 1.8); place(bCyan, bCyan.userData.data, dropB.matrix, t);
+    pools[0].position.x = dropA.position.x; pools[1].position.x = dropB.position.x; pools[0].material.opacity = s5; pools[1].material.opacity = 1;
+  }
+
+  const [, pos, look, fov] = cam;
+  const zoomOut = portrait ? (showMicro ? 1.55 : showDuo ? 1.6 : lerp(1.2, 1.15, seg(p, .2, .34))) : 1;
+  camera.position.copy(look).addScaledVector(pos.clone().sub(look), zoomOut);
+  if (idle) { camera.position.x += Math.sin(t * .21) * .06; camera.position.y += Math.sin(t * .17) * .04; }
+  camera.fov = fov * (portrait ? (showMacro ? 1.2 : 1.12) : 1);
+  if (portrait) camera.setViewOffset(W, H, 0, H * (showMacro ? .1 : .17), W, H); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+  camera.lookAt(look);
+  // Focus pulls with the story: drop in the macro shots, the docking sites in the molecular shots.
+  const focusPt = showMacro ? tmpV.set(0, Math.max(SURF + .3, drop.position.y + RD * .9), EZ) : showMicro ? look : tmpV.set(cx0Duo, 1.15, 0);
+  const fd = camera.position.distanceTo(focusPt);
+  bokeh.uniforms.focus.value = fd;
+  bokeh.uniforms.aperture.value = (showMicro ? .0032 : showMacro ? .0042 : .0026) * (portrait ? .85 : 1);
+  grade.uniforms.uTime.value = (t % 10);
+  composer.render();
+
+  // Pin project labels under the two droplets
+  const lab = smoothLab(p);
+  for (const [el, m] of [[sampleA, dropA], [sampleB, dropB]]) {
+    if (!showDuo) { el.style.opacity = 0; el.style.visibility = 'hidden'; continue; }
+    tmpV.copy(m.position); tmpV.y -= 1.25 * m.scale.y + .15; tmpV.project(camera);
+    el.style.left = ((tmpV.x * .5 + .5) * W).toFixed(1) + 'px'; el.style.top = ((-tmpV.y * .5 + .5) * H).toFixed(1) + 'px';
+    el.style.opacity = lab.toFixed(3); el.style.visibility = lab < .01 ? 'hidden' : 'visible';
+  }
+};
+const smoothLab = p => { const t = clamp((p - .9) / .04); return t * t * (3 - 2 * t); };
+window.__glReady = true;
+
+}
+</script>
+
 <script data-goatcounter="https://bakircaylab.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
