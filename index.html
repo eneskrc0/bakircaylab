@@ -62,7 +62,7 @@ html.dark {
   --line: rgba(175, 221, 229, .14); --gold: #d4866c;
   --ground-rgb: 2, 27, 30; --ink-rgb: 0, 0, 0;
   --stage-bg: linear-gradient(#0d3d43, #072d31 45%, #04221f 75%, #021b1e);
-  --veil-bg: radial-gradient(60% 60% at 50% 50%, #0d4249 0%, #021b1e 70%);
+  --veil-bg: radial-gradient(60% 60% at 50% 50%, #2b7c84 0%, #0e4a51 55%, #083a40 100%);
 }
 html.dark .brand img { filter: brightness(0) invert(1); }
 html.dark .beat.hero p { color: #b9d4d7; }
@@ -1033,9 +1033,9 @@ const areaLights = [
 const key = new THREE.DirectionalLight(0xe6eeff, .9); key.position.set(4, 8, 5); scene.add(key); scene.add(key.target);
 key.castShadow = true; key.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
 key.shadow.bias = -.0004; key.shadow.normalBias = .02; key.shadow.radius = 4;
-let shadowMode = '';
+let shadowMode = '', shadowDirty = true;
 const setShadow = (mode) => {
-  if (mode === shadowMode) return; shadowMode = mode;
+  if (mode === shadowMode) return; shadowMode = mode; shadowDirty = true;
   const c = key.shadow.camera, e = mode === 'micro' ? 13 : 4.5, cz = mode === 'macro' ? EZ : 0;
   key.position.set(4, 9, 5 + cz); key.target.position.set(0, 0, cz);
   c.left = -e; c.right = e; c.top = e; c.bottom = -e; c.near = .5; c.far = 30; c.updateProjectionMatrix();
@@ -1172,8 +1172,8 @@ const drop = new THREE.Mesh(dropGeo, milkMat); drop.castShadow = true; macro.add
 const V0 = 4 / 3 * Math.PI * RD * RD * RD;
 const capH = a => { let h = RD; for (let i = 0; i < 24; i++) { const f = h * h * h + 3 * a * a * h - 6 * V0 / Math.PI; h -= f / (3 * h * h + 3 * a * a); } return h; };
 let lastShape = '';
-function shapeDrop(stretch, k, a) {
-  const key = stretch.toFixed(4) + '|' + k.toFixed(3) + '|' + a.toFixed(4);
+function shapeDrop(stretch, k, a, w = 0) {
+  const key = stretch.toFixed(4) + '|' + k.toFixed(3) + '|' + a.toFixed(4) + '|' + w.toFixed(4);
   if (key === lastShape) return; lastShape = key;
   const pos = dropGeo.attributes.position.array;
   const h = capH(a), Rc = (a * a + h * h) / (2 * h), yc = h - Rc, alpha = Math.acos(Math.min(1, Math.max(-1, -yc / Rc)));
@@ -1189,9 +1189,15 @@ function shapeDrop(stretch, k, a) {
       else { cr = a * (Math.PI - phi) / (Math.PI - PHI_C); cy = 0; }
       sx += (dx * cr - sx) * k; sy += (cy - sy) * k; sz += (dz * cr - sz) * k;
     }
+    if (w) { const up = Math.max(0, sy - .0); sy = up * (1 + w); sx *= 1 - w * .45; sz *= 1 - w * .45; }
     pos[i] = sx; pos[i + 1] = sy; pos[i + 2] = sz;
   }
   dropGeo.attributes.position.needsUpdate = true; dropGeo.computeVertexNormals(); dropGeo.computeBoundingSphere();
+  const nrm = dropGeo.attributes.normal.array;
+  for (let i = 0; i < nrm.length; i += 3) {
+    const l = Math.hypot(nrm[i], nrm[i + 1], nrm[i + 2]);
+    if (!(l > 1e-5)) { nrm[i] = 0; nrm[i + 1] = -1; nrm[i + 2] = 0; }
+  }
 }
 shapeDrop(0, 0, .3);
 const molGeo = new THREE.SphereGeometry(.03, 16, 12);
@@ -1219,8 +1225,12 @@ const pipette = (() => {
   return g;
 })();
 macro.add(pipette);
+let contactT = -1;
+const ripple = new THREE.Mesh(new THREE.RingGeometry(.97, 1, 128), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+ripple.rotation.x = -Math.PI / 2; ripple.visible = false;
 const splash = new THREE.Mesh(new THREE.RingGeometry(.94, 1, 96), new THREE.MeshBasicMaterial({ color: 0xfff3dc, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
 splash.rotation.x = -Math.PI / 2; splash.position.set(0, SURF + .02, EZ); macro.add(splash);
+ripple.position.set(0, SURF + .021, EZ); macro.add(ripple);
 
 const dust = (n, spread) => {
   const g = new THREE.BufferGeometry(), a = new Float32Array(n * 3);
@@ -1494,6 +1504,15 @@ const resize = () => {
 const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
 const composer = new EffectComposer(renderer, rt);
 composer.addPass(new RenderPass(scene, camera));
+const sanitize = new ShaderPass({
+  uniforms: { tDiffuse: { value: null } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main(){ vec4 c = texture2D(tDiffuse, vUv);
+      if (!(c.r == c.r) || !(c.g == c.g) || !(c.b == c.b) || max(max(c.r, c.g), c.b) > 6e4) c = vec4(0.0, 0.0, 0.0, 1.0);
+      gl_FragColor = vec4(min(c.rgb, vec3(24.0)), c.a); }`
+});
+if (!mobile) composer.addPass(sanitize);
 const bokeh = new BokehPass(scene, camera, { focus: 8, aperture: .002, maxblur: .013 });
 bokeh.setSize = function (w, h) { this.materialBokeh.uniforms.aspect.value = w / h; this.renderTargetDepth.setSize(w, h); };
 const bloom = new UnrealBloomPass(new THREE.Vector2(128, 128), .3, .45, .8);
@@ -1590,7 +1609,13 @@ window.__glFrame = (p, t) => {
       a = Math.max(.14, af * (1 - Math.exp(-6.5 * l) * Math.cos(12 * l)));
       a = Math.min(a, .86);
     }
-    shapeDrop(stretch, k, a);
+    // Real time, not scroll: the moment it touches, the drop rebounds and settles with a damped wobble.
+    if (f >= 1 && contactT < 0) contactT = t; else if (f < 1) contactT = -1;
+    const dt = contactT < 0 ? 0 : t - contactT;
+    const w = contactT < 0 || !idle ? 0 : Math.exp(-dt * 3.2) * Math.sin(dt * 19) * .16;
+    shapeDrop(stretch, k, a, w);
+    ripple.visible = contactT >= 0 && dt < 1.6;
+    if (ripple.visible) { const rr = a * (1 + dt * 1.1); ripple.scale.set(rr, rr, 1); ripple.material.opacity = .28 * Math.exp(-dt * 2.4); }
     drop.position.set(0, bottom, EZ);
     // Faint contact ring as the drop wets the electrode
     splash.material.opacity = f >= 1 ? Math.sin(Math.PI * clamp(l * 2.2)) * .22 : 0; const sr = a * 1.02; splash.scale.set(sr, sr, 1);
@@ -1673,7 +1698,7 @@ window.__glFrame = (p, t) => {
 
   const [, pos, look, fov] = cam;
   const zoomOut = portrait ? (showMicro ? 1.55 : showDuo ? 1.6 : lerp(1.2, 1.15, seg(p, .2, .34))) : 1;
-  camera.position.copy(look).addScaledVector(pos.clone().sub(look), zoomOut);
+  camera.position.copy(look).addScaledVector(tmpP.copy(pos).sub(look), zoomOut);
   if (idle) { camera.position.x += Math.sin(t * .21) * .06; camera.position.y += Math.sin(t * .17) * .04; }
   camera.fov = fov * (portrait ? (showMacro ? 1.2 : 1.12) : 1);
   if (portrait) camera.setViewOffset(W, H, 0, H * (showMacro ? .1 : .17), W, H); else camera.clearViewOffset();
@@ -1685,6 +1710,8 @@ window.__glFrame = (p, t) => {
   bokeh.uniforms.focus.value = fd;
   bokeh.uniforms.aperture.value = (showMicro ? .0032 : showMacro ? .0042 : .0026) * (portrait ? .85 : 1);
   grade.uniforms.uTime.value = (t % 10);
+  // A scene cut moves the shadow frustum: re-render the map this frame, or stale shadows flash dark.
+  if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; lastShadowP = p; }
   composer.render();
 
   // Pin project labels under the two droplets
