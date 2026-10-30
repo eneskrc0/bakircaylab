@@ -88,7 +88,8 @@ p { margin: 0; }
 .brand b { font: 700 15px/1 var(--font-display); letter-spacing: .14em; }
 .brand b span { font-weight: 300; }
 .nav { display: flex; gap: 6px; }
-.nav a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 8px 12px; border-radius: 999px; transition: color .2s, background .2s; }
+@media (max-width: 1040px) { .nav a:not(.nav-key) { display: none; } }
+.nav a { white-space: nowrap; text-decoration: none; color: var(--muted); font-size: 14px; padding: 8px 12px; border-radius: 999px; transition: color .2s, background .2s; }
 .site-header .wrap { justify-content: flex-start; }
 .nav { margin-left: auto; }
 .tools { display: flex; align-items: center; gap: 8px; }
