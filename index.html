@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://bakircaylab.goatcounter.com; media-src 'self'; connect-src 'self' https://cdn.jsdelivr.net https://bakircaylab.goatcounter.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>Bakırçay Lab | Biyosensör Araştırma Projeleri</title>
-<meta name="description" content="Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.">
+<title>Bakırçay Lab | Sensör Araştırma Projeleri</title>
+<meta name="description" content="Bakırçay Lab: inek sütünde tetrasiklin kalıntısı ve tükürükte kortizol için iki ayrı sensör araştırma ve geliştirme projesi.">
 <link rel="canonical" href="https://bakircaylab.com/">
-<meta property="og:title" content="Bakırçay Lab | Biyosensör Araştırma Projeleri">
-<meta property="og:description" content="Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.">
+<meta property="og:title" content="Bakırçay Lab | Sensör Araştırma Projeleri">
+<meta property="og:description" content="Bakırçay Lab: inek sütünde tetrasiklin kalıntısı ve tükürükte kortizol için iki ayrı sensör araştırma ve geliştirme projesi.">
 <meta property="og:site_name" content="Bakırçay Lab">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bakircaylab.com/">
 <meta property="og:image" content="https://bakircaylab.com/icon-512.png">
 <meta name="theme-color" content="#003135">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Bakırçay Lab", "alternateName": ["Bakircay Lab", "BakircayLab", "Bakırçay Laboratuvarı"], "url": "https://bakircaylab.com/", "logo": "https://bakircaylab.com/icon-512.png", "description": "Bakırçay Lab: tükürükte ve anne sütünde kortizol ölçümüne yönelik iki biyosensör araştırma ve geliştirme projesi.", "knowsAbout": ["biyosensör", "kortizol", "tükürük analizi", "anne sütü", "elektrokimyasal sensör"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Bakırçay Lab", "alternateName": ["Bakircay Lab", "BakircayLab", "Bakırçay Laboratuvarı"], "url": "https://bakircaylab.com/", "logo": "https://bakircaylab.com/icon-512.png", "description": "Bakırçay Lab: inek sütünde tetrasiklin kalıntısı ve tükürükte kortizol için iki ayrı sensör araştırma ve geliştirme projesi.", "knowsAbout": ["biyosensör", "kortizol", "tükürük analizi", "tetrasiklin", "süt kalıntı analizi", "grafen", "P3HT"]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Bakırçay Lab", "alternateName": "Bakircay Lab", "url": "https://bakircaylab.com/", "inLanguage": ["tr", "en"]}</script>
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
@@ -39,7 +39,7 @@
   --text: #003135;
   --muted: #4c6a6d;
   --accent: #024950;         /* petrol: UI and links */
-  --signal: #0fa4af;         /* turquoise: cortisol, binding, data */
+  --signal: #0fa4af;         /* turquoise: analyte, signal, data */
   --sage: #964734;           /* copper (Bakırçay = copper): small labels only */
   --sky: #afdde5;            /* pale aqua: fills */
   --gold: #964734;           /* copper status dot */
@@ -138,6 +138,10 @@ p { margin: 0; }
 .chart .grid { stroke: rgba(var(--ink-rgb), .08); stroke-width: 1; fill: none; }
 .chart .curve { stroke: var(--signal); stroke-width: 2.5; fill: none; stroke-linecap: round; }
 .chart .band { fill: rgba(15, 164, 175, .16); stroke: none; }
+.chart .ref { stroke: rgba(var(--ink-rgb), .5); stroke-width: 1.6; stroke-dasharray: 5 5; fill: none; }
+.chart .zero { stroke: rgba(var(--ink-rgb), .22); stroke-width: 1; stroke-dasharray: 2 4; fill: none; }
+.chart .lg { fill: rgba(var(--ink-rgb), .55); }
+.chart .lg-on { fill: var(--signal); }
 .chart text { fill: var(--muted); font: 500 11px var(--font-mono); letter-spacing: .06em; }
 .chart .tag { fill: var(--text); }
 .chart .dot { fill: var(--signal); }
@@ -242,6 +246,21 @@ p { margin: 0; }
 .pub-link { font: 500 12px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 11px 16px; white-space: nowrap; transition: background .2s, color .2s, border-color .2s; }
 .pub-link:hover { background: var(--accent); color: var(--ink-0); border-color: var(--accent); }
 @media (max-width: 760px) { .pub { grid-template-columns: 1fr; gap: 12px; padding: 26px 0; } .pub-meta { flex-direction: row; gap: 14px; padding-top: 0; } .pub-link { justify-self: start; } }
+/* Opening: slow turquoise light flowing like a long-exposure photograph */
+.flow-hero { position: relative; isolation: isolate; overflow: hidden; height: 100vh; height: 100svh; min-height: 560px; display: grid; place-items: center; text-align: center;
+  background: #024950; color: #fff; padding: calc(var(--header-h) + 24px) 16px 40px; }
+.flow-hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; display: block; }
+.flow-grain { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .16; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.flow-inner { display: grid; justify-items: center; gap: 22px; max-width: 920px; }
+.flow-hero .hero-mark { background: #fff; margin: 0 0 4px; }
+.flow-hero .mono { color: rgba(255,255,255,.82); }
+.flow-hero h1 { font-family: "Aspekta", var(--font-body); font-weight: 450; font-size: clamp(46px, 8.6vw, 116px); line-height: .98; letter-spacing: -.045em; margin: 10px 0 6px; color: #fff; }
+.flow-hero h1 em { font-style: normal; color: #AFDDE5; }
+.flow-hero p { font-size: clamp(16px, 1.5vw, 20px); line-height: 1.45; color: rgba(255,255,255,.9); max-width: 34ch; margin: 0; }
+.flow-hero .scroll-cue { color: rgba(255,255,255,.8); text-decoration: none; margin-top: 18px; }
+.flow-hero .scroll-cue i { background: linear-gradient(#fff, transparent); }
+@media (max-width: 760px) { .flow-inner { gap: 16px; } .flow-hero .mono { font-size: 10.5px; letter-spacing: .1em; } }
 /* Footer: Aspekta + Roboto Mono, deep petrol field with a soft light bloom */
 /* Aspekta © 2025 Ivo Dolenc, SIL Open Font License 1.1 (openfontlicense.org) */
 @font-face { font-family: "Aspekta"; src: url("aspekta.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
@@ -365,60 +384,69 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
 </header>
 
 <main id="top">
+  <section class="flow-hero" aria-label="Bakırçay Lab">
+    <canvas id="flow" aria-hidden="true"></canvas>
+    <div class="flow-grain" aria-hidden="true"></div>
+    <div class="flow-inner">
+      <span class="hero-mark" role="img" aria-label="Bakırçay Lab logosu"></span>
+      <span class="mono">Bakırçay Lab · Biyosensör Ar-Ge</span>
+      <h1>Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.</h1>
+      <p>İnek sütünde tetrasiklin kalıntısı ve tükürükte kortizol: iki ayrı sensör araştırma projesi.</p>
+      <a class="scroll-cue mono" href="#story"><i></i>Kaydırın</a>
+    </div>
+  </section>
   <section class="story" id="story" aria-label="Bir damladan ölçüme: sensörün çalışma fikri">
     <div class="stage" id="stage">
       <canvas id="gl" aria-hidden="true"></canvas>
       <div class="veil" id="veil"></div>
 
       <div class="beats">
-        <div class="beat hero" data-a="-1" data-b=".105">
-          <span class="hero-mark" role="img" aria-label="Bakırçay Lab logosu"></span>
-          <span class="mono">Bakırçay Lab · Biyosensör Ar-Ge</span>
-          <h1>Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.</h1>
-          <p>Tükürükte ve anne sütünde kortizolün ölçülmesine yönelik iki biyosensör araştırma projesi.</p>
-          <span class="scroll-cue mono"><i></i>Kaydırın</span>
-        </div>
-        <div class="beat" data-a=".125" data-b=".31">
+        <div class="beat" data-a=".015" data-b=".31">
           <span class="mono">01 · Örnek</span>
-          <h2>Örnek, sensör yüzeyine ulaşır.</h2>
-          <p>Bu canlandırmada örnek, bir damla anne sütü. Damla çalışma elektrodunun üzerine bırakılır ve yüzeye yayılır. Ölçüm, örneğin elektrotla temas ettiği bu küçük alanda başlar.</p>
+          <h2>Örnek, ince filme ulaşır.</h2>
+          <p>Bu canlandırmada örnek, bir damla inek sütü. Damla, cam lam üzerindeki grafen/P3HT ince filmin üzerine, iki gümüş kontağın arasına bırakılır ve yüzeye yayılır.</p>
         </div>
         <div class="beat" data-a=".335" data-b=".44">
           <span class="mono">02 · Ölçek</span>
           <h2>Yüzeye yaklaştıkça ölçek değişir.</h2>
-          <p>Elektrodun üzerinde, kortizolü tanımak üzere seçilen <strong>tanıma molekülleri</strong> bulunur. Sensörün seçiciliği bu katmandan gelir.</p>
+          <p>Film, iletken <strong>grafen</strong> ile yarı iletken bir polimer olan <strong>P3HT</strong>’den oluşur. Akım, bu ağ boyunca bir gümüş kontaktan diğerine taşınır.</p>
         </div>
         <div class="beat" data-a=".46" data-b=".615">
-          <span class="mono">03 · Tanıma</span>
-          <h2>Kortizol bağlanır. Diğerleri geçip gider.</h2>
-          <p>Kortizol molekülleri tanıma bölgelerine tutunur. Sütteki yağ damlacıkları ve proteinlerin yüzeye bağlanmaması hedeflenir. Bu <strong>seçicilik</strong>, deneylerle doğrulanması gereken temel özelliklerden biridir.</p>
+          <span class="mono">03 · Etkileşim</span>
+          <h2>Tetrasiklin, filmle etkileşir.</h2>
+          <p>Sütteki tetrasiklin molekülleri film yüzeyine ulaşır. Yağ damlacıkları ve proteinler de yüzeye gelir; tetrasiklinin etkisini bunlardan ayırmak, yani <strong>seçicilik</strong>, yöntemin doğrulanması gereken temel noktasıdır.</p>
         </div>
         <div class="beat" data-a=".635" data-b=".785">
           <span class="mono">04 · Sinyal</span>
-          <h2>Bağlanma, ölçülebilir bir sinyale dönüşür.</h2>
-          <p>Yüzeydeki bağlanma olayları elektriksel bir değişim oluşturur. Bu değişim okunur ve bir <strong>kalibrasyon eğrisi</strong> yardımıyla derişime çevrilir.</p>
+          <h2>Etkileşim, akımda bir değişime dönüşür.</h2>
+          <p>İki uçlu <strong>I–V ölçümünde</strong> gerilim −3 V ile +3 V arasında taranır ve akım okunur. Süt damlatılmadan önceki ve sonraki eğriler karşılaştırılarak akımdaki değişim incelenir.</p>
         </div>
         <div class="beat" data-a=".83" data-b="9">
-          <span class="mono">05 · İki örnek</span>
-          <h2>Aynı yaklaşım, iki farklı örnek.</h2>
-          <p>Tükürük ve anne sütü çok farklı bileşimlere sahiptir. Her biri için sensör yüzeyi ve ölçüm koşulları ayrı ayrı geliştiriliyor.</p>
+          <span class="mono">05 · İki proje</span>
+          <h2>İki ayrı proje, iki farklı örnek.</h2>
+          <p>İnek sütünde tetrasiklin ve tükürükte kortizol birbirinden bağımsız iki projedir. Yöntemleri, örnekleri ve hedefleri ayrı ayrı geliştiriliyor.</p>
         </div>
       </div>
 
-      <figure class="chart" id="chart" aria-label="Temsili kalibrasyon eğrisi">
+      <figure class="chart" id="chart" aria-label="Temsili I–V eğrileri">
         <svg viewBox="0 0 460 330" role="img" aria-labelledby="chart-t">
-          <title id="chart-t">Temsili kalibrasyon eğrisi: kortizol derişimi arttıkça sinyal değişimi artar ve doygunluğa yaklaşır.</title>
+          <title id="chart-t">Temsili I–V eğrileri: −3 V ile +3 V arasında, akımın mutlak değeri; süt damlatılmadan önce ve sonra. Şematik çizim, ölçüm verisi değildir.</title>
           <g class="grid">
-            <path d="M60 60 H440 M60 120 H440 M60 180 H440 M60 240 H440"/>
+            <path d="M60 60 H440 M60 120 H440 M60 180 H440 M60 240 H440 M155 30 V270 M345 30 V270"/>
           </g>
-          <path class="axis" d="M60 24 V280 H440"/>
+          <path class="axis" d="M60 24 V270 H440"/>
+          <path class="zero" d="M250 30 V270"/>
           <path class="band" id="band" d=""/>
+          <path class="ref" id="curve0" d=""/>
           <path class="curve" id="curve" d=""/>
           <circle class="dot" id="dot" r="5" cx="60" cy="270"/>
-          <text x="60" y="306">DÜŞÜK</text>
-          <text x="440" y="306" text-anchor="end">YÜKSEK</text>
-          <text x="250" y="326" text-anchor="middle">KORTİZOL DERİŞİMİ (LOG ÖLÇEK)</text>
-          <text x="48" y="150" text-anchor="middle" transform="rotate(-90 48 150)">SİNYAL DEĞİŞİMİ</text>
+          <text x="60" y="292">−3 V</text>
+          <text x="250" y="292" text-anchor="middle">0</text>
+          <text x="440" y="292" text-anchor="end">+3 V</text>
+          <text x="250" y="320" text-anchor="middle">GERİLİM (V)</text>
+          <text x="48" y="150" text-anchor="middle" transform="rotate(-90 48 150)">|AKIM|</text>
+          <text class="lg" x="250" y="48" text-anchor="middle">- - SÜT ÖNCESİ</text>
+          <text class="lg lg-on" x="250" y="66" text-anchor="middle">— SÜT SONRASI</text>
           <text class="tag" x="440" y="16" text-anchor="end">TEMSİLİ · ÖLÇÜM VERİSİ DEĞİLDİR</text>
         </svg>
       </figure>
@@ -430,10 +458,10 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
         <a href="#tukuruk">Projeyi inceleyin ↓</a>
       </div>
       <div class="sample" id="sample-b">
-        <span class="mono">02 · Anne sütü</span>
-        <b>Anne sütünde kortizol</b>
+        <span class="mono">02 · İnek sütü</span>
+        <b>İnek sütünde tetrasiklin</b>
         <small>Opak; yağ ve protein içerir</small>
-        <a href="#anne-sutu">Projeyi inceleyin ↓</a>
+        <a href="#inek-sutu">Projeyi inceleyin ↓</a>
       </div>
 
       <div class="mprog" id="mprog" aria-hidden="true">
@@ -445,9 +473,9 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
           <li data-p=".02"><span>Başlangıç</span><i></i></li>
           <li data-p=".2"><span>Örnek</span><i></i></li>
           <li data-p=".39"><span>Ölçek</span><i></i></li>
-          <li data-p=".54"><span>Tanıma</span><i></i></li>
+          <li data-p=".54"><span>Etkileşim</span><i></i></li>
           <li data-p=".71"><span>Sinyal</span><i></i></li>
-          <li data-p=".93"><span>İki örnek</span><i></i></li>
+          <li data-p=".93"><span>İki proje</span><i></i></li>
         </ol>
       </nav>
     </div>
@@ -457,8 +485,8 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     <div class="wrap">
       <div class="section-head">
         <span class="mono">Projeler</span>
-        <h2 id="projeler-h">Kortizolü iki farklı örnekte ölçmek.</h2>
-        <p>Kortizol, stres yanıtıyla ilişkili bir biyobelirteçtir. İki projemiz de bu molekülü, laboratuvar dışına taşınabilecek bir sensör yaklaşımıyla ölçmeyi araştırıyor.</p>
+        <h2 id="projeler-h">İki ayrı proje, iki ayrı soru.</h2>
+        <p>Projelerimiz birbirinden bağımsızdır. Biri inek sütünde antibiyotik kalıntısını, diğeri tükürükte stresle ilişkili bir hormonu ölçmeye yönelik sensör yaklaşımlarını araştırıyor.</p>
       </div>
 
       <article class="project" id="tukuruk" aria-labelledby="p1-h">
@@ -495,7 +523,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
         </div>
       </article>
 
-      <article class="project" id="anne-sutu" aria-labelledby="p2-h">
+      <article class="project" id="inek-sutu" aria-labelledby="p2-h">
         <figure class="project-visual">
           <div class="device">
             <video class="device-video" muted loop playsinline preload="none" poster="media/milk-card.webp" aria-label="Süt örneği için pipet biçimli cihaz konsepti">
@@ -506,23 +534,24 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
           <figcaption>Cihaz konsepti: tek kullanımlık numune ucu ve tekrar kullanılabilen bir okuyucu. Görsel bir tasarım çalışmasıdır.</figcaption>
         </figure>
         <div class="project-body">
-          <div class="meta"><span class="mono">02 · Anne sütü</span><span class="status">Ar-Ge aşamasında</span></div>
-          <h3 id="p2-h">Anne sütünde kortizol tespitine yönelik biyosensör</h3>
-          <p>Anne sütü, kortizol dahil çeşitli hormonlar içerir. Bu proje, anne sütü örneklerindeki kortizol düzeylerinin incelenmesine yönelik bir biyosensör yaklaşımını araştırıyor.</p>
+          <div class="meta"><span class="mono">02 · İnek sütü</span><span class="status">Ar-Ge aşamasında</span></div>
+          <h3 id="p2-h">İnek sütünde tetrasiklin kalıntısının tespitine yönelik sensör</h3>
+          <p>Tetrasiklin, veteriner hekimlikte yaygın kullanılan bir antibiyotiktir. Tedavi gören bir inek bekleme süresi dolmadan sağılırsa antibiyotik süte geçebilir. AB, sütte tetrasiklin için 100 µg/kg kalıntı limiti belirlemiştir; kalıntılar gıda güvenliği ve antibiyotik direnci açısından sorun oluşturur. Proje, TÜBİTAK 2209-A önerisi olarak hazırlanıyor.</p>
           <div class="facts">
             <div>
               <h4 class="mono">Araştırdığımız</h4>
               <ul>
-                <li>Yağ ve protein içeriği yüksek, karmaşık bir örnekte ölçüm yapabilen bir sensör yüzeyi</li>
-                <li>Örnek hazırlığını en aza indiren bir ölçüm akışı</li>
+                <li>Lamın tamamını kaplayan grafen/P3HT ince film ve iki gümüş kontakla, −3 V ile +3 V arasında iki uçlu I–V ölçümü. Süt filme damlatılır ve akımdaki değişim incelenir.</li>
+                <li>Adım adım doğrulama: tampon, seyreltilmiş süt, tam süt.</li>
+                <li>Yöntem doğrulanırsa taşınabilir bir okuyucu.</li>
               </ul>
             </div>
             <div class="caution">
               <h4 class="mono">Yorumlarken</h4>
               <ul>
-                <li>Sütteki kortizol düzeyi günün saatine, emzirme dönemine ve örnekleme koşullarına göre değişebilir.</li>
-                <li>Bu ölçümden bebeğin sağlığı, annenin psikolojik durumu ya da sütün niteliği hakkında doğrudan sonuç çıkarılmaz.</li>
-                <li>Ölçüm sonuçları, sütü değerlendiren bir etiket olarak kullanılmaz.</li>
+                <li>Süt; yağ, protein ve başka bileşenler içerir. Akımdaki değişimin tetrasiklinden kaynaklandığının ayrıca gösterilmesi gerekir.</li>
+                <li>Seçicilik yeterli olmazsa, B planı olarak tetrasikline özgü bir aptamer katmanı eklenecek.</li>
+                <li>Bu çalışma araştırma aşamasındadır. Sütün tüketime uygunluğuna karar veren bir test değildir.</li>
               </ul>
             </div>
           </div>
@@ -544,8 +573,8 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
         <div class="about-copy">
           <span class="mono">Biz kimiz?</span>
           <h2 id="biz-h">Bilimden doğan fikirler, hayata dokunan çözümler.</h2>
-          <p>Bakırçay Lab, sağlık alanındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.</p>
-          <p>Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. Tükürükte ve anne sütünde kortizol ölçümüne yönelik projelerimiz bu yaklaşımın güncel örnekleri.</p>
+          <p>Bakırçay Lab, sağlık ve gıda güvenliği alanındaki ihtiyaçlara yönelik sensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.</p>
+          <p>Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. İnek sütünde tetrasiklin kalıntısı ve tükürükte kortizol ölçümüne yönelik iki ayrı projemiz bu yaklaşımın güncel örnekleri.</p>
         </div>
       </div>
       <dl class="principles">
@@ -561,14 +590,13 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
       <div class="section-head">
         <span class="mono">Bilimsel çerçeve</span>
         <h2 id="cerceve-h">Bir ölçüm sonucu, bağlamıyla anlam kazanır.</h2>
-        <p>Kortizol ölçümünü doğru yorumlamak için örneğin ne zaman, nasıl ve kimden alındığını bilmek gerekir.</p>
+        <p>İki projenin de sonuçları, ancak neyin, hangi sınırla ve hangi koşullarda ölçüldüğü bilindiğinde doğru yorumlanabilir.</p>
       </div>
       <dl class="frame">
-        <div class="frame-row"><dt class="mono">Biyobelirteç</dt><dd>Kortizol, stres yanıtıyla ilişkili bir hormondur. Stresin kendisi değil, onunla ilişkili biyolojik süreçlerin bir göstergesidir.</dd></div>
-        <div class="frame-row"><dt class="mono">Örnekleme zamanı</dt><dd>Kortizol düzeyi uyandıktan sonra yükselir ve gün boyunca azalır. Farklı saatlerde alınan örnekler doğrudan karşılaştırılamaz.</dd></div>
-        <div class="frame-row"><dt class="mono">Biyolojik değişkenlik</dt><dd>Düzeyler kişiden kişiye ve aynı kişide günden güne değişir. Anlamlı bir değerlendirme, genellikle birden fazla ölçüm gerektirir.</dd></div>
-        <div class="frame-row"><dt class="mono">Tek ölçümün sınırı</dt><dd>Tek bir kortizol değeri, bir kişinin stres durumunu kesin olarak belirlemez.</dd></div>
-        <div class="frame-row"><dt class="mono">Örnek matrisi</dt><dd>Tükürük ve anne sütü farklı bileşenler içerir. Sensör performansının her örnek türünde ayrı ayrı gösterilmesi gerekir.</dd></div>
+        <div class="frame-row"><dt class="mono">Kalıntı limiti</dt><dd>AB, sütte tetrasiklin için 100 µg/kg en yüksek kalıntı limiti belirler. Yararlı bir yöntemin bu düzeyin çevresindeki derişimleri ayırt edebilmesi gerekir.</dd></div>
+        <div class="frame-row"><dt class="mono">Neden önemli</dt><dd>Bekleme süresi dolmadan sağılan süt antibiyotik kalıntısı taşıyabilir. Kalıntılar gıda güvenliği ve antibiyotik direnci açısından sorun oluşturur.</dd></div>
+        <div class="frame-row"><dt class="mono">Süt matrisi</dt><dd>Süt; yağ, protein ve başka bileşenler içerir. Bunlar da filmin akımını değiştirebilir, bu yüzden tetrasiklinin etkisinin ayrıca gösterilmesi gerekir.</dd></div>
+        <div class="frame-row"><dt class="mono">Kortizol ve zaman</dt><dd>Tükürük projesinde kortizol düzeyi gün içinde değişir. Tek bir değer, bir kişinin stres durumunu kesin olarak belirlemez.</dd></div>
         <div class="frame-row"><dt class="mono">Doğrulama</dt><dd>Kalibrasyon, seçicilik ve tekrarlanabilirlik testleri ile gerçek örneklerde kabul görmüş referans yöntemlerle karşılaştırma yapılması gerekir.</dd></div>
       </dl>
     </div>
@@ -579,14 +607,14 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
       <div class="section-head">
         <span class="mono">Proje durumu</span>
         <h2 id="durum-h">Araştırma ve geliştirme aşamasında.</h2>
-        <p>Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Çalışma planımız bu adımları izliyor.</p>
+        <p>Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Süt projesinin çalışma planı bu adımları izliyor.</p>
       </div>
       <ol class="steps">
-        <li><b>Tanıma katmanı</b><p>Kortizolü tanıyacak molekülün seçilmesi ve elektrot yüzeyine bağlanması.</p></li>
-        <li><b>Sinyal okuma</b><p>Bağlanmanın oluşturduğu elektriksel değişimin kararlı biçimde ölçülmesi.</p></li>
-        <li><b>Kalibrasyon</b><p>Bilinen derişimlerle kalibrasyon eğrisinin ve tayin sınırının belirlenmesi.</p></li>
-        <li><b>Seçicilik ve tekrar</b><p>Benzer moleküllere karşı seçiciliğin ve ölçümlerin tekrarlanabilirliğinin test edilmesi.</p></li>
-        <li><b>Gerçek örnekler</b><p>Tükürük ve anne sütü örneklerinde, referans yöntemlerle karşılaştırmalı değerlendirme.</p></li>
+        <li><b>İnce film</b><p>Cam lamın tamamının grafen/P3HT ince filmle kaplanması ve iki gümüş kontağın yerleştirilmesi.</p></li>
+        <li><b>Tampon</b><p>Bilinen tetrasiklin derişimleriyle tamponda I–V ölçümü ve akım değişiminin incelenmesi.</p></li>
+        <li><b>Seyreltilmiş süt</b><p>Ölçümün seyreltilmiş sütte tekrarlanması ve süt bileşenlerinin etkisinin ayrılması.</p></li>
+        <li><b>Tam süt</b><p>Seyreltmeden, tam sütte ölçüm ve tekrarlanabilirlik.</p></li>
+        <li><b>Taşınabilir okuyucu</b><p>Yöntem doğrulanırsa taşınabilir bir okuyucu. Seçicilik yetmezse aptamer katmanı B planı.</p></li>
       </ol>
       <p class="disclaimer"><strong>Bu projeler araştırma aşamasındadır.</strong> Klinik kullanım için doğrulanmış bir test ya da satışta olan bir ürün değildir. Sayfadaki görseller sensörün çalışma fikrini anlatan şematik canlandırmalardır.</p>
     </div>
@@ -644,7 +672,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
 <footer class="site-footer" id="iletisim">
   <div class="ft-bg" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="ft-lead ft-tr">Tükürükte ve anne sütünde kortizol ölçümü için biyosensörler geliştiriyoruz.</p>
+    <p class="ft-lead ft-tr">İnek sütünde antibiyotik kalıntısı ve tükürükte kortizol için sensörler geliştiriyoruz.</p>
     <a class="ft-cta" href="https://www.linkedin.com/company/bakircaylab" target="_blank" rel="noopener"><span class="ft-tr">LinkedIn'de takip edin</span><i aria-hidden="true">→</i></a>
     <div class="ft-grid">
       <nav class="ft-col" aria-label="Alt menü">
@@ -681,6 +709,56 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   <span class="ft-word" aria-hidden="true">BakırçayLab</span>
 </footer>
 
+<script>
+/* ---------- Opening flow (plain WebGL, half resolution, paused off-screen) ---------- */
+(() => {
+  const cv = document.getElementById('flow'); if (!cv) return;
+  const gl = cv.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'low-power' });
+  if (!gl) return;
+  const vs = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }';
+  const fs = `precision highp float;
+  uniform vec2 R; uniform float T; uniform vec3 A, B, C, D, E;
+  float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.-2.*f);
+    return mix(mix(h(i), h(i+vec2(1,0)), f.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), f.x), f.y); }
+  float fbm(vec2 p){ float s = 0., a = .5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6); for (int i = 0; i < 5; i++){ s += a*n(p); p = m*p; a *= .5; } return s; }
+  void main(){
+    vec2 uv = gl_FragCoord.xy / R; vec2 q = (gl_FragCoord.xy - .5*R) / min(R.x, R.y);
+    float t = T * .045;
+    float ang = -.62; mat2 rot = mat2(cos(ang), -sin(ang), sin(ang), cos(ang));
+    vec2 s = rot * q; s *= vec2(.42, 1.35);
+    vec2 w = vec2(fbm(s + vec2(t, -t*.6)), fbm(s + vec2(5.2 - t*.7, 1.3 + t)));
+    float f = fbm(s + 2.4*w + vec2(t*.4, 0.));
+    float g = fbm(s*1.15 - 1.6*w + vec2(0., t*.5) + 8.);
+    vec3 col = mix(A, B, smoothstep(.25, .75, f));
+    col = mix(col, C, smoothstep(.45, .85, g) * .85);
+    col = mix(col, D, smoothstep(.62, .92, f*g*1.9) * .7);
+    float mist = smoothstep(.35, .95, (1.-uv.y) * (.55 + .7*g));
+    col = mix(col, E, mist * .8);
+    col = mix(col, D, smoothstep(.7, .95, w.x) * .35);
+    col *= .92 + .14*smoothstep(1.2, .2, length(q));
+    gl_FragColor = vec4(col, 1.);
+  }`;
+  const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+  gl.useProgram(pr);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = k => gl.getUniformLocation(pr, k), hex = x => [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255];
+  [0x003135, 0x024950, 0x0fa4af, 0xafdde5, 0x8fc4cb].forEach((c, i) => gl.uniform3fv(U('ABCDE'[i]), hex(c)));
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2) * .5, r = cv.getBoundingClientRect();
+    cv.width = Math.max(1, r.width * d | 0); cv.height = Math.max(1, r.height * d | 0); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(U('R'), cv.width, cv.height); draw(performance.now()); };
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches, t0 = performance.now();
+  let on = true, raf = 0;
+  const draw = now => { gl.uniform1f(U('T'), still ? 12 : (now - t0) / 1000 + 12); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+  const loop = now => { draw(now); raf = on && !still ? requestAnimationFrame(loop) : 0; };
+  new IntersectionObserver(es => { on = es[0].isIntersecting; if (on && !raf && !still) raf = requestAnimationFrame(loop); }).observe(cv);
+  addEventListener('resize', size); size();
+  if (!still) raf = requestAnimationFrame(loop);
+})();
+</script>
+
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -704,18 +782,19 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   const curve = document.getElementById('curve'), band = document.getElementById('band'), dot = document.getElementById('dot');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  // Representative sigmoid on a log-concentration axis (shape only, no data).
-  const X0 = 60, X1 = 440, Y0 = 270, Y1 = 50;
-  const sig = u => 1 / (1 + Math.exp(-(u - .5) * 9));
-  const pts = [], up = [], lo = [];
+  // Representative two-terminal I–V sweep, −3 V … +3 V, plotted as |I| (the negative branch folds upward).
+  // Shape only, no data: reference curve before the milk, the drawn curve after it, band = change in current.
+  const XC = 250, XW = 190, YB = 270, YH = 205;
+  const iv = v => Math.abs(.55 * v + .45 * v * v * v);
+  const pts = [], ref = [];
   for (let i = 0; i <= 80; i++) {
-    const u = i / 80, s = (sig(u) - sig(0)) / (sig(1) - sig(0));
-    const x = X0 + u * (X1 - X0), y = Y0 + s * (Y1 - Y0), w = 10 + 8 * Math.sin(Math.PI * u);
-    pts.push([x, y]); up.push([x, y - w]); lo.push([x, y + w]);
+    const v = -1 + 2 * i / 80, x = XC + v * XW;
+    ref.push([x, YB - iv(v) * YH]); pts.push([x, YB - iv(v) * .64 * YH]);
   }
   const d = a => a.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
   curve.setAttribute('d', d(pts));
-  band.setAttribute('d', d(up) + ' ' + d(lo.slice().reverse()).replace('M', 'L') + ' Z');
+  document.getElementById('curve0').setAttribute('d', d(ref));
+  band.setAttribute('d', d(ref) + ' ' + d(pts.slice().reverse()).replace('M', 'L') + ' Z');
   const len = curve.getTotalLength();
   curve.style.strokeDasharray = len; curve.style.strokeDashoffset = len;
 
@@ -763,7 +842,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
 
     // Rail
     if (isNarrow()) {
-      const cuts = [.11, .30, .44, .62, .80, 1], names = document.documentElement.lang === 'en' ? ['Sample', 'Scale', 'Recognition', 'Signal', 'Two samples'] : ['Örnek', 'Ölçek', 'Tanıma', 'Sinyal', 'İki örnek'];
+      const cuts = [.11, .30, .44, .62, .80, 1], names = document.documentElement.lang === 'en' ? ['Sample', 'Scale', 'Interaction', 'Signal', 'Two projects'] : ['Örnek', 'Ölçek', 'Etkileşim', 'Sinyal', 'İki proje'];
       let k = 0; for (let i = 0; i < 5; i++) if (p >= cuts[i]) k = i;
       mprogBars.forEach((b, i) => b.style.setProperty('--f', clamp((p - cuts[i]) / (cuts[i + 1] - cuts[i])).toFixed(3)));
       mprogN.textContent = '0' + (k + 1); mprogL.textContent = names[k];
@@ -781,14 +860,14 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
 
 /* ---------- Language (TR/EN) and theme (light/dark) ---------- */
 (() => {
-  const EN = {"Projeler": "Projects", "Biz kimiz?": "About us", "Bilimsel çerçeve": "Scientific context", "Proje durumu": "Project status", "Bakırçay Lab · Biyosensör Ar-Ge": "Bakırçay Lab · Biosensor R&amp;D", "Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.": "One drop.<br>One <em>molecule</em>.<br>One measurement.", "Tükürükte ve anne sütünde kortizolün ölçülmesine yönelik iki biyosensör araştırma projesi.": "Two biosensor research projects for measuring cortisol in saliva and in breast milk.", "<i></i>Kaydırın": "<i></i>Scroll", "01 · Örnek": "01 · Sample", "Örnek, sensör yüzeyine ulaşır.": "The sample reaches the sensor surface.", "Bu canlandırmada örnek, bir damla anne sütü. Damla çalışma elektrodunun üzerine bırakılır ve yüzeye yayılır. Ölçüm, örneğin elektrotla temas ettiği bu küçük alanda başlar.": "In this animation the sample is a drop of breast milk. It is placed on the working electrode and spreads across the surface. The measurement starts in this small area where the sample touches the electrode.", "02 · Ölçek": "02 · Scale", "Yüzeye yaklaştıkça ölçek değişir.": "Closer to the surface, the scale changes.", "Elektrodun üzerinde, kortizolü tanımak üzere seçilen <strong>tanıma molekülleri</strong> bulunur. Sensörün seçiciliği bu katmandan gelir.": "The electrode carries <strong>recognition molecules</strong> chosen to recognise cortisol. The sensor's selectivity comes from this layer.", "03 · Tanıma": "03 · Recognition", "Kortizol bağlanır. Diğerleri geçip gider.": "Cortisol binds. Everything else drifts past.", "Kortizol molekülleri tanıma bölgelerine tutunur. Sütteki yağ damlacıkları ve proteinlerin yüzeye bağlanmaması hedeflenir. Bu <strong>seçicilik</strong>, deneylerle doğrulanması gereken temel özelliklerden biridir.": "Cortisol molecules attach to the recognition sites. The aim is that fat droplets and proteins in milk do not bind to the surface. This <strong>selectivity</strong> is one of the key properties that must be confirmed by experiment.", "04 · Sinyal": "04 · Signal", "Bağlanma, ölçülebilir bir sinyale dönüşür.": "Binding becomes a measurable signal.", "Yüzeydeki bağlanma olayları elektriksel bir değişim oluşturur. Bu değişim okunur ve bir <strong>kalibrasyon eğrisi</strong> yardımıyla derişime çevrilir.": "Binding events on the surface create an electrical change. That change is read and converted into a concentration using a <strong>calibration curve</strong>.", "05 · İki örnek": "05 · Two samples", "Aynı yaklaşım, iki farklı örnek.": "One approach, two very different samples.", "Tükürük ve anne sütü çok farklı bileşimlere sahiptir. Her biri için sensör yüzeyi ve ölçüm koşulları ayrı ayrı geliştiriliyor.": "Saliva and breast milk have very different compositions. The sensor surface and measurement conditions are being developed separately for each.", "DÜŞÜK": "LOW", "YÜKSEK": "HIGH", "KORTİZOL DERİŞİMİ (LOG ÖLÇEK)": "CORTISOL CONCENTRATION (LOG SCALE)", "SİNYAL DEĞİŞİMİ": "SIGNAL CHANGE", "TEMSİLİ · ÖLÇÜM VERİSİ DEĞİLDİR": "REPRESENTATIVE · NOT MEASURED DATA", "01 · Tükürük": "01 · Saliva", "Tükürükte kortizol": "Cortisol in saliva", "Berrak, sulu bir örnek": "A clear, watery sample", "Projeyi inceleyin ↓": "View the project ↓", "02 · Anne sütü": "02 · Breast milk", "Anne sütünde kortizol": "Cortisol in breast milk", "Opak; yağ ve protein içerir": "Opaque; contains fat and protein", "Başlangıç": "Start", "Örnek": "Sample", "Ölçek": "Scale", "Tanıma": "Recognition", "Sinyal": "Signal", "İki örnek": "Two samples", "Kortizolü iki farklı örnekte ölçmek.": "Measuring cortisol in two different samples.", "Kortizol, stres yanıtıyla ilişkili bir biyobelirteçtir. İki projemiz de bu molekülü, laboratuvar dışına taşınabilecek bir sensör yaklaşımıyla ölçmeyi araştırıyor.": "Cortisol is a biomarker associated with the stress response. Both of our projects explore measuring this molecule with a sensor approach that could work outside the laboratory.", "Konsept tasarım": "Concept design", "Cihaz konsepti: tükürük örneğiyle çalışacak taşınabilir bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a portable reader designed to work with a saliva sample. This image is a design study.", "Ar-Ge aşamasında": "In R&amp;D", "Tükürükte kortizol tespitine yönelik biyosensör": "A biosensor for detecting cortisol in saliva", "Tükürük, iğne gerektirmeden toplanabilen bir örnek türüdür. Bu proje, stresle ilişkili bir biyobelirteç olan kortizolün tükürükte ölçülmesine yönelik bir biyosensör yaklaşımını araştırıyor.": "Saliva can be collected without needles. This project explores a biosensor approach for measuring cortisol, a stress-related biomarker, in saliva.", "Araştırdığımız": "What we are exploring", "Tükürükteki kortizolü seçici olarak tanıyan bir sensör yüzeyi": "A sensor surface that selectively recognises cortisol in saliva", "Küçük örnek hacmiyle çalışabilen, taşınabilir bir ölçüm düzeni": "A portable measurement set-up that works with a small sample volume", "Yorumlarken": "When interpreting results", "Kortizol gün içinde doğal bir ritimle değişir. Örneğin alındığı saat sonucu doğrudan etkiler.": "Cortisol follows a natural daily rhythm. The time a sample is taken directly affects the result.", "Uyku, yemek, fiziksel aktivite ve kişiden kişiye biyolojik değişkenlik ölçümü etkileyebilir.": "Sleep, meals, physical activity and person-to-person biological variability can affect the measurement.", "Tek bir ölçüm, bir kişinin stres durumunu tek başına belirlemez.": "A single measurement does not, on its own, determine a person's stress state.", "Cihaz konsepti: tek kullanımlık numune ucu ve tekrar kullanılabilen bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a disposable sampling tip with a reusable reader. This image is a design study.", "Anne sütünde kortizol tespitine yönelik biyosensör": "A biosensor for detecting cortisol in breast milk", "Anne sütü, kortizol dahil çeşitli hormonlar içerir. Bu proje, anne sütü örneklerindeki kortizol düzeylerinin incelenmesine yönelik bir biyosensör yaklaşımını araştırıyor.": "Breast milk contains a range of hormones, including cortisol. This project explores a biosensor approach for studying cortisol levels in breast milk samples.", "Yağ ve protein içeriği yüksek, karmaşık bir örnekte ölçüm yapabilen bir sensör yüzeyi": "A sensor surface that can measure in a complex sample rich in fat and protein", "Örnek hazırlığını en aza indiren bir ölçüm akışı": "A measurement workflow that keeps sample preparation to a minimum", "Sütteki kortizol düzeyi günün saatine, emzirme dönemine ve örnekleme koşullarına göre değişebilir.": "Cortisol levels in milk can vary with the time of day, the stage of lactation and sampling conditions.", "Bu ölçümden bebeğin sağlığı, annenin psikolojik durumu ya da sütün niteliği hakkında doğrudan sonuç çıkarılmaz.": "No direct conclusion is drawn from this measurement about the baby's health, the mother's psychological state or the quality of the milk.", "Ölçüm sonuçları, sütü değerlendiren bir etiket olarak kullanılmaz.": "Results are not used as a label that rates the milk.", "↻ Tekrar izle": "↻ Watch again", "Bilimden doğan fikirler, hayata dokunan çözümler.": "Ideas born from science, solutions that touch lives.", "Bakırçay Lab, sağlık alanındaki ihtiyaçlara yönelik biyosensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.": "Bakırçay Lab is a research and development team working on biosensors and measurement technologies for health needs. We combine scientific research with portable device design to develop easy-to-use measurement methods.", "Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. Tükürükte ve anne sütünde kortizol ölçümüne yönelik projelerimiz bu yaklaşımın güncel örnekleri.": "We begin by defining a real need, considering sensor development, experimental evaluation and user experience together. Our projects on measuring cortisol in saliva and in breast milk are current examples of this approach.", "Bilimsel yaklaşım": "A scientific approach", "Tasarım kararlarımızı deneysel verilerle değerlendiriyor, sonuçların tekrarlanabilirliğini ve ölçümlerin sınırlarını açıkça ortaya koymayı önemsiyoruz.": "We evaluate design decisions with experimental data and care about showing the reproducibility of results and the limits of each measurement clearly.", "Kullanıcı odaklı tasarım": "User-centred design", "Örneğin alınmasından sonucun görüntülenmesine kadar sade, anlaşılır ve kullanım amacına uygun bir deneyim tasarlıyoruz.": "From taking the sample to viewing the result, we design a simple, clear experience suited to its intended use.", "Araştırmadan uygulamaya": "From research to practice", "Sağlık alanındaki farklı ihtiyaçlara yanıt verebilecek sensör çözümleriyle araştırmanın uygulamaya dönüşmesine katkı sunmayı hedefliyoruz.": "We aim to help research become practice through sensor solutions that respond to different health needs.", "Bir ölçüm sonucu, bağlamıyla anlam kazanır.": "A measurement means something only in context.", "Kortizol ölçümünü doğru yorumlamak için örneğin ne zaman, nasıl ve kimden alındığını bilmek gerekir.": "To interpret a cortisol measurement correctly, you need to know when, how and from whom the sample was taken.", "Biyobelirteç": "Biomarker", "Kortizol, stres yanıtıyla ilişkili bir hormondur. Stresin kendisi değil, onunla ilişkili biyolojik süreçlerin bir göstergesidir.": "Cortisol is a hormone associated with the stress response. It indicates related biological processes, not stress itself.", "Örnekleme zamanı": "Sampling time", "Kortizol düzeyi uyandıktan sonra yükselir ve gün boyunca azalır. Farklı saatlerde alınan örnekler doğrudan karşılaştırılamaz.": "Cortisol rises after waking and falls through the day. Samples taken at different times cannot be compared directly.", "Biyolojik değişkenlik": "Biological variability", "Düzeyler kişiden kişiye ve aynı kişide günden güne değişir. Anlamlı bir değerlendirme, genellikle birden fazla ölçüm gerektirir.": "Levels vary between people and from day to day in the same person. A meaningful assessment usually needs more than one measurement.", "Tek ölçümün sınırı": "Limits of one measurement", "Tek bir kortizol değeri, bir kişinin stres durumunu kesin olarak belirlemez.": "A single cortisol value does not definitively determine a person's stress state.", "Örnek matrisi": "Sample matrix", "Tükürük ve anne sütü farklı bileşenler içerir. Sensör performansının her örnek türünde ayrı ayrı gösterilmesi gerekir.": "Saliva and breast milk contain different components. Sensor performance has to be shown separately for each sample type.", "Doğrulama": "Validation", "Kalibrasyon, seçicilik ve tekrarlanabilirlik testleri ile gerçek örneklerde kabul görmüş referans yöntemlerle karşılaştırma yapılması gerekir.": "Calibration, selectivity and reproducibility tests are needed, along with comparison against accepted reference methods in real samples.", "Araştırma ve geliştirme aşamasında.": "In research and development.", "Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Çalışma planımız bu adımları izliyor.": "The path from a sensor idea to a reliable measurement is made of steps validated in sequence. Our work plan follows these steps.", "Tanıma katmanı": "Recognition layer", "Kortizolü tanıyacak molekülün seçilmesi ve elektrot yüzeyine bağlanması.": "Choosing the molecule that will recognise cortisol and attaching it to the electrode surface.", "Sinyal okuma": "Signal readout", "Bağlanmanın oluşturduğu elektriksel değişimin kararlı biçimde ölçülmesi.": "Measuring the electrical change caused by binding in a stable way.", "Kalibrasyon": "Calibration", "Bilinen derişimlerle kalibrasyon eğrisinin ve tayin sınırının belirlenmesi.": "Establishing the calibration curve and the limit of detection with known concentrations.", "Seçicilik ve tekrar": "Selectivity and repeatability", "Benzer moleküllere karşı seçiciliğin ve ölçümlerin tekrarlanabilirliğinin test edilmesi.": "Testing selectivity against similar molecules and the repeatability of measurements.", "Gerçek örnekler": "Real samples", "Tükürük ve anne sütü örneklerinde, referans yöntemlerle karşılaştırmalı değerlendirme.": "Comparative evaluation in saliva and breast milk samples against reference methods.", "<strong>Bu projeler araştırma aşamasındadır.</strong> Klinik kullanım için doğrulanmış bir test ya da satışta olan bir ürün değildir. Sayfadaki görseller sensörün çalışma fikrini anlatan şematik canlandırmalardır.": "<strong>These projects are in the research stage.</strong> They are not a test validated for clinical use or a product on sale. The visuals on this page are schematic animations that illustrate how the sensor works.", "Tükürükte ve anne sütünde kortizol ölçümü için biyosensörler geliştiriyoruz.": "We develop biosensors for measuring cortisol in saliva and breast milk.", "LinkedIn'de takip edin": "Follow us on LinkedIn", "Sayfa": "Navigate", "Ekip": "Team", "Bağlantı": "Connect", "Elektrik-Elektronik Mühendisliği öğrencisi": "Electrical-electronics engineering students", "Araştırma görevlisi": "Research assistant", "Profesör": "Professor", "Ar-Ge aşamasındaki biyosensör projeleri": "Biosensor projects in R&amp;D", "© 2026 Bakırçay Lab. Tüm hakları saklıdır.": "© 2026 Bakırçay Lab. All rights reserved.", "Yayınlar": "Publications", "Çalışmalarımız yayında.": "Our work, published.", "Biyosensörler üzerine iki kitap bölümü ve uluslararası bir öğrenci kongresinde sunulan iki bildiri.": "Two book chapters on biosensors and two papers presented at an international student congress.", "Kitap bölümü": "Book chapter", "Bildiri": "Conference paper", "Sütlere Katkılanan Antibiyotiklerin Tespiti Amacıyla Üretilen PLA:PCBM Tabanlı Biyosensör Uygulaması": "PLA:PCBM Based Biosensor Application for the Detection of Antibiotics Added to Milk", "PCBM Katkılı PLA Tabanlı Biyosensör ile Terde Laktat Düzeylerinin İncelenmesi": "Investigation of Lactate Levels in Sweat with a PCBM-Doped PLA-Based Biosensor", "<em>V. Uluslararası Sağlık Bilimleri Öğrenci Kongresi (SAGOK 2026)</em> · 8–10 Mayıs 2026, İzmir · Özet Metin Kitabı s. 336 · ISBN 978-625-94344-4-5": "<em>V. International Health Sciences Institute Student Congress (SAGOK 2026)</em> · 8–10 May 2026, İzmir · Abstract Book p. 336 · ISBN 978-625-94344-4-5", "<em>V. Uluslararası Sağlık Bilimleri Öğrenci Kongresi (SAGOK 2026)</em> · 8–10 Mayıs 2026, İzmir · Özet Metin Kitabı s. 312 · ISBN 978-625-94344-4-5": "<em>V. International Health Sciences Institute Student Congress (SAGOK 2026)</em> · 8–10 May 2026, İzmir · Abstract Book p. 312 · ISBN 978-625-94344-4-5", "<em>Elektrik-Elektronik ve Haberleşme Mühendisliğinde Güncel Konular ve Akademik Değerlendirmeler</em> · Ed. Doç. Dr. Süleyman Adak · YAZ Yayınları · s. 157–177 · E-ISBN 978-625-8926-85-9": "<em>Elektrik-Elektronik ve Haberleşme Mühendisliğinde Güncel Konular ve Akademik Değerlendirmeler</em> · (in Turkish) · Ed. Assoc. Prof. Süleyman Adak · YAZ Yayınları · pp. 157–177 · E-ISBN 978-625-8926-85-9", "<em>Türkiye ve Dünyada Elektrik-Elektronik ve Haberleşme Mühendisliği</em> · Ed. Doç. Dr. Ali Durmuş · YAZ Yayınları · s. 123–143 · ISBN 978-625-8678-40-6": "<em>Türkiye ve Dünyada Elektrik-Elektronik ve Haberleşme Mühendisliği</em> · (in Turkish) · Ed. Assoc. Prof. Ali Durmuş · YAZ Yayınları · pp. 123–143 · ISBN 978-625-8678-40-6"};
+  const EN = {"Projeler": "Projects", "Biz kimiz?": "About us", "Bilimsel çerçeve": "Scientific context", "Proje durumu": "Project status", "Bakırçay Lab · Biyosensör Ar-Ge": "Bakırçay Lab · Biosensor R&amp;D", "Bir damla.<br>Bir <em>molekül</em>.<br>Bir ölçüm.": "One drop.<br>One <em>molecule</em>.<br>One measurement.", "<i></i>Kaydırın": "<i></i>Scroll", "01 · Örnek": "01 · Sample", "02 · Ölçek": "02 · Scale", "Yüzeye yaklaştıkça ölçek değişir.": "Closer to the surface, the scale changes.", "04 · Sinyal": "04 · Signal", "TEMSİLİ · ÖLÇÜM VERİSİ DEĞİLDİR": "REPRESENTATIVE · NOT MEASURED DATA", "01 · Tükürük": "01 · Saliva", "Tükürükte kortizol": "Cortisol in saliva", "Berrak, sulu bir örnek": "A clear, watery sample", "Projeyi inceleyin ↓": "View the project ↓", "Opak; yağ ve protein içerir": "Opaque; contains fat and protein", "Başlangıç": "Start", "Örnek": "Sample", "Ölçek": "Scale", "Sinyal": "Signal", "Konsept tasarım": "Concept design", "Cihaz konsepti: tükürük örneğiyle çalışacak taşınabilir bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a portable reader designed to work with a saliva sample. This image is a design study.", "Ar-Ge aşamasında": "In R&amp;D", "Tükürükte kortizol tespitine yönelik biyosensör": "A biosensor for detecting cortisol in saliva", "Tükürük, iğne gerektirmeden toplanabilen bir örnek türüdür. Bu proje, stresle ilişkili bir biyobelirteç olan kortizolün tükürükte ölçülmesine yönelik bir biyosensör yaklaşımını araştırıyor.": "Saliva can be collected without needles. This project explores a biosensor approach for measuring cortisol, a stress-related biomarker, in saliva.", "Araştırdığımız": "What we are exploring", "Tükürükteki kortizolü seçici olarak tanıyan bir sensör yüzeyi": "A sensor surface that selectively recognises cortisol in saliva", "Küçük örnek hacmiyle çalışabilen, taşınabilir bir ölçüm düzeni": "A portable measurement set-up that works with a small sample volume", "Yorumlarken": "When interpreting results", "Kortizol gün içinde doğal bir ritimle değişir. Örneğin alındığı saat sonucu doğrudan etkiler.": "Cortisol follows a natural daily rhythm. The time a sample is taken directly affects the result.", "Uyku, yemek, fiziksel aktivite ve kişiden kişiye biyolojik değişkenlik ölçümü etkileyebilir.": "Sleep, meals, physical activity and person-to-person biological variability can affect the measurement.", "Tek bir ölçüm, bir kişinin stres durumunu tek başına belirlemez.": "A single measurement does not, on its own, determine a person's stress state.", "Cihaz konsepti: tek kullanımlık numune ucu ve tekrar kullanılabilen bir okuyucu. Görsel bir tasarım çalışmasıdır.": "Device concept: a disposable sampling tip with a reusable reader. This image is a design study.", "↻ Tekrar izle": "↻ Watch again", "Bilimden doğan fikirler, hayata dokunan çözümler.": "Ideas born from science, solutions that touch lives.", "Bakırçay Lab, sağlık ve gıda güvenliği alanındaki ihtiyaçlara yönelik sensör ve ölçüm teknolojileri üzerine çalışan bir araştırma ve geliştirme ekibidir. Bilimsel araştırmayı taşınabilir cihaz tasarımıyla bir araya getirerek kolay kullanılabilir ölçüm yöntemleri geliştirmeyi hedefliyoruz.": "Bakırçay Lab is a research and development team working on sensors and measurement technologies for health and food-safety needs. We combine scientific research with portable device design to develop easy-to-use measurement methods.", "Bilimsel yaklaşım": "A scientific approach", "Tasarım kararlarımızı deneysel verilerle değerlendiriyor, sonuçların tekrarlanabilirliğini ve ölçümlerin sınırlarını açıkça ortaya koymayı önemsiyoruz.": "We evaluate design decisions with experimental data and care about showing the reproducibility of results and the limits of each measurement clearly.", "Kullanıcı odaklı tasarım": "User-centred design", "Örneğin alınmasından sonucun görüntülenmesine kadar sade, anlaşılır ve kullanım amacına uygun bir deneyim tasarlıyoruz.": "From taking the sample to viewing the result, we design a simple, clear experience suited to its intended use.", "Araştırmadan uygulamaya": "From research to practice", "Sağlık alanındaki farklı ihtiyaçlara yanıt verebilecek sensör çözümleriyle araştırmanın uygulamaya dönüşmesine katkı sunmayı hedefliyoruz.": "We aim to help research become practice through sensor solutions that respond to different health needs.", "Bir ölçüm sonucu, bağlamıyla anlam kazanır.": "A measurement means something only in context.", "Doğrulama": "Validation", "Kalibrasyon, seçicilik ve tekrarlanabilirlik testleri ile gerçek örneklerde kabul görmüş referans yöntemlerle karşılaştırma yapılması gerekir.": "Calibration, selectivity and reproducibility tests are needed, along with comparison against accepted reference methods in real samples.", "Araştırma ve geliştirme aşamasında.": "In research and development.", "Kalibrasyon": "Calibration", "<strong>Bu projeler araştırma aşamasındadır.</strong> Klinik kullanım için doğrulanmış bir test ya da satışta olan bir ürün değildir. Sayfadaki görseller sensörün çalışma fikrini anlatan şematik canlandırmalardır.": "<strong>These projects are in the research stage.</strong> They are not a test validated for clinical use or a product on sale. The visuals on this page are schematic animations that illustrate how the sensor works.", "LinkedIn'de takip edin": "Follow us on LinkedIn", "Sayfa": "Navigate", "Ekip": "Team", "Bağlantı": "Connect", "Elektrik-Elektronik Mühendisliği öğrencisi": "Electrical-electronics engineering students", "Araştırma görevlisi": "Research assistant", "Profesör": "Professor", "Ar-Ge aşamasındaki biyosensör projeleri": "Biosensor projects in R&amp;D", "© 2026 Bakırçay Lab. Tüm hakları saklıdır.": "© 2026 Bakırçay Lab. All rights reserved.", "Yayınlar": "Publications", "Çalışmalarımız yayında.": "Our work, published.", "Biyosensörler üzerine iki kitap bölümü ve uluslararası bir öğrenci kongresinde sunulan iki bildiri.": "Two book chapters on biosensors and two papers presented at an international student congress.", "Kitap bölümü": "Book chapter", "Bildiri": "Conference paper", "Sütlere Katkılanan Antibiyotiklerin Tespiti Amacıyla Üretilen PLA:PCBM Tabanlı Biyosensör Uygulaması": "PLA:PCBM Based Biosensor Application for the Detection of Antibiotics Added to Milk", "PCBM Katkılı PLA Tabanlı Biyosensör ile Terde Laktat Düzeylerinin İncelenmesi": "Investigation of Lactate Levels in Sweat with a PCBM-Doped PLA-Based Biosensor", "<em>V. Uluslararası Sağlık Bilimleri Öğrenci Kongresi (SAGOK 2026)</em> · 8–10 Mayıs 2026, İzmir · Özet Metin Kitabı s. 336 · ISBN 978-625-94344-4-5": "<em>V. International Health Sciences Institute Student Congress (SAGOK 2026)</em> · 8–10 May 2026, İzmir · Abstract Book p. 336 · ISBN 978-625-94344-4-5", "<em>V. Uluslararası Sağlık Bilimleri Öğrenci Kongresi (SAGOK 2026)</em> · 8–10 Mayıs 2026, İzmir · Özet Metin Kitabı s. 312 · ISBN 978-625-94344-4-5": "<em>V. International Health Sciences Institute Student Congress (SAGOK 2026)</em> · 8–10 May 2026, İzmir · Abstract Book p. 312 · ISBN 978-625-94344-4-5", "<em>Elektrik-Elektronik ve Haberleşme Mühendisliğinde Güncel Konular ve Akademik Değerlendirmeler</em> · Ed. Doç. Dr. Süleyman Adak · YAZ Yayınları · s. 157–177 · E-ISBN 978-625-8926-85-9": "<em>Elektrik-Elektronik ve Haberleşme Mühendisliğinde Güncel Konular ve Akademik Değerlendirmeler</em> · (in Turkish) · Ed. Assoc. Prof. Süleyman Adak · YAZ Yayınları · pp. 157–177 · E-ISBN 978-625-8926-85-9", "<em>Türkiye ve Dünyada Elektrik-Elektronik ve Haberleşme Mühendisliği</em> · Ed. Doç. Dr. Ali Durmuş · YAZ Yayınları · s. 123–143 · ISBN 978-625-8678-40-6": "<em>Türkiye ve Dünyada Elektrik-Elektronik ve Haberleşme Mühendisliği</em> · (in Turkish) · Ed. Assoc. Prof. Ali Durmuş · YAZ Yayınları · pp. 123–143 · ISBN 978-625-8678-40-6", "İnek sütünde tetrasiklin kalıntısı ve tükürükte kortizol: iki ayrı sensör araştırma projesi.": "Tetracycline residue in cow’s milk and cortisol in saliva: two separate sensor research projects.", "Bu canlandırmada örnek, bir damla inek sütü. Damla, cam lam üzerindeki grafen/P3HT ince filmin üzerine, iki gümüş kontağın arasına bırakılır ve yüzeye yayılır.": "In this animation the sample is a drop of cow’s milk. It is placed on a graphene/P3HT thin film on a glass slide, between two silver contacts, and spreads over the surface.", "Örnek, ince filme ulaşır.": "The sample reaches the thin film.", "Film, iletken <strong>grafen</strong> ile yarı iletken bir polimer olan <strong>P3HT</strong>’den oluşur. Akım, bu ağ boyunca bir gümüş kontaktan diğerine taşınır.": "The film combines conductive <strong>graphene</strong> with <strong>P3HT</strong>, a semiconducting polymer. Current travels through this network from one silver contact to the other.", "03 · Etkileşim": "03 · Interaction", "Tetrasiklin, filmle etkileşir.": "Tetracycline interacts with the film.", "Sütteki tetrasiklin molekülleri film yüzeyine ulaşır. Yağ damlacıkları ve proteinler de yüzeye gelir; tetrasiklinin etkisini bunlardan ayırmak, yani <strong>seçicilik</strong>, yöntemin doğrulanması gereken temel noktasıdır.": "Tetracycline molecules in the milk reach the film surface. Fat droplets and proteins arrive too; separating the effect of tetracycline from theirs, that is <strong>selectivity</strong>, is the key point the method has to prove.", "Etkileşim, akımda bir değişime dönüşür.": "The interaction shows up as a change in current.", "05 · İki proje": "05 · Two projects", "İki ayrı proje, iki farklı örnek.": "Two separate projects, two different samples.", "İnek sütünde tetrasiklin ve tükürükte kortizol birbirinden bağımsız iki projedir. Yöntemleri, örnekleri ve hedefleri ayrı ayrı geliştiriliyor.": "Tetracycline in cow’s milk and cortisol in saliva are two independent projects. Their methods, samples and goals are developed separately.", "GERİLİM (V)": "VOLTAGE (V)", "— SÜT SONRASI": "— AFTER MILK", "02 · İnek sütü": "02 · Cow’s milk", "İnek sütünde tetrasiklin": "Tetracycline in cow’s milk", "Etkileşim": "Interaction", "İki proje": "Two projects", "İki ayrı proje, iki ayrı soru.": "Two separate projects, two separate questions.", "Projelerimiz birbirinden bağımsızdır. Biri inek sütünde antibiyotik kalıntısını, diğeri tükürükte stresle ilişkili bir hormonu ölçmeye yönelik sensör yaklaşımlarını araştırıyor.": "Our projects are independent of each other. One explores a sensor approach for antibiotic residue in cow’s milk, the other for a stress-related hormone in saliva.", "İnek sütünde tetrasiklin kalıntısının tespitine yönelik sensör": "A sensor for detecting tetracycline residue in cow’s milk", "Tetrasiklin, veteriner hekimlikte yaygın kullanılan bir antibiyotiktir. Tedavi gören bir inek bekleme süresi dolmadan sağılırsa antibiyotik süte geçebilir. AB, sütte tetrasiklin için 100 µg/kg kalıntı limiti belirlemiştir; kalıntılar gıda güvenliği ve antibiyotik direnci açısından sorun oluşturur. Proje, TÜBİTAK 2209-A önerisi olarak hazırlanıyor.": "Tetracycline is an antibiotic widely used in veterinary medicine. If a treated cow is milked before the withdrawal period ends, the antibiotic can pass into the milk. The EU sets a maximum residue limit of 100 µg/kg for tetracycline in milk; residues are a concern for food safety and antibiotic resistance. The project is being prepared as a TÜBİTAK 2209-A proposal.", "Adım adım doğrulama: tampon, seyreltilmiş süt, tam süt.": "Step-by-step validation: buffer, diluted milk, whole milk.", "Yöntem doğrulanırsa taşınabilir bir okuyucu.": "A portable reader, once the method is validated.", "Süt; yağ, protein ve başka bileşenler içerir. Akımdaki değişimin tetrasiklinden kaynaklandığının ayrıca gösterilmesi gerekir.": "Milk contains fat, protein and other components. It must be shown separately that the change in current comes from tetracycline.", "Seçicilik yeterli olmazsa, B planı olarak tetrasikline özgü bir aptamer katmanı eklenecek.": "If selectivity is not sufficient, a tetracycline-specific aptamer layer will be added as plan B.", "Bu çalışma araştırma aşamasındadır. Sütün tüketime uygunluğuna karar veren bir test değildir.": "This work is at the research stage. It is not a test that decides whether milk is fit for consumption.", "Çalışmalarımıza gerçek bir ihtiyacı tanımlayarak başlıyor; sensör geliştirme, deneysel değerlendirme ve kullanıcı deneyimini birlikte ele alıyoruz. İnek sütünde tetrasiklin kalıntısı ve tükürükte kortizol ölçümüne yönelik iki ayrı projemiz bu yaklaşımın güncel örnekleri.": "We begin by defining a real need, considering sensor development, experimental evaluation and user experience together. Our two separate projects, on tetracycline residue in cow’s milk and on cortisol in saliva, are current examples of this approach.", "İki projenin de sonuçları, ancak neyin, hangi sınırla ve hangi koşullarda ölçüldüğü bilindiğinde doğru yorumlanabilir.": "The results of both projects can only be read correctly when it is known what was measured, against which limit and under which conditions.", "Kalıntı limiti": "Residue limit", "AB, sütte tetrasiklin için 100 µg/kg en yüksek kalıntı limiti belirler. Yararlı bir yöntemin bu düzeyin çevresindeki derişimleri ayırt edebilmesi gerekir.": "The EU sets a maximum residue limit of 100 µg/kg for tetracycline in milk. A useful method has to distinguish concentrations around that level.", "Neden önemli": "Why it matters", "Bekleme süresi dolmadan sağılan süt antibiyotik kalıntısı taşıyabilir. Kalıntılar gıda güvenliği ve antibiyotik direnci açısından sorun oluşturur.": "Milk taken before the withdrawal period ends can carry antibiotic residue. Residues are a concern for food safety and antibiotic resistance.", "Süt matrisi": "Milk matrix", "Süt; yağ, protein ve başka bileşenler içerir. Bunlar da filmin akımını değiştirebilir, bu yüzden tetrasiklinin etkisinin ayrıca gösterilmesi gerekir.": "Milk contains fat, protein and other components. These can also change the film’s current, so the effect of tetracycline has to be shown separately.", "Kortizol ve zaman": "Cortisol and timing", "Tükürük projesinde kortizol düzeyi gün içinde değişir. Tek bir değer, bir kişinin stres durumunu kesin olarak belirlemez.": "In the saliva project, cortisol levels change over the day. A single value does not definitively determine a person’s stress state.", "Bir sensör fikrinden güvenilir bir ölçüme giden yol, sırayla doğrulanan adımlardan oluşur. Süt projesinin çalışma planı bu adımları izliyor.": "The path from a sensor idea to a reliable measurement is a series of steps, each validated in turn. The milk project’s work plan follows these steps.", "İnce film": "Thin film", "Tampon": "Buffer", "Bilinen tetrasiklin derişimleriyle tamponda I–V ölçümü ve akım değişiminin incelenmesi.": "I–V measurements in buffer with known tetracycline concentrations, studying the change in current.", "Seyreltilmiş süt": "Diluted milk", "Ölçümün seyreltilmiş sütte tekrarlanması ve süt bileşenlerinin etkisinin ayrılması.": "Repeating the measurement in diluted milk and separating out the effect of milk components.", "Tam süt": "Whole milk", "Seyreltmeden, tam sütte ölçüm ve tekrarlanabilirlik.": "Measurement and repeatability in whole milk, without dilution.", "Taşınabilir okuyucu": "Portable reader", "Yöntem doğrulanırsa taşınabilir bir okuyucu. Seçicilik yetmezse aptamer katmanı B planı.": "A portable reader once the method is validated. If selectivity falls short, an aptamer layer is plan B.", "İnek sütünde antibiyotik kalıntısı ve tükürükte kortizol için sensörler geliştiriyoruz.": "We develop sensors for antibiotic residue in cow’s milk and for cortisol in saliva.", "İki uçlu <strong>I–V ölçümünde</strong> gerilim −3 V ile +3 V arasında taranır ve akım okunur. Süt damlatılmadan önceki ve sonraki eğriler karşılaştırılarak akımdaki değişim incelenir.": "In a two-terminal <strong>I–V measurement</strong> the voltage is swept from −3 V to +3 V and the current is read. The curves before and after the milk is dropped are compared to study the change in current.", "Lamın tamamını kaplayan grafen/P3HT ince film ve iki gümüş kontakla, −3 V ile +3 V arasında iki uçlu I–V ölçümü. Süt filme damlatılır ve akımdaki değişim incelenir.": "A graphene/P3HT thin film covering the whole glass slide, two silver contacts and a two-terminal I–V sweep from −3 V to +3 V. Milk is dropped onto the film and the change in current is studied.", "Cam lamın tamamının grafen/P3HT ince filmle kaplanması ve iki gümüş kontağın yerleştirilmesi.": "Coating the whole glass slide with the graphene/P3HT thin film and adding the two silver contacts.", "|AKIM|": "|CURRENT|", "- - SÜT ÖNCESİ": "- - BEFORE MILK"};
   const norm = h => h.replace(/<br\s*\/?>/g, '<br>').replace(/\s+/g, ' ').trim();
-  const sel = 'nav a, .beat .mono, .beat h1, .beat h2, .beat p, .chart text, .sample .mono, .sample b, .sample small, .sample a, .rail span, .section-head .mono, h2, h3, h4, .section-head p, .project-body > p, li, dt, dd, .steps b, .steps p, figcaption, .status, .device-tag, .replay, .about-copy .mono, .about-copy p, .disclaimer, .ft-tr, .pub-type, .pub-title, .pub-venue';
+  const sel = '.meta .mono, nav a, .flow-hero .mono, .flow-hero h1, .flow-hero p, .flow-hero .scroll-cue, .beat .mono, .beat h1, .beat h2, .beat p, .chart text, .sample .mono, .sample b, .sample small, .sample a, .rail span, .section-head .mono, h2, h3, h4, .section-head p, .project-body > p, li, dt, dd, .steps b, .steps p, figcaption, .status, .device-tag, .replay, .about-copy .mono, .about-copy p, .disclaimer, .ft-tr, .pub-type, .pub-title, .pub-venue';
   const items = [];
   document.querySelectorAll(sel).forEach(el => { const k = norm(el.innerHTML); if (EN[k]) items.push({ el, tr: el.innerHTML, en: EN[k] }); });
   const ARIA = [
     ['#story', 'Bir damladan ölçüme: sensörün çalışma fikri', 'From a drop to a measurement: how the sensor works'],
-    ['#chart', 'Temsili kalibrasyon eğrisi', 'Representative calibration curve'],
+    ['#chart', 'Temsili I–V eğrileri', 'Representative I–V curves'],
     ['.hero-mark', 'Bakırçay Lab logosu', 'Bakırçay Lab logo'],
     ['.ft-col[aria-label]', 'Alt menü', 'Footer menu'],
     ['.ft-top', 'Başa dön', 'Back to top'],
@@ -797,10 +876,10 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     ['.rail', 'Hikâye sahneleri', 'Story scenes'],
     ['#about-video', 'Bakırçay Lab logo animasyonu', 'Bakırçay Lab logo animation'],
     ['#tukuruk .device-video', 'Stres ölçümü için taşınabilir okuyucu konsepti', 'Concept of a portable reader for stress measurement'],
-    ['#anne-sutu .device-video', 'Süt örneği için pipet biçimli cihaz konsepti', 'Concept of a pipette-shaped device for milk samples']
+    ['#inek-sutu .device-video', 'Süt örneği için pipet biçimli cihaz konsepti', 'Concept of a pipette-shaped device for milk samples']
   ];
   const chartTitle = document.getElementById('chart-t'), chartTr = chartTitle.textContent;
-  const chartEn = 'Representative calibration curve: as cortisol concentration rises, the signal change increases and approaches saturation.';
+  const chartEn = 'Representative I–V curves: absolute current between −3 V and +3 V, before and after milk is dropped. Schematic, not measured data.';
   const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const themeBtn = document.getElementById('theme-btn');
   const setLang = (lang, save) => {
@@ -809,7 +888,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     items.forEach(i => { i.el.innerHTML = en ? i.en : i.tr; });
     ARIA.forEach(([q, tr, e]) => document.querySelectorAll(q).forEach(el => el.setAttribute('aria-label', en ? e : tr)));
     chartTitle.textContent = en ? chartEn : chartTr;
-    document.title = en ? 'Bakırçay Lab | Biosensor Research Projects' : 'Bakırçay Lab | Biyosensör Araştırma Projeleri';
+    document.title = en ? 'Bakırçay Lab | Sensor Research Projects' : 'Bakırçay Lab | Sensör Araştırma Projeleri';
     document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === (en ? 'en' : 'tr'))));
     setThemeLabel();
     if (save) store('bakircay-language', en ? 'en' : 'tr');
@@ -1110,51 +1189,47 @@ const macroFog = new THREE.FogExp2(0xd5e9ec, .012);
 /* ---------- Macro: sensor chip (screen-printed electrode style) ---------- */
 const chip = new THREE.Group(); macro.add(chip);
 const T = .14, SURF = T + .03, EZ = -1.6;
-const subGeo = new THREE.ExtrudeGeometry(roundedRect(3.6, 7.2, .3), { depth: T, bevelEnabled: true, bevelThickness: .03, bevelSize: .03, bevelSegments: 3, curveSegments: 14 });
+const subGeo = new THREE.ExtrudeGeometry(roundedRect(3.4, 7.2, .07), { depth: T, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3, curveSegments: 8 });
 subGeo.rotateX(-Math.PI / 2);
 const LITE = mobile;  // phones: transparency instead of refraction
 const tr = (v) => LITE ? { transparent: true, opacity: v, depthWrite: false } : { transmission: 1 };
 const glassSub = new THREE.MeshPhysicalMaterial({ color: 0xf4fbfa, roughness: .03, ...tr(.82), thickness: .2, ior: 1.52,
   attenuationColor: new THREE.Color(0x8fd6cc), attenuationDistance: .7, clearcoat: 1, clearcoatRoughness: .02, specularIntensity: 1, envMapIntensity: 1.5 });
 chip.add(new THREE.Mesh(subGeo, glassSub));
-const we = new THREE.Mesh(new THREE.CylinderGeometry(.85, .85, .02, 120), gold); we.receiveShadow = true; we.position.set(0, SURF + .01, EZ); chip.add(we);
-const ringGeo = (r0, r1, a0, len) => { const g = new THREE.RingGeometry(r0, r1, 120, 1, a0, len); g.rotateX(-Math.PI / 2); return g; };
-const platinum = new THREE.MeshPhysicalMaterial({ color: 0xe9ecee, metalness: 1, roughness: .38, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: .4, envMapIntensity: 1.2, side: THREE.DoubleSide });
-const ce = new THREE.Mesh(ringGeo(1.0, 1.3, 1.58 * Math.PI, 1.55 * Math.PI), platinum); ce.position.set(0, SURF + .006, EZ); chip.add(ce);
-const outer = new THREE.Mesh(ringGeo(1.36, 1.44, 1.62 * Math.PI, 1.42 * Math.PI), gold); outer.position.set(0, SURF + .007, EZ); chip.add(outer);
-const re = new THREE.Mesh(ringGeo(1.0, 1.3, 1.17 * Math.PI, .25 * Math.PI), silver); re.position.set(0, SURF + .006, EZ); chip.add(re);
-const ang = a => [Math.cos(a) * 1.185, EZ - Math.sin(a) * 1.185];
-const traces = [
-  { pts: [[0, EZ + .84], [0, 2.3]], m: gold },
-  { pts: [ang(1.58 * Math.PI), [ang(1.58 * Math.PI)[0], -.1], [.75, .6], [.75, 2.3]], m: goldMatte },
-  { pts: [ang(1.42 * Math.PI), [ang(1.42 * Math.PI)[0], -.1], [-.75, .6], [-.75, 2.3]], m: silver }
-];
-traces.forEach(t => chip.add(new THREE.Mesh(ribbon(t.pts, .13, SURF + .005), t.m)));
-[[-.75, silver], [0, gold], [.75, goldMatte]].forEach(([x, m]) => {
-  const g = new THREE.ShapeGeometry(roundedRect(.48, .95, .06)); g.rotateX(-Math.PI / 2);
-  const pad = new THREE.Mesh(g, m); pad.position.set(x, SURF + .006, 2.75); chip.add(pad);
-});
-const labelTex = (() => {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d');
-  g.fillStyle = 'rgba(215,226,245,.55)'; g.font = '600 64px "Plus Jakarta Sans", sans-serif'; g.textAlign = 'center';
-  g.letterSpacing = '18px'; g.fillText('BAKIRÇAY LAB', 512, 120);
-  g.font = '500 34px "IBM Plex Mono", monospace'; g.fillStyle = 'rgba(215,226,245,.35)'; g.fillText('WE · CE · RE', 512, 190);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+// Drop-cast graphene/P3HT film: dark, slightly violet, uneven edge with a coffee ring where the solvent dried last.
+const filmTex = (() => {
+  // Drop-cast film over the whole slide: dark, slightly violet, thickness varies gently, darker rim where it dried last.
+  const c = document.createElement('canvas'); c.width = 384; c.height = 800; const g = c.getContext('2d');
+  g.fillStyle = '#19141d'; g.fillRect(0, 0, 384, 800);
+  for (let i = 0; i < 26; i++) { const x = rnd() * 384, y = rnd() * 800, r = 60 + rnd() * 160, gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, `rgba(${70 + rnd() * 30 | 0},${48 + rnd() * 20 | 0},${80 + rnd() * 30 | 0},${.12 + rnd() * .16})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, 384, 800); }
+  g.strokeStyle = 'rgba(6,4,8,.75)'; g.lineWidth = 10; g.strokeRect(5, 5, 374, 790);
+  for (let i = 0; i < 2200; i++) { const x = rnd() * 384, y = rnd() * 800, r = .6 + rnd() * 1.8; g.fillStyle = `rgba(${150 + rnd() * 60 | 0},${140 + rnd() * 50 | 0},${170 + rnd() * 50 | 0},${rnd() * .06})`; g.fillRect(x, y, r, r); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 })();
-const label = new THREE.Mesh(new THREE.PlaneGeometry(2.6, .65), new THREE.MeshBasicMaterial({ map: labelTex, transparent: true, depthWrite: false }));
-label.rotation.x = -Math.PI / 2; label.position.set(0, SURF + .008, 1.05);
-// Insulation window: a translucent dielectric layer over the traces between electrode and pads
-const insul = new THREE.Mesh((() => {
-  // Dielectric print: covers the tracks, leaves a round window over the three electrodes and the contact pads bare.
-  const sh = new THREE.Shape(), x0 = -1.62, x1 = 1.62, y0 = -2.15, y1 = 3.42, r = .16;
-  sh.moveTo(x0 + r, y0); sh.lineTo(x1 - r, y0); sh.quadraticCurveTo(x1, y0, x1, y0 + r); sh.lineTo(x1, y1 - r); sh.quadraticCurveTo(x1, y1, x1 - r, y1);
-  sh.lineTo(x0 + r, y1); sh.quadraticCurveTo(x0, y1, x0, y1 - r); sh.lineTo(x0, y0 + r); sh.quadraticCurveTo(x0, y0, x0 + r, y0);
-  const hole = new THREE.Path(); hole.absarc(0, -EZ, 1.46, 0, Math.PI * 2, true); sh.holes.push(hole);
-  const g = new THREE.ExtrudeGeometry(sh, { depth: .018, bevelEnabled: true, bevelThickness: .006, bevelSize: .012, bevelSegments: 2, curveSegments: 96 });
-  g.rotateX(-Math.PI / 2); return g; })(),
-  new THREE.MeshPhysicalMaterial({ color: 0x24363a, roughness: .3, transparent: true, opacity: .5, clearcoat: .8, clearcoatRoughness: .2, envMapIntensity: .8, depthWrite: false }));
-insul.position.set(0, SURF, 0);
-label.position.y = SURF + .032;
+const filmMat = new THREE.MeshPhysicalMaterial({ map: filmTex, roughness: .34, metalness: .3, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: .25,
+  clearcoat: .55, clearcoatRoughness: .25, envMapIntensity: 1.1, ...(LITE ? {} : { iridescence: .45, iridescenceIOR: 1.7, iridescenceThicknessRange: [180, 520] }) });
+const filmGeo = (() => {
+  const g = new THREE.ShapeGeometry(roundedRect(3.38, 7.18, .065), 6), p = g.attributes.position, uv = g.attributes.uv;
+  for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + 1.69) / 3.38, (p.getY(i) + 3.59) / 7.18);
+  g.rotateX(-Math.PI / 2); return g;
+})();
+const film = new THREE.Mesh(filmGeo, filmMat); film.position.set(0, SURF + .004, 0); chip.add(film);
+// Two silver-paste contacts over the film edges (two-terminal I–V), each with a measurement lead.
+const pasteMat = new THREE.MeshPhysicalMaterial({ color: 0xaeb4bc, metalness: 1, roughness: .38, roughnessMap: inkTex, bumpMap: inkTex, bumpScale: 1.6, envMapIntensity: 1.2 });
+const padGeo = new THREE.ExtrudeGeometry(roundedRect(.5, 2.4, .22), { depth: .03, bevelEnabled: true, bevelThickness: .02, bevelSize: .05, bevelSegments: 4, curveSegments: 16 });
+padGeo.rotateX(-Math.PI / 2);
+const leadMat = [new THREE.MeshPhysicalMaterial({ color: 0xb3262a, roughness: .35, clearcoat: .6 }), new THREE.MeshPhysicalMaterial({ color: 0x1c2326, roughness: .35, clearcoat: .6 })];
+const copper = new THREE.MeshPhysicalMaterial({ color: 0xd08a5a, metalness: 1, roughness: .3 });
+[-1, 1].forEach((sg, k) => {
+  const pad = new THREE.Mesh(padGeo, pasteMat); pad.position.set(sg * 1.2, SURF + .006, EZ); chip.add(pad);
+  // Bare copper end pressed into the paste, insulated lead leaving over the slide edge.
+  const pts = [V(sg * 1.3, SURF + .06, EZ - .55), V(sg * 1.55, SURF + .065, EZ - .6), V(sg * 1.85, SURF + .03, EZ - .7), V(sg * 2.6, SURF - .12, EZ - .95), V(sg * 5, SURF - .25, EZ - 1.6)];
+  const curve = new THREE.CatmullRomCurve3(pts);
+  chip.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 64, .045, 14), leadMat[k]));
+  const bare = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(sg * 1.2, SURF + .045, EZ + .5), V(sg * 1.2, SURF + .05, EZ), V(sg * 1.25, SURF + .058, EZ - .45), pts[0]]), 24, .02, 8), copper); chip.add(bare);
+});
+
 chip.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = o.material !== glassSub; } });
 
 /* ---------- Droplet ---------- */
@@ -1164,7 +1239,7 @@ const dropMat = new THREE.MeshPhysicalMaterial({
 });
 const R = .62, RD = .38;
 const milkMat = new THREE.MeshPhysicalMaterial({ color: 0xf6f2ea, emissive: 0x0d0c0a, roughness: .025, transmission: LITE ? 0 : .28, thickness: 1, ior: 1.345, attenuationColor: new THREE.Color(0xeee3d0), attenuationDistance: .12, clearcoat: 1, clearcoatRoughness: .02, sheen: .35, sheenRoughness: .5, sheenColor: new THREE.Color(0xdfe9ff), specularIntensity: 1, envMapIntensity: 1.4 });
-// The opening sample is a drop of breast milk. Its mesh is reshaped every frame: a hanging drop that
+// The opening sample is a drop of cow's milk. Its mesh is reshaped every frame: a hanging drop that
 // elongates as it falls, then a sessile drop (spherical cap) that spreads, overshoots and settles on the electrode.
 const dropGeo = new THREE.SphereGeometry(1, mobile ? 56 : 88, mobile ? 42 : 66);
 const basePos = dropGeo.attributes.position.array.slice();
@@ -1249,109 +1324,135 @@ const grainTex = (() => {
     const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgb(${v},${v},${v})`); gr.addColorStop(1, 'rgba(128,128,128,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(5, 5); return t;
 })();
-const surfMat = new THREE.MeshPhysicalMaterial({ color: 0xd9ad5f, metalness: 1, roughness: .34, bumpMap: grainTex, bumpScale: 2.2, roughnessMap: grainTex, envMapIntensity: .95, emissive: 0x000000 });
+// P3HT matrix: a dense mat of short, curved nanofibrils (reddish violet on near-black), used as colour and relief.
+const fibrilTex = (() => {
+  const N = 1024, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
+  g.fillStyle = '#16111a'; g.fillRect(0, 0, N, N); g.lineCap = 'round';
+  const stroke = (k, a, w, col) => { for (let i = 0; i < k; i++) {
+    let x = rnd() * N, y = rnd() * N, ang = rnd() * 6.28; const L = 14 + rnd() * 34;
+    g.strokeStyle = col(); g.lineWidth = w * (.6 + rnd() * .8); g.globalAlpha = a * (.5 + rnd() * .5); g.beginPath(); g.moveTo(x, y);
+    for (let t = 0; t < L; t += 4) { ang += (rnd() - .5) * .5; x += Math.cos(ang) * 4; y += Math.sin(ang) * 4; g.lineTo(x, y); }
+    g.stroke(); } };
+  stroke(5200, .55, 3.2, () => `rgb(${52 + rnd() * 26 | 0},${22 + rnd() * 12 | 0},${46 + rnd() * 22 | 0})`);
+  stroke(2600, .5, 2.2, () => `rgb(${96 + rnd() * 40 | 0},${40 + rnd() * 20 | 0},${82 + rnd() * 30 | 0})`);
+  stroke(900, .35, 1.2, () => `rgb(${170 + rnd() * 40 | 0},${110 + rnd() * 30 | 0},${160 + rnd() * 40 | 0})`);
+  g.globalAlpha = 1;
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 3); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+})();
+const surfMat = new THREE.MeshPhysicalMaterial({ map: fibrilTex, bumpMap: fibrilTex, bumpScale: 3, metalness: .15, roughness: .5, roughnessMap: grainTex, envMapIntensity: .85, emissive: 0x000000,
+  clearcoat: .35, clearcoatRoughness: .4, sheen: .5, sheenRoughness: .45, sheenColor: new THREE.Color(0x8a4f7c),
+  ...(mobile ? {} : { iridescence: .25, iridescenceIOR: 1.6, iridescenceThicknessRange: [200, 480] }) });
 const surface = new THREE.Mesh(new THREE.PlaneGeometry(60, 60, 1, 1), surfMat); surface.rotation.x = -Math.PI / 2; surface.receiveShadow = true; micro.add(surface);
-
-// Linker monolayer
-const NL = mobile ? 320 : 700;
-const linkers = new THREE.InstancedMesh(new THREE.CylinderGeometry(.028, .028, .5, 12), new THREE.MeshStandardMaterial({ color: 0x9fb0cc, roughness: .55 }), NL);
 const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), e4 = new THREE.Euler(), s4 = new THREE.Vector3(1, 1, 1);
-for (let i = 0; i < NL; i++) {
-  e4.set((rnd() - .5) * .7, rnd() * 6.28, (rnd() - .5) * .7); q4.setFromEuler(e4);
-  m4.compose(V((rnd() - .5) * 22, .24, (rnd() - .5) * 22), q4, s4); linkers.setMatrixAt(i, m4);
-}
-micro.add(linkers);
-
-// Recognition molecules (Y-shaped, antibody-like schematic)
-const ARM = .62 * Math.PI / 3;
-const yGeo = (() => {
-  // Globular domains (two chains side by side), slightly lumpy like a protein surface.
-  const parts = [];
-  const bead = (x, y, z, r) => {
-    const g = new THREE.SphereGeometry(r, 20, 14), p = g.attributes.position;
-    for (let i = 0; i < p.count; i++) { const vx = p.getX(i) + x, vy = p.getY(i) + y, vz = p.getZ(i) + z;
-      const n = 1 + .13 * Math.sin(vx * 37.1 + vz * 11.3) * Math.sin(vy * 29.7 + vx * 7.1) * Math.sin(vz * 33.3 + vy * 5.7);
-      p.setXYZ(i, x + (vx - x) * n, y + (vy - y) * n, z + (vz - z) * n); }
-    g.computeVertexNormals(); parts.push(g);
-  };
-  [[.5, .13], [.7, .14], [.9, .13], [1.08, .12]].forEach(([y, r], i) => { bead(-.065, y, (i % 2 ? .03 : -.03), r); bead(.065, y + .04, (i % 2 ? -.03 : .03), r * .95); });
-  for (const sgn of [-1, 1]) {
-    const dx = sgn * Math.sin(ARM), dy = Math.cos(ARM), px = -dy, py = dx;
-    [[.14, .13], [.33, .135], [.52, .125], [.68, .115]].forEach(([d, r], i) => {
-      const off = (i % 2 ? .055 : -.055);
-      bead(dx * d + px * off, 1.22 + dy * d + py * off, (i % 2 ? .04 : -.04), r);
-    });
+// Graphene: few-layer sheets with ragged edges, gentle wrinkles and a faint honeycomb; four silhouettes in a 2×2 atlas.
+const flakeTex = (() => {
+  const N = 1024, h = N / 2, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
+  g.clearRect(0, 0, N, N);
+  for (let cell = 0; cell < 4; cell++) {
+    const ox = (cell % 2) * h, oy = (cell >> 1) * h, cx = ox + h / 2, cy = oy + h / 2, pts = [];
+    const n = 9 + (rnd() * 5 | 0); for (let i = 0; i < n; i++) { const a = i / n * 6.283 + (rnd() - .5) * .4, r = h * (.3 + rnd() * .17); pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r * (.7 + rnd() * .3)]); }
+    const path = () => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.closePath(); };
+    g.save(); path(); g.clip();
+    g.fillStyle = '#30353b'; g.fillRect(ox, oy, h, h);
+    // a second, smaller layer on top: few-layer stacking reads as a slightly brighter patch
+    g.fillStyle = 'rgba(20,22,26,.45)'; g.beginPath(); g.ellipse(cx + (rnd() - .5) * 60, cy + (rnd() - .5) * 60, h * .17, h * .12, rnd() * 3, 0, 6.283); g.fill();
+    g.strokeStyle = 'rgba(190,200,212,.13)'; g.lineWidth = 1;
+    const a = 6, hh = a * Math.sqrt(3);
+    for (let row = -1; row < h / hh * 2 + 2; row++) for (let col = -1; col < h / (3 * a) + 2; col++) {
+      const x0 = ox + col * 3 * a + (row % 2 ? 1.5 * a : 0), y0 = oy + row * hh / 2;
+      g.beginPath(); for (let k = 0; k <= 6; k++) { const t = k * Math.PI / 3; k ? g.lineTo(x0 + a * Math.cos(t), y0 + a * Math.sin(t)) : g.moveTo(x0 + a, y0); } g.stroke();
+    }
+    g.restore();
+    path(); g.strokeStyle = 'rgba(170,180,192,.4)'; g.lineWidth = 3; g.stroke();   // bright folded edge
   }
-  bead(0, 1.2, 0, .1);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+})();
+const flakeMat = new THREE.MeshPhysicalMaterial({ map: flakeTex, alphaTest: .5, metalness: .75, roughness: .3, clearcoat: .4, clearcoatRoughness: .2, envMapIntensity: .75, side: THREE.DoubleSide });
+const NFL = mobile ? 40 : 90;
+for (let cell = 0; cell < 4; cell++) {
+  const g = new THREE.PlaneGeometry(2.4, 2.4, 22, 22), p = g.attributes.position, uv = g.attributes.uv, ph = rnd() * 6;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i);
+    p.setZ(i, .05 * Math.sin(x * 3.1 + ph) * Math.cos(y * 2.3 - ph) + .035 * Math.sin((x + y) * 6.5 + ph * 2) + .02 * (x * x + y * y));
+    uv.setXY(i, uv.getX(i) * .5 + (cell % 2) * .5, uv.getY(i) * .5 + (1 - (cell >> 1)) * .5);
+  }
+  g.rotateX(-Math.PI / 2); g.computeVertexNormals();
+  const k = NFL / 4 | 0, mesh = new THREE.InstancedMesh(g, flakeMat, k);
+  for (let i = 0; i < k; i++) {
+    const r = .7 + rnd() * 1.1;
+    e4.set((rnd() - .5) * .06, rnd() * 6.28, (rnd() - .5) * .06); q4.setFromEuler(e4);
+    m4.compose(V((rnd() - .5) * 26, .03 + rnd() * .1, (rnd() - .5) * 26), q4, V(r, 1, r * (.8 + rnd() * .4))); mesh.setMatrixAt(i, m4);
+  }
+  mesh.receiveShadow = true; mesh.castShadow = !mobile; micro.add(mesh);
+}
+// A few P3HT fibrils standing proud of the surface, draped over flake edges (thin, partly embedded).
+const chainGeo = (() => {
+  const parts = [], NCH = mobile ? 26 : 60;
+  for (let c = 0; c < NCH; c++) {
+    let x = (rnd() - .5) * 22, z = (rnd() - .5) * 22, a = rnd() * 6.28; const pts = [];
+    for (let i = 0; i < 8; i++) { pts.push(V(x, .05 + rnd() * .09, z)); a += (rnd() - .5) * .6; x += Math.cos(a) * .32; z += Math.sin(a) * .32; }
+    parts.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .03, 6));
+  }
   return mergeGeometries(parts);
 })();
-const GRID = mobile ? 6 : 7, SP = 1.95;
-const recs = [];
-for (let i = 0; i < GRID; i++) for (let j = 0; j < GRID; j++) {
-  recs.push({ x: (i - (GRID - 1) / 2) * SP + (rnd() - .5) * .5, z: (j - (GRID - 1) / 2) * SP + (rnd() - .5) * .5, yaw: rnd() * 6.28, tilt: (rnd() - .5) * .2 });
-}
-const recMesh = new THREE.InstancedMesh(yGeo, new THREE.MeshPhysicalMaterial({ color: 0xc8b4a6, roughness: .58, clearcoat: .2, clearcoatRoughness: .5, envMapIntensity: .75, sheen: .8, sheenRoughness: .5, sheenColor: new THREE.Color(0xf4e7de) }), recs.length);
-const sites = [];
-recs.forEach((r, i) => {
-  e4.set(r.tilt, r.yaw, r.tilt * .6); q4.setFromEuler(e4); m4.compose(V(r.x, 0, r.z), q4, s4); recMesh.setMatrixAt(i, m4);
-  r.q = q4.clone(); r.ph = rnd() * 6.28;
-  for (const sgn of [-1, 1]) {
-    const local = V(sgn * Math.sin(ARM) * .7, 1.22 + Math.cos(ARM) * .7, 0);
-    const outL = V(sgn * Math.sin(ARM), Math.cos(ARM), 0);
-    sites.push({ ri: i, local, outL, pos: local.clone().applyMatrix4(m4), dir: outL.clone().applyQuaternion(q4).normalize(), bound: 0 });
-  }
-});
-recMesh.castShadow = !mobile; micro.add(recMesh);
-const siteMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(.105, 24, 18), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .45, emissive: 0x05140f }), sites.length);
-const siteBase = new THREE.Color(0xb39b8c), siteOn = new THREE.Color(0x0fa4af), tmpC = new THREE.Color();
-sites.forEach((s, i) => { m4.compose(s.pos, new THREE.Quaternion(), s4); siteMesh.setMatrixAt(i, m4); siteMesh.setColorAt(i, siteBase); });
-micro.add(siteMesh);
-const halo = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 1.5, map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true, sizeAttenuation: true }));
-halo.geometry.setAttribute('position', new THREE.Float32BufferAttribute(sites.flatMap(s => [s.pos.x, s.pos.y, s.pos.z]), 3));
-halo.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(sites.length * 3), 3));
-halo.visible = false; micro.add(halo);
+const chains = new THREE.Mesh(chainGeo, new THREE.MeshPhysicalMaterial({ color: 0x5a2550, roughness: .45, clearcoat: .4, clearcoatRoughness: .3, sheen: .7, sheenColor: new THREE.Color(0xb36a9e), envMapIntensity: .8 }));
+chains.receiveShadow = true; micro.add(chains);
 
-// Cortisol (steroid skeleton schematic: tubes along fused rings + oxygen atoms)
-const cortGeo = (() => {
-  const rings = window.__steroidRings, parts = [], S = .2;
+// Tetracycline (schematic): four linearly fused six-membered rings with oxygen and nitrogen substituents.
+const tetraGeo = (() => {
+  const parts = [], S = .2, rings = [];
+  for (let k = 0; k < 4; k++) { const cx = (k - 1.5) * Math.sqrt(3), r = []; for (let i = 0; i < 6; i++) { const t = Math.PI / 6 + i * Math.PI / 3; r.push([cx + Math.cos(t), Math.sin(t)]); } rings.push(r); }
+  const paint = (g, col) => { const c = new THREE.Color(col), n = g.attributes.position.count, arr = new Float32Array(n * 3); for (let i = 0; i < n; i++) { arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(arr, 3)); g.deleteAttribute('uv'); return g; };
   const tube = (a, b, r, col) => {
     const A = V(a[0] * S, a[1] * S, 0), B = V(b[0] * S, b[1] * S, 0), L = A.distanceTo(B);
-    const g = new THREE.CylinderGeometry(r, r, L, 14); g.rotateZ(Math.PI / 2);
-    const ang = Math.atan2(B.y - A.y, B.x - A.x); g.rotateZ(ang); g.translate((A.x + B.x) / 2, (A.y + B.y) / 2, 0);
-    paint(g, col); parts.push(g);
+    const g = new THREE.CylinderGeometry(r, r, L, 12); g.rotateZ(Math.PI / 2); g.rotateZ(Math.atan2(B.y - A.y, B.x - A.x)); g.translate((A.x + B.x) / 2, (A.y + B.y) / 2, 0);
+    parts.push(paint(g, col));
   };
-  const atom = (p, r, col) => { const g = new THREE.SphereGeometry(r, 20, 14); g.translate(p[0] * S, p[1] * S, 0); paint(g, col); parts.push(g); };
-  const paint = (g, col) => { const c = new THREE.Color(col), n = g.attributes.position.count, arr = new Float32Array(n * 3); for (let i = 0; i < n; i++) { arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(arr, 3)); };
+  const atom = (p, r, col) => { const g = new THREE.SphereGeometry(r, 18, 12); g.translate(p[0] * S, p[1] * S, 0); parts.push(paint(g, col)); };
   const seen = new Set();
   rings.forEach(r => r.forEach((p, i) => {
-    const q = r[(i + 1) % r.length], k = [p, q].map(v => v.map(n => n.toFixed(2)).join(',')).sort().join('|');
-    if (!seen.has(k)) { seen.add(k); tube(p, q, .045, 0x0e8f99); }
-    atom(p, .068, 0x0fa4af);
+    const q = r[(i + 1) % 6], key = [p, q].map(v => v.map(n => n.toFixed(2)).join(',')).sort().join('|');
+    if (!seen.has(key)) { seen.add(key); tube(p, q, .045, 0xd8a531); }
+    atom(p, .066, 0xf2c14e);
   }));
-  // Oxygen substituents (keto on ring A, hydroxyls on rings C and D): placed outward from ring centres.
-  const out = (ring, pick, dist) => { const c = ring.reduce((s, p) => [s[0] + p[0] / ring.length, s[1] + p[1] / ring.length], [0, 0]); const p = ring[pick]; const d = [p[0] - c[0], p[1] - c[1]], L = Math.hypot(...d); return [p, [p[0] + d[0] / L * dist, p[1] + d[1] / L * dist]]; };
-  const A = rings[0], C = rings[2], D = rings[3];
-  const leftA = A.reduce((m, p, i) => p[0] < A[m][0] ? i : m, 0);
-  const topC = C.reduce((m, p, i) => p[1] > C[m][1] ? i : m, 0);
-  const farD = D.reduce((m, p, i) => p[0] > D[m][0] ? i : m, 0);
-  for (const [ring, pick] of [[A, leftA], [C, topC], [D, farD]]) { const [p, q] = out(ring, pick, 1); tube(p, q, .04, 0xafdde5); atom(q, .11, 0xd9574c); }
-  const g = mergeGeometries(parts); g.computeBoundingSphere(); return g;
+  const O = 0xd9574c, N = 0x4f7fd9;
+  const sub = (p, dir, col, len = .95) => { const q = [p[0] + dir[0] * len, p[1] + dir[1] * len]; tube(p, q, .036, 0xe6d3a0); atom(q, col === O ? .11 : .115, col); return q; };
+  // lower edge: oxygen on each ring (keto/hydroxyl), the hallmark of the tetracycline skeleton
+  rings.forEach(r => sub(r[4], [0, -1], O));
+  // ring A: carboxamide (C=O + N) on the far left, dimethylamino N on top
+  const am = sub(rings[0][3], [-.87, -.5], 0xe6d3a0, .9); sub(am, [-.87, .5], N, .8); sub(am, [0, -1], O, .8);
+  sub(rings[0][1], [0, 1], N);
+  // ring C: hydroxyl and methyl on top
+  sub(rings[2][1], [.5, .87], O); sub(rings[2][1], [-.5, .87], 0xe6d3a0, .8);
+  const g = mergeGeometries(parts); g.center(); g.computeBoundingSphere(); return g;
 })();
-const NC = mobile ? 22 : 40;
-const cortMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, emissive: 0x003135, emissiveIntensity: .4, roughness: .3, clearcoat: .6, clearcoatRoughness: .2, envMapIntensity: .9 });
-const cort = new THREE.InstancedMesh(cortGeo, cortMat, NC);
-const freeSites = sites.map((_, i) => i).sort(() => rnd() - .5);
+const NC = mobile ? 14 : 24;
+const cortMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, emissive: 0x2a1a00, emissiveIntensity: .5, roughness: .3, clearcoat: .6, clearcoatRoughness: .2, envMapIntensity: .9 });
+const cort = new THREE.InstancedMesh(tetraGeo, cortMat, NC);
 const cortData = [];
 for (let i = 0; i < NC; i++) {
-  const si = freeSites[i], s = sites[si];
+  // Each molecule settles flat on the film (π-stacking schematic) at its own spot near the centre of the shot.
+  const end = V((rnd() - .5) * 18, .26 + rnd() * .05, (rnd() - .5) * 14);
   const start = V((rnd() - .5) * 16, 5 + rnd() * 7, (rnd() - .5) * 16);
-  const end = s.pos.clone().addScaledVector(s.dir, .32);
   const ctrl = end.clone().add(V((rnd() - .5) * 2, 2.6 + rnd() * 1.5, (rnd() - .5) * 2));
-  const dock = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), s.dir).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)));
+  const dock = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, rnd() * 6.28, 0, 'YXZ'));
   const spin = new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * 6, rnd() * 6, rnd() * 6));
-  cortData.push({ si, start, end, ctrl, dock, spin, d: rnd() * .58, ph: rnd() * 6.28 });
+  cortData.push({ end, start, ctrl, dock, spin, d: rnd() * .58, ph: rnd() * 6.28, bound: 0 });
 }
 cort.castShadow = !mobile; micro.add(cort);
+// A soft glow under each molecule as it lands on the film
+const halo = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 1.4, map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true, sizeAttenuation: true }));
+halo.geometry.setAttribute('position', new THREE.Float32BufferAttribute(cortData.flatMap(d => [d.end.x, d.end.y - .1, d.end.z]), 3));
+halo.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(NC * 3), 3));
+micro.add(halo);
+// Charge carriers drifting through the film from one contact towards the other (the current in an I–V sweep).
+const NCAR = mobile ? 260 : 620;
+const carData = new Float32Array(NCAR * 4);
+for (let i = 0; i < NCAR; i++) { carData[i * 4] = (rnd() - .5) * 28; carData[i * 4 + 1] = .1 + rnd() * .12; carData[i * 4 + 2] = (rnd() - .5) * 22; carData[i * 4 + 3] = .7 + rnd() * .6; }
+const carriers = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: .32, map: glowTex, color: 0x5fe3ec, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+carriers.geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(NCAR * 3), 3));
+micro.add(carriers);
+let carX = 0;
 // Milk components that should not bind: fat globules (large, smooth) and casein micelles (small, knobbly).
 const brown = (t, ph, out) => out.set(
   Math.sin(t * .71 + ph) * .6 + Math.sin(t * 1.93 + ph * 2.1) * .25 + Math.sin(t * 4.1 + ph * 3.7) * .08,
@@ -1368,9 +1469,7 @@ for (let i = 0; i < NFAT; i++) { const r = .32 + rnd() * .38; fatData.push({ p: 
 for (let i = 0; i < NCAS; i++) casData.push({ p: V((rnd() - .5) * 18, 2.6 + rnd() * 7, (rnd() - .5) * 18), s: .7 + rnd() * .6, ph: rnd() * 6.28, q: new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * 6, rnd() * 6, rnd() * 6)) });
 fat.castShadow = !mobile; casein.castShadow = !mobile;
 micro.add(fat, casein);
-// Signal columns rising from bound sites
-const cols = new THREE.InstancedMesh(new THREE.CylinderGeometry(.035, .035, 1, 14, 1, true), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .55, depthWrite: false }), NC);
-micro.add(cols);
+
 
 /* ---------- Lab room: what a macro lens sees behind the sensor, softened by depth of field ---------- */
 const labRoom = new THREE.Group(); scene.add(labRoom);
@@ -1429,7 +1528,7 @@ for (let r = 0; r < 2; r++) for (let i = 0; i < 7; i++) {
   const cap = new THREE.Mesh(new THREE.CylinderGeometry(.155, .155, .2, 48), capMat); cap.position.y = 1.0; tg.add(cap);
 }
 
-/* ---------- Duo: saliva and breast-milk droplets ---------- */
+/* ---------- Duo: saliva (cortisol project) and cow's milk (tetracycline project) ---------- */
 const duo = new THREE.Group(); scene.add(duo);
 const duoBenchMat = new THREE.MeshPhysicalMaterial({ color: 0xe6f0f1, roughness: .32, clearcoat: .9, clearcoatRoughness: .18, envMapIntensity: .45 });
 const duoBench = new THREE.Mesh(bench.geometry, duoBenchMat); duoBench.rotation.x = -Math.PI / 2; duoBench.position.y = -.035; duoBench.receiveShadow = true; duo.add(duoBench);
@@ -1465,10 +1564,10 @@ const macroCam = keys([
 ]);
 const microCam = keys([
   [.345, V(0, 17, 11),    V(0, 0, 0),   42],
-  [.43,  V(5.2, 5.6, 9.6), V(0, 1, 0),  38],
-  [.6,   V(-4.4, 3.6, 8.2), V(0, 1.1, 0), 38],
-  [.665, V(-.6, 2.5, 5.4), V(0, 1.3, 0), 40],
-  [.8,   V(0, 9.5, 13.5), V(0, 1.2, 0), 40]
+  [.43,  V(4.8, 4.6, 8.8), V(0, .5, 0),  38],
+  [.6,   V(-4, 3, 7.4), V(0, .55, 0), 38],
+  [.665, V(-.6, 2.1, 5), V(0, .45, 0), 40],
+  [.8,   V(0, 9.5, 13.5), V(0, .8, 0), 40]
 ]);
 const duoCam = keys([
   [.8,  V(0, 2.4, 9.5), V(0, 1.15, 0), 34],
@@ -1572,7 +1671,7 @@ const setScene = (a, b, c) => {
 try {
   for (const st of [[0, 1, 0], [0, 0, 1], [1, 0, 0]]) { setScene(...st.map(Boolean)); renderer.compile(scene, camera); }
 } catch (e) {}
-window.__glFrame = (p, t) => {
+window.__glFrame = (p, t, dtF = .016) => {
   // Adaptive resolution: drop pixel ratio when frames run long, recover when there is headroom.
   const ft = lastT ? t - lastT : 1 / 60; lastT = t; frameN++;
   if (ft > 1 / 30) { slow++; fast = 0; } else if (ft < 1 / 55) { fast++; slow = 0; }
@@ -1627,43 +1726,33 @@ window.__glFrame = (p, t) => {
     cam = microCam(p);
     setShadow('micro');
     const q = seg(p, .42, .62), sig = seg(p, .62, .78);
-    // Recognition molecules flex slightly; binding sites follow them.
-    recs.forEach((r, i) => {
-      tmpQ.setFromEuler(tmpE.set(Math.sin(t * .7 + r.ph) * .05 * idle, 0, Math.cos(t * .6 + r.ph) * .05 * idle));
-      tmpQ.premultiply(r.q); tmpM.compose(tmpP.set(r.x, 0, r.z), tmpQ, s4); recMesh.setMatrixAt(i, tmpM); r.m = r.m || new THREE.Matrix4(); r.m.copy(tmpM); r.qq = (r.qq || new THREE.Quaternion()).copy(tmpQ);
-    });
-    recMesh.instanceMatrix.needsUpdate = true;
-    const hp = halo.geometry.attributes.position;
-    sites.forEach((s, i) => { const r = recs[s.ri]; s.pos.copy(s.local).applyMatrix4(r.m); s.dir.copy(s.outL).applyQuaternion(r.qq).normalize(); hp.setXYZ(i, s.pos.x, s.pos.y, s.pos.z); s.bound = 0; });
-    hp.needsUpdate = true;
+    let nb = 0;
+    const hc = halo.geometry.attributes.color;
     cortData.forEach((d, i) => {
       const k = clamp((q - d.d) / .36), e = ease(k);
-      d.end.copy(sites[d.si].pos).addScaledVector(sites[d.si].dir, .32);
       if (k <= 0) tmpV.copy(d.start); else bezier(d.start, d.ctrl, d.end, e, tmpV);
-      // Brownian jitter that fades out as the molecule docks
+      // Brownian jitter that fades out as the molecule settles on the film
       if (idle && k < 1) tmpV.addScaledVector(brown(t * 1.3, d.ph, tmpS), .32 * (1 - e));
       tmpQ.copy(d.spin); if (idle && k < 1) tmpQ.multiply(tmpQ2.setFromAxisAngle(UP, t * .3 + d.ph));
       tmpQ.slerp(d.dock, e);
       tmpM.compose(tmpV, tmpQ, s4); cort.setMatrixAt(i, tmpM);
-      if (k >= 1) sites[d.si].bound = 1;
-      // Signal columns
-      const h = sig * (2.5 + Math.sin(d.ph) * 1.2) * (k >= 1 ? 1 : 0);
-      tmpM.compose(tmpP.set(d.end.x, d.end.y + h / 2, d.end.z), tmpQ2.identity(), tmpS2.set(1, Math.max(.0001, h), 1)); cols.setMatrixAt(i, tmpM);
-      const pulse = .55 + .45 * Math.sin(t * 3 + d.ph * 2) * idle;
-      cols.setColorAt(i, tmpC.setRGB(.06, .64, .69).lerp(WHITE, .35 * (1 - pulse)));
+      const on = k >= 1 ? 1 : 0; if (on) nb++;
+      if (on && d.tb === undefined) d.tb = t; if (!on) d.tb = undefined;
+      const flash = d.tb === undefined ? 0 : Math.exp(-(t - d.tb) * 2.2);
+      d.glow = lerp(d.glow || 0, on, .2);
+      const g = d.glow * (.25 + .35 * sig) * (1 + .25 * Math.sin(t * 2.4 + i) * idle * sig) + flash * 1.4;
+      hc.setXYZ(i, .95 * g, .72 * g, .25 * g);
     });
-    cort.instanceMatrix.needsUpdate = true; cols.instanceMatrix.needsUpdate = true; if (cols.instanceColor) cols.instanceColor.needsUpdate = true;
-    const hc = halo.geometry.attributes.color;
-    sites.forEach((s, i) => {
-      if (s.bound && s.tb === undefined) s.tb = t; if (!s.bound) s.tb = undefined;
-      const flash = s.tb === undefined ? 0 : Math.exp(-(t - s.tb) * 2.2);
-      s.glow = lerp(s.glow || 0, s.bound, .2);
-      siteMesh.setColorAt(i, tmpC.copy(siteBase).lerp(siteOn, s.glow));
-      tmpM.compose(s.pos, tmpQ.identity(), tmpS.setScalar(1 + flash * .7)); siteMesh.setMatrixAt(i, tmpM);
-      const g = s.glow * (.5 + .45 * sig) * (1 + .25 * Math.sin(t * 2.4 + i) * idle * sig) + flash * 1.6;
-      hc.setXYZ(i, .3 * g, .8 * g, 1 * g);
-    });
-    siteMesh.instanceColor.needsUpdate = true; siteMesh.instanceMatrix.needsUpdate = true; hc.needsUpdate = true;
+    cort.instanceMatrix.needsUpdate = true; hc.needsUpdate = true;
+    // Current through the film: carriers stream across; as molecules settle, the flow changes (schematic).
+    const frac = nb / NC, cp = carriers.geometry.attributes.position;
+    carX += (idle ? dtF : 0) * (1.6 - .7 * frac);
+    for (let i = 0; i < NCAR; i++) {
+      let x = carData[i * 4] + carX * carData[i * 4 + 3]; x = ((x + 14) % 28 + 28) % 28 - 14;
+      cp.setXYZ(i, x, carData[i * 4 + 1] + Math.sin(t * 3 + i) * .02, carData[i * 4 + 2] + Math.sin(x * .6 + i) * .15);
+    }
+    cp.needsUpdate = true;
+    carriers.material.opacity = (.35 + .55 * sig) * (1 - .35 * frac * sig);
     fatData.forEach((d, i) => {
       tmpV.copy(d.p).addScaledVector(brown(t * .35, d.ph, tmpS), idle ? .9 : 0); tmpV.x += q * 1.5;
       tmpV.y = Math.max(2.3 + d.r, tmpV.y);
@@ -1676,7 +1765,7 @@ window.__glFrame = (p, t) => {
       tmpM.compose(tmpV, tmpQ, tmpS.setScalar(d.s)); casein.setMatrixAt(i, tmpM);
     });
     fat.instanceMatrix.needsUpdate = true; casein.instanceMatrix.needsUpdate = true;
-    surfMat.emissive.setRGB(.02 * sig, .07 * sig, .16 * sig);
+    surfMat.emissive.setRGB(.01 * sig, .05 * sig, .07 * sig);
     micro.rotation.y = Math.sin(t * .08) * .04 * idle;
   }
 
