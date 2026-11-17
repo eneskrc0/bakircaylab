@@ -851,7 +851,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     let on = 0; rail.forEach((li, i) => { if (p >= +li.dataset.p - .08) on = i; });
     rail.forEach((li, i) => li.classList.toggle('on', i === on));
     state.lift = lift;
-    if (window.__glFrame) window.__glFrame(p, now / 1000, dt);
+    if (window.__glFrame) window.__glFrame(p, now / 1000, dt, p === state.target);
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
@@ -1038,7 +1038,7 @@ import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUnifo
 const canvas = document.getElementById('gl');
 let renderer;
 try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });  // AA comes from the multisampled composer target
 } catch (e) { document.documentElement.classList.add('no-gl'); }
 
 if (renderer) {
@@ -1052,17 +1052,17 @@ const mobile = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer:
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
-// Sharpness first: phones render at 2x (their screens are 3x), desktops at least 1.5x so 1x monitors
-// get supersampled edges. Adaptive drops are capped so it never falls to a visibly soft resolution.
+// Phones: smoothness first. 1.5x with 2x MSAA looks sharp on a 3x screen at less than half the pixels of 2x;
+// adaptive drops may go down to 1x on slow phones. Desktops stay at least 1.5x for supersampled edges.
 const DEV = devicePixelRatio || 1;
-const DPR_MAX = mobile ? Math.min(DEV, 2) : Math.min(Math.max(DEV, 1.5), 2);
-const DPR_MIN = Math.min(DPR_MAX, mobile ? 1.75 : 1.5);
+const DPR_MAX = mobile ? Math.min(DEV, 1.5) : Math.min(Math.max(DEV, 1.5), 2);
+const DPR_MIN = Math.min(DPR_MAX, mobile ? 1 : 1.5);
 let dpr = DPR_MAX, dprDrops = 0;
 renderer.setPixelRatio(dpr);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = .95;
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = mobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;  // refreshed every other frame below
 renderer.setClearColor(0x000000, 0);
 
@@ -1595,12 +1595,16 @@ let cx0Duo = 0;
 
 /* ---------- Resize ---------- */
 let W = 1, H = 1;
+let sizedW = 0, sizedH = 0, sizedD = 0;
 const resize = () => {
   const r = canvas.getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height);
+  // Phones fire 'resize' whenever the browser toolbar slides in or out while scrolling. The stage is sized in svh,
+  // so nothing really changed: skip it, because reallocating every render target is a visible hitch.
+  if (W === sizedW && H === sizedH && dpr === sizedD) return; sizedW = W; sizedH = H; sizedD = dpr;
   renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
   if (typeof composer !== 'undefined') { composer.setPixelRatio(dpr); composer.setSize(W, H); bokeh.uniforms.aspect.value = W / H; bloom.resolution.set(W / 2, H / 2); }
 };
-const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: mobile ? 2 : 4 });
 const composer = new EffectComposer(renderer, rt);
 composer.addPass(new RenderPass(scene, camera));
 const sanitize = new ShaderPass({
@@ -1625,7 +1629,7 @@ const grade = new ShaderPass({
     void main(){
       vec2 d = vUv - .5;
       float ca = dot(d, d) * .003;                       // faint lens chromatic aberration toward the edges
-      vec3 c = vec3(texture2D(tDiffuse, vUv + d * ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - d * ca).b);
+      ${mobile ? 'vec3 c = texture2D(tDiffuse, vUv).rgb;' : 'vec3 c = vec3(texture2D(tDiffuse, vUv + d * ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - d * ca).b);'}
       // Filmic split tone: teal in the shadows, a touch of warmth in the highlights.
       float l = dot(c, vec3(.2126, .7152, .0722));
       c = mix(c, c * vec3(.9, 1.03, 1.06), (1.0 - l) * mix(.18, .4, uDark));
@@ -1671,12 +1675,18 @@ const setScene = (a, b, c) => {
 try {
   for (const st of [[0, 1, 0], [0, 0, 1], [1, 0, 0]]) { setScene(...st.map(Boolean)); renderer.compile(scene, camera); }
 } catch (e) {}
-window.__glFrame = (p, t, dtF = .016) => {
+let skipOdd = false, lastDraw = 0;
+window.__glFrame = (p, t, dtF = .016, settled = false) => {
+  // Phones: while the page is not being scrolled only the slow idle motion plays, so draw every other frame.
+  // Half the GPU work at rest keeps the phone cool, so it is not throttled when the scroll starts again.
+  if (mobile && settled && (skipOdd = !skipOdd)) { lastT = t; return; }
+  if (!settled) skipOdd = false;
+  const fdt = lastDraw ? Math.min(.1, t - lastDraw) : .016; lastDraw = t;
   // Adaptive resolution: drop pixel ratio when frames run long, recover when there is headroom.
   const ft = lastT ? t - lastT : 1 / 60; lastT = t; frameN++;
   if (ft > 1 / 30) { slow++; fast = 0; } else if (ft < 1 / 55) { fast++; slow = 0; }
   // Resizing render targets is itself a hitch, so change resolution rarely and never ping-pong.
-  if (slow > 120 && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
+  if (slow > (mobile ? 30 : 120) && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
   if (fast > 900 && dpr < DPR_MAX && dprDrops < 2) { dpr = Math.min(DPR_MAX, dpr + .25); renderer.setPixelRatio(dpr); resize(); fast = 0; }
   if (!visible) return;
   const portrait = W / H < .9;
@@ -1746,7 +1756,7 @@ window.__glFrame = (p, t, dtF = .016) => {
     cort.instanceMatrix.needsUpdate = true; hc.needsUpdate = true;
     // Current through the film: carriers stream across; as molecules settle, the flow changes (schematic).
     const frac = nb / NC, cp = carriers.geometry.attributes.position;
-    carX += (idle ? dtF : 0) * (1.6 - .7 * frac);
+    carX += (idle ? fdt : 0) * (1.6 - .7 * frac);
     for (let i = 0; i < NCAR; i++) {
       let x = carData[i * 4] + carX * carData[i * 4 + 3]; x = ((x + 14) % 28 + 28) % 28 - 14;
       cp.setXYZ(i, x, carData[i * 4 + 1] + Math.sin(t * 3 + i) * .02, carData[i * 4 + 2] + Math.sin(x * .6 + i) * .15);
