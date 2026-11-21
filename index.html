@@ -838,7 +838,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     band.style.opacity = (draw * .9).toFixed(3);
     stage.classList.toggle('chart-on', co > .05 && isNarrow());
     // Veil covers the two scale cuts
-    const v = Math.max(1 - Math.abs(p - .345) / .03, 1 - Math.abs(p - .80) / .03, 0);
+    const v = Math.max(1 - Math.abs(p - .345) / .02, 1 - Math.abs(p - .80) / .02, 0);
     veil.style.opacity = clamp(v * 1.15).toFixed(3);
 
     // Rail
@@ -1573,7 +1573,7 @@ const macroCam = keys([
   [0,    V(0, 4.2, EZ + 7.4),    V(0, 1.1, EZ), 30],
   [.11,  V(.35, 3.6, EZ + 6.2),  V(0, .9, EZ),  30],
   [.27,  V(1.25, 2.1, EZ + 3.4), V(0, .25, EZ), 30],
-  [.345, V(1.05, .62, EZ + .55), V(.72, SURF + .02, EZ + .1), 22]
+  [.345, V(1.45, .62, EZ + .55), V(1.08, SURF + .02, EZ + .1), 22]   // dive onto the film right at the edge of the milk
 ]);
 const microCam = keys([
   [.345, V(0, 17, 11),    V(0, 0, 0),   42],
@@ -1819,7 +1819,10 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   }
 
   const [, pos, look, fov] = cam;
-  const zoomOut = portrait ? (showMicro ? 1.55 : showDuo ? 1.6 : lerp(1.2, 1.15, seg(p, .2, .34))) : 1;
+  // Tall phone screens see a narrow slice of the scene: back the macro camera off so the whole slide,
+  // both silver contacts and the drop stay in frame (the dive at the end of the macro shot still closes in).
+  const macroZoom = clamp(.72 / (W / H), 1.2, 2.6) * lerp(1, .78, seg(p, .27, .345));
+  const zoomOut = portrait ? (showMicro ? 1.55 : showDuo ? 1.6 : macroZoom) : 1;
   camera.position.copy(look).addScaledVector(tmpP.copy(pos).sub(look), zoomOut);
   if (idle) { camera.position.x += Math.sin(t * .21) * .06; camera.position.y += Math.sin(t * .17) * .04; }
   camera.fov = fov * (portrait ? (showMacro ? 1.2 : 1.12) : 1);
