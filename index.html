@@ -69,7 +69,7 @@ html.dark .beat.hero p { color: #b9d4d7; }
 html.dark .project-body > p, html.dark .about-copy p, html.dark .frame-row dd { color: #c6dcdf; }
 * { box-sizing: border-box; }
 html { background: var(--ink-0); scroll-behavior: auto; }
-body { background: var(--ink-0); color: var(--text); font: 400 16px/1.65 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { margin: 0; background: var(--ink-0); color: var(--text); font: 400 16px/1.65 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink-0); }
 a { color: inherit; }
 h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -.03em; font-weight: 650; }
@@ -671,7 +671,11 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
           <a class="pub-link" href="https://doi.org/10.5281/zenodo.18155986" target="_blank" rel="noopener">DOI ↗</a>
         </li>
       </ol>
-    <script>
+    </div>
+  </section>
+</main>
+
+<script>
 (() => {
   const cv = document.getElementById('ribbon'); if (!cv) return;
   const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, depth: false, stencil: false, powerPreference: 'low-power' });
