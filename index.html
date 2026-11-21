@@ -302,6 +302,11 @@ p { margin: 0; }
 @media (max-width: 560px) { .ft-grid { grid-template-columns: 1fr; gap: 36px; } .ft-lead { padding-right: 60px; } .ft-legal { flex-direction: column; } }
 
 /* No WebGL: the story still reads over a quiet gradient */
+/* Ribbon: a turquoise strand ribbon that winds down past the project texts after the animation.
+   Fixed canvas behind the content; sections it crosses are transparent so it shows, cards and text stay on top. */
+#ribbon { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+#ribbon.on { opacity: 1; }
+#projeler, #biz-kimiz, #cerceve, #durum, #yayinlar { background: transparent; }
 .no-gl #gl { display: none; }
 .no-gl .stage { background: radial-gradient(70% 60% at 68% 45%, #ffffff 0%, #e2f2f4 45%, #c9e6ea 80%); }
 
@@ -357,6 +362,7 @@ p { margin: 0; }
 </style>
 </head>
 <body>
+<canvas id="ribbon" aria-hidden="true"></canvas>
 
 
 <script>
@@ -665,10 +671,225 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
           <a class="pub-link" href="https://doi.org/10.5281/zenodo.18155986" target="_blank" rel="noopener">DOI ↗</a>
         </li>
       </ol>
-    </div>
-  </section>
-</main>
-
+    <script>
+(() => {
+  const cv = document.getElementById('ribbon'); if (!cv) return;
+  const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, depth: false, stencil: false, powerPreference: 'low-power' });
+  if (!gl) return;
+  const coarse = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NS = coarse ? 14 : 34, STEP = coarse ? 18 : 10, NP = coarse ? 36 : 160, W0 = coarse ? 22 : 60, LAM = coarse ? 320 : 520;
+  const mk = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+  const prog = (v, f) => { const p = gl.createProgram(); gl.attachShader(p, mk(gl.VERTEX_SHADER, v)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
+  // ---- strands: two crossing sheets of fine lines plus a soft glow, offset sideways from the path
+  const pr = prog(`precision highp float;
+    attribute vec2 aP, aN; attribute vec3 aS; attribute float aSide, aEnv;
+    uniform float T, Y, REV, W, LAM, V; uniform vec2 R;
+    varying float vA, vK, vG, vPulse;
+    float off(float s, float u, float sh){
+      float x = s / LAM, ph = sh * 3.14159;
+      float wave = sin(x * 2.2 + T * .9 + ph + u * 1.4) * (.55 + .45 * u) + .45 * sin(x * 3.7 - T * .62 - ph * .6 + u * 2.3) + .18 * sin(x * 7.0 + T * 1.6 + u * 5.0);
+      float fan = (u - .5) * (.85 + .4 * sin(x * 1.7 + T * .5 + sh * 2.0));
+      return W * (1.0 + .7 * V) * (.55 * wave + (u < 0.0 ? 0.0 : fan));
+    }
+    void main(){
+      float s = aS.x, u = aS.y, sh = aS.z, glow = step(u, -.5), uu = glow > .5 ? .5 : u;
+      float o = off(s, uu, sh) * aEnv;
+      float d = (off(s + 4.0, uu, sh) - off(s - 4.0, uu, sh)) / 8.0 * aEnv;
+      vec2 dir = normalize(vec2(aN.y, -aN.x) + aN * d), nrm = vec2(-dir.y, dir.x);
+      float w = glow > .5 ? W * 1.7 * aEnv : 1.15;
+      vec2 p = aP + aN * o + nrm * aSide * w;
+      gl_Position = vec4(p.x / R.x * 2.0 - 1.0, 1.0 - (p.y - Y) / R.y * 2.0, 0.0, 1.0);
+      float rim = pow(abs(u - .5) * 2.0, 5.0);
+      float shimmer = .72 + .28 * sin(T * 2.3 + u * 47.0 + s / 70.0);
+      vPulse = pow(.5 + .5 * sin(s / 170.0 - T * 2.4), 14.0) + .6 * pow(.5 + .5 * sin(s / 410.0 - T * 1.3 + 1.7), 20.0);  // light running down the ribbon
+      vA = (glow > .5 ? 1.0 : (.13 + .87 * rim) * shimmer) * aEnv * smoothstep(REV, REV - 320.0, aP.y);
+      vK = aSide; vG = glow;
+    }`, `precision mediump float;
+    varying float vA, vK, vG, vPulse; uniform float DARK;
+    void main(){
+      float k = exp(-vK * vK * (vG > .5 ? 2.2 : 3.0));
+      float boost = 1.0 + vPulse * (vG > .5 ? 1.6 : 2.4);
+      vec3 cl = vG > .5 ? vec3(.56, .86, .90) : mix(vec3(.0, .42, .47), vec3(.03, .62, .68), min(1.0, vA + vPulse));
+      vec3 cd = vG > .5 ? vec3(.03, .38, .42) : mix(vec3(.02, .55, .62), vec3(.72, .98, 1.0), min(1.0, vA + vPulse * .8));
+      float a = min(1.0, vA * k * boost * (vG > .5 ? mix(.26, .32, DARK) : mix(.72, .9, DARK)));
+      gl_FragColor = vec4(mix(cl, cd, DARK) * a, a * (1.0 - DARK * .85));
+    }`);
+  // ---- sparkles: small glints drifting down along the ribbon
+  const pp = prog(`precision highp float;
+    attribute vec3 aQ; uniform float Y, DPR; uniform vec2 R; varying float vB;
+    void main(){ gl_Position = vec4(aQ.x / R.x * 2.0 - 1.0, 1.0 - (aQ.y - Y) / R.y * 2.0, 0.0, 1.0); gl_PointSize = (2.0 + 5.0 * aQ.z) * DPR; vB = aQ.z; }`,
+    `precision mediump float; varying float vB; uniform float DARK;
+    void main(){ vec2 c = gl_PointCoord - .5; float r = length(c); float a = smoothstep(.5, .0, r); a = a * a * vB;
+      vec3 col = mix(vec3(.0, .55, .6), vec3(.85, 1.0, 1.0), DARK);
+      gl_FragColor = vec4(col * a, a * (1.0 - DARK * .8)); }`);
+  if (!pr || !pp) return;
+  const U = (p, n) => gl.getUniformLocation(p, n);
+  const bufs = {};
+  const bind = (p, name, size) => { const l = gl.getAttribLocation(p, name); gl.bindBuffer(gl.ARRAY_BUFFER, bufs[name]); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); return l; };
+  const fill = (name, data, usage) => { if (!bufs[name]) bufs[name] = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bufs[name]); gl.bufferData(gl.ARRAY_BUFFER, data, usage || gl.STATIC_DRAW); };
+  // ---- layout → paths (document px). Desktop: trunk → split around "Bilimsel çerçeve" → merge → down to the end.
+  const docRect = el => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + scrollY, b: r.bottom + scrollY, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + scrollY + r.height / 2 }; };
+  const q = sel => document.querySelector(sel);
+  const layoutPaths = () => {
+    const head = q('#projeler .section-head h2'), wrap = q('#projeler .wrap'), foot = q('.site-footer');
+    if (!head || !wrap) return null;
+    const Hd = docRect(head), Wr = docRect(wrap), VW = document.documentElement.clientWidth;
+    const mL = Math.max(14, Wr.l * .5), mR = Math.min(VW - 14, Wr.r + (VW - Wr.r) * .5);    // the page margins
+    const endY = foot ? docRect(foot).t - 40 : document.body.scrollHeight - 200;
+    const blocks = [...document.querySelectorAll('#projeler .project'), q('#biz-kimiz .about')].filter(Boolean);
+    const trunk = [[Wr.r + 40, Hd.t - 60], [Math.min(Wr.r - 20, Hd.r + 60), Hd.cy]];
+    const two = blocks.every(b => { const m = b.querySelector('.device, .about-media'), t = b.querySelector('.project-body, .about-copy'); return m && t && Math.abs(docRect(m).cx - docRect(t).cx) > 120; });
+    if (!two) {                                    // phones: hug a screen edge beside the text, cross only in the gaps
+      const pts = [], els = [...document.querySelectorAll('#projeler .project'), q('#biz-kimiz'), q('#cerceve'), q('#durum'), q('#yayinlar')].filter(Boolean);
+      els.forEach((el, k) => { const B = docRect(el), e = k % 2 ? 2 : VW - 2; pts.push([e, B.t + 40], [e, B.cy], [e, B.b - 40]);
+        const nx = els[k + 1]; if (nx) pts.push([VW / 2, (B.b + docRect(nx).t) / 2]); });
+      pts.push([pts[pts.length - 1][0], endY]);
+      return [{ pts: [trunk[0], ...pts], rin: 360, rout: 420 }];
+    }
+    blocks.forEach(b => {
+      const M = docRect(b.querySelector('.device, .about-media')), X = docRect(b.querySelector('.project-body, .about-copy')), B = docRect(b);
+      const side = Math.sign(M.cx - X.cx), gut = side < 0 ? (M.r + X.l) / 2 : (X.r + M.l) / 2;
+      trunk.push([gut - side * X.w * .12, B.t + B.h * .08], [M.cx - side * M.w * .12, M.cy], [M.cx + side * M.w * .1, Math.max(B.b, M.b) + 70]);
+    });
+    const cf = q('#cerceve'), cfh = q('#cerceve .section-head'), fr = q('#cerceve .frame'), du = q('#durum'), duh = q('#durum .section-head h2'), st = q('#durum .steps'), yh = q('#yayinlar .section-head'), pubs = q('#yayinlar .pubs');
+    const paths = [];
+    if (cf && cfh && fr && du && duh) {
+      const C = docRect(cf), CH = docRect(cfh), F = docRect(fr), D = docRect(du), DH = docRect(duh);
+      // The ribbon's two sheets part at the split (one per side) and meet again at the merge. Both junctions are
+      // approached and left vertically, with shared tangents, so the sheets run on without a seam.
+      const last = trunk[trunk.length - 1], split = [last[0], Math.max(last[1] + 120, C.t + 10)];
+      const preS = [split[0], split[1] - 150], postS = [split[0], split[1] + 150];
+      trunk.push(preS, split);
+      const merge = [Wr.l + Wr.w * .72, DH.t + DH.h * .2], preM = [merge[0], merge[1] - 170], postM = [merge[0], merge[1] + 150];
+      const prevT = trunk[trunk.length - 3];
+      const left = [preS, split, postS, [mL + (split[0] - mL) * .35, CH.t + CH.h * .3], [mL, CH.b + 40], [mL, F.cy], [mL + 70, F.b + 20], [Wr.l + Wr.w * .42, D.t + 40], preM, merge, postM];
+      const right = [preS, split, postS, [Wr.l + Wr.w * .58, CH.t + CH.h * .25], [Wr.r - 40, CH.b - 10], [mR, F.t + 40], [mR, F.cy], [mR - 60, F.b + 10], [Wr.l + Wr.w * .9, D.t + 50], preM, merge, postM];
+      const down = [merge, postM];
+      if (st) { const S = docRect(st); down.push([merge[0] + 30, (postM[1] + S.t) / 2 + 20], [(merge[0] + mR) / 2 + 30, S.t + 10], [mR, S.t + S.h * .7], [mR - 40, S.b + 90], [Wr.l + Wr.w * .76, S.b + 230]); }
+      else down.push([merge[0] + 70, DH.b + 50]);
+      if (yh && pubs) { const Y = docRect(yh), Pb = docRect(pubs); down.push([Wr.l + Wr.w * .55, Y.t - 40], [mL, Y.b + 10], [mL, Pb.cy], [mL + 60, Pb.b + 30], [Wr.l + Wr.w * .5, endY]); }
+      else down.push([merge[0], endY]);
+      // Junctions cross-fade: the trunk fades out over preS→split while each branch fades in over the same stretch
+      // (identical curve there), and the branches fade out over merge→postM while the lower trunk fades in.
+      const X1 = segLen(prevT, preS, split, postS), X2 = segLen(preM, merge, postM, down[2]);
+      paths.push({ pts: trunk, gEnd: postS, sheets: [0, 1], rin: 360, rout: X1, X1 });
+      paths.push({ pts: left, gStart: prevT, gEnd: down[2], sheets: [0], branch: 1, rin: X1, rout: X2, X2 });
+      paths.push({ pts: right, gStart: prevT, gEnd: down[2], sheets: [1], branch: 1, rin: X1, rout: X2, X2 });
+      paths.push({ pts: down, gStart: preM, sheets: [0, 1], rin: X2, rout: 420, lower: 1 });
+    } else { trunk.push([trunk[trunk.length - 1][0], endY]); paths.push({ pts: trunk, rin: 360, rout: 420 }); }
+    return paths;
+  };
+  const segLen = (p0, p1, p2, p3) => { let l = 0, prev = p1; for (let k = 1; k <= 60; k++) { const t = k / 60, t2 = t * t, t3 = t2 * t;
+      const c = [0, 1].map(i => .5 * (2 * p1[i] + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t2 + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t3));
+      l += Math.hypot(c[0] - prev[0], c[1] - prev[1]); prev = c; } return l; };
+  const catmull = (P, step, g0, g1) => {
+    const dense = [], n = P.length;
+    for (let i = 0; i < n - 1; i++) { const p0 = i ? P[i - 1] : (g0 || P[0]), p1 = P[i], p2 = P[i + 1], p3 = i + 2 < n ? P[i + 2] : (g1 || P[n - 1]);
+      for (let k = 0; k < 40; k++) { const t = k / 40, t2 = t * t, t3 = t2 * t;
+        dense.push([0, 1].map(c => .5 * (2 * p1[c] + (-p0[c] + p2[c]) * t + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * t2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * t3))); } }
+    dense.push(P[n - 1]);
+    const out = [dense[0]]; let acc = 0;
+    for (let i = 1; i < dense.length; i++) { const a = dense[i - 1], b = dense[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]); acc += d;
+      while (acc >= step) { acc -= step; const f = 1 - acc / d; out.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]); } }
+    return out;
+  };
+  let lastKey = '', count = 0, yTop = 0, yBot = 0, lines = [];
+  const build = () => {
+    const paths = layoutPaths(); if (!paths) return;
+    const key = JSON.stringify(paths.map(p => p.pts.map(v => v.map(Math.round)))) + innerWidth; if (key === lastKey) return; lastKey = key;
+    // arc-length offsets keep the wave phase continuous across the split and the merge
+    const curves = paths.map(p => catmull(p.pts, STEP, p.gStart, p.gEnd));
+    const lens = curves.map(c => (c.length - 1) * STEP);
+    // Branches of different lengths are given the same wave length, so both sheets arrive at the merge in phase.
+    const bl = paths.map((p, i) => p.branch ? lens[i] - p.X2 : 0).filter(Boolean), Lb = bl.length ? bl.reduce((a, b) => a + b) / bl.length : 0;
+    const sc = paths.map((p, i) => p.branch ? Lb / (lens[i] - p.X2) : 1);
+    const sB = paths[0].X1 ? lens[0] - paths[0].X1 : 0;
+    const s0 = paths.map(p => p.branch ? sB : p.lower ? sB + Lb : 0);
+    const all = [[-1, 0], [-1, 1]]; for (let sh = 0; sh < 2; sh++) for (let j = 0; j < NS; j++) all.push([j / (NS - 1), sh]);
+    const strandsOf = p => all.filter(st => !p.sheets || p.sheets.includes(st[1]));
+    let tot = 0; curves.forEach((c, i) => tot += strandsOf(paths[i]).length * (c.length * 2 + 2));
+    const aP = new Float32Array(tot * 2), aN = new Float32Array(tot * 2), aS = new Float32Array(tot * 3), aSide = new Float32Array(tot), aEnv = new Float32Array(tot);
+    let v = 0; lines = []; yTop = 1e9; yBot = -1e9;
+    curves.forEach((C, pi) => {
+      const n = C.length, L = lens[pi], P = paths[pi];
+      // normals from a wide window so tight corners do not flip them
+      const N = C.map((c, i) => { const a = C[Math.max(0, i - 3)], b = C[Math.min(n - 1, i + 3)], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; });
+      // On bends tighter than the ribbon is wide, the outer strands would fold into knots: narrow the ribbon there.
+      const ang = C.map((c, i) => { const b = C[Math.min(n - 1, i + 1)], a = C[Math.max(0, i - 1)]; return Math.atan2(b[1] - a[1], b[0] - a[0]); });
+      let kap = ang.map((a, i) => { if (!i || i === n - 1) return 0; let d = ang[i + 1] - ang[i - 1]; d = Math.atan2(Math.sin(d), Math.cos(d)); return Math.abs(d) / (2 * STEP); });
+      const smooth = (arr, r) => arr.map((_, i) => { let s = 0, c = 0; for (let k = -r; k <= r; k++) { const j = i + k; if (j >= 0 && j < n) { s += arr[j]; c++; } } return s / c; });
+      kap = smooth(kap, 6);
+      const reach = W0 * 1.9;
+      const fit = smooth(kap.map(k => Math.min(1, Math.max(.18, 1 / (k * reach * 2.2 + 1e-6)))), 10);
+      const E = C.map((c, i) => { const s = i * STEP, sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+        return sm(s / P.rin) * sm((L - s) / P.rout) * fit[i]; });
+      C.forEach(c => { yTop = Math.min(yTop, c[1]); yBot = Math.max(yBot, c[1]); });
+      lines.push({ C, N, E, s0: s0[pi], L });
+      const put = (i, side, st) => { aP[v * 2] = C[i][0]; aP[v * 2 + 1] = C[i][1]; aN[v * 2] = N[i][0]; aN[v * 2 + 1] = N[i][1];
+        aS[v * 3] = s0[pi] + i * STEP * sc[pi]; aS[v * 3 + 1] = st[0]; aS[v * 3 + 2] = st[1]; aSide[v] = side; aEnv[v] = E[i]; v++; };
+      strandsOf(P).forEach(st => { put(0, -1, st); for (let i = 0; i < n; i++) { put(i, -1, st); put(i, 1, st); } put(n - 1, 1, st); });
+    });
+    yTop -= 200; yBot += 200; count = v;
+    fill('aP', aP); fill('aN', aN); fill('aS', aS); fill('aSide', aSide); fill('aEnv', aEnv);
+    // sparkles: each rides one path at its own speed and lane
+    parts = Array.from({ length: NP }, () => { const li = Math.floor(Math.random() * lines.length); return { li, s: Math.random() * lines[li].L, sp: 40 + Math.random() * 110, lane: (Math.random() - .5) * 2, tw: Math.random() * 6.28 }; });
+  };
+  let parts = [];
+  const qbuf = new Float32Array(NP * 3);
+  let dpr = 1;
+  const size = () => { dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 2);
+    const w = Math.max(1, innerWidth * dpr | 0), h = Math.max(1, innerHeight * dpr | 0);
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); } };
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  const darkMQ = matchMedia('(prefers-color-scheme: dark)');
+  const isDark = () => { const m = getComputedStyle(document.body).backgroundColor.match(/\d+(\.\d+)?/g); if (!m) return darkMQ.matches;
+    return (.2126 * m[0] + .7152 * m[1] + .0722 * m[2]) < 110; };
+  let rev = 0, raf = 0, t0 = performance.now(), last = t0, dark = isDark() ? 1 : 0, darkT = dark, fn = 0, vel = 0, lastY = scrollY;
+  const frame = now => {
+    raf = 0;
+    const y = scrollY, vh = innerHeight, dt = Math.min(.05, (now - last) / 1000); last = now;
+    const inRange = count && y + vh > yTop && y < yBot;
+    cv.classList.toggle('on', !!inRange);
+    if (!inRange) return;
+    vel += (Math.min(1, Math.abs(y - lastY) / 60) - vel) * .08; lastY = y;     // scrolling stirs the ribbon a little
+    rev = Math.max(rev, y + vh * .85);
+    if (!(fn++ % 30)) darkT = isDark() ? 1 : 0; dark += (darkT - dark) * .2;
+    const T = still ? 3 : (now - t0) / 1000;
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(pr);
+    gl.uniform1f(U(pr, 'T'), T); gl.uniform1f(U(pr, 'Y'), y); gl.uniform1f(U(pr, 'REV'), still ? 1e9 : rev); gl.uniform1f(U(pr, 'DARK'), dark);
+    gl.uniform1f(U(pr, 'W'), W0); gl.uniform1f(U(pr, 'LAM'), LAM); gl.uniform1f(U(pr, 'V'), still ? 0 : vel); gl.uniform2f(U(pr, 'R'), innerWidth, vh);
+    const ls = ['aP', 'aN', 'aS', 'aSide', 'aEnv'].map((n, i) => bind(pr, n, [2, 2, 3, 1, 1][i]));
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, count);
+    ls.forEach(l => gl.disableVertexAttribArray(l));
+    if (!still && parts.length) {
+      let k = 0;
+      parts.forEach(p => { const ln = lines[p.li]; p.s += p.sp * dt; if (p.s > ln.L) { p.s = 0; p.li = Math.floor(Math.random() * lines.length); }
+        const i = Math.min(ln.C.length - 1, Math.round(p.s / STEP)), c = ln.C[i], nn = ln.N[i];
+        const yy = c[1] + nn[1] * p.lane * W0 * .8, vis = ln.E[i] * (yy < rev - 200 ? 1 : 0);
+        qbuf[k++] = c[0] + nn[0] * p.lane * W0 * .8; qbuf[k++] = yy; qbuf[k++] = vis * (.35 + .65 * Math.pow(.5 + .5 * Math.sin(T * 3 + p.tw), 3)); });
+      fill('aQ', qbuf, gl.DYNAMIC_DRAW);
+      gl.useProgram(pp);
+      gl.uniform1f(U(pp, 'Y'), y); gl.uniform1f(U(pp, 'DPR'), dpr); gl.uniform1f(U(pp, 'DARK'), dark); gl.uniform2f(U(pp, 'R'), innerWidth, vh);
+      const l = bind(pp, 'aQ', 3); gl.drawArrays(gl.POINTS, 0, NP); gl.disableVertexAttribArray(l);
+    }
+    if (!still) raf = requestAnimationFrame(frame);
+  };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  const relayout = () => { size(); build(); kick(); };
+  addEventListener('scroll', kick, { passive: true });
+  addEventListener('resize', relayout);
+  addEventListener('load', relayout);
+  if (document.fonts) document.fonts.ready.then(relayout);
+  new ResizeObserver(() => { build(); kick(); }).observe(document.body);
+  document.addEventListener('click', () => setTimeout(() => { build(); kick(); }, 80));
+  relayout();
+})();
+</script>
+ relayout();
+})();
+</script>
 <footer class="site-footer" id="iletisim">
   <div class="ft-bg" aria-hidden="true"></div>
   <div class="wrap">
