@@ -363,6 +363,97 @@ p { margin: 0; }
 </head>
 <body>
 <canvas id="ribbon" aria-hidden="true"></canvas>
+<script>
+/* Phones: the ribbon is drawn into plain 2D canvases that sit inside each section, so it scrolls with the page
+   natively. (A fixed canvas redrawn on every scroll frame lags behind the page on phones and seems to jump.)
+   It runs down one screen edge beside the text and crosses over only in the empty padding between sections. */
+function phoneRibbon(still) {
+  const secs = [...document.querySelectorAll('#projeler, #biz-kimiz, #cerceve, #durum, #yayinlar')];
+  if (!secs.length) return;
+  const css = document.createElement('style');
+  css.textContent = '.rb2{position:absolute;left:0;top:0;width:100%;height:100%;z-index:-1;pointer-events:none}#projeler,#biz-kimiz,#cerceve,#durum,#yayinlar{isolation:isolate}';
+  document.head.appendChild(css);
+  const NS = 12, STEP = 6, W = 20, LAM = 300, DPR = Math.min(devicePixelRatio || 1, 1.5);
+  let items = [], built = '';
+  const docTop = el => el.getBoundingClientRect().top + scrollY;
+  const build = () => {
+    const VW = document.documentElement.clientWidth;
+    const key = VW + ':' + secs.map(s => Math.round(s.offsetHeight)).join(',');
+    if (key === built) return; built = key;
+    // one continuous path in page coordinates: edge → cross in the gap → other edge …
+    const pts = [];
+    secs.forEach((sec, k) => {
+      const t = docTop(sec), b = t + sec.offsetHeight, pad = parseFloat(getComputedStyle(sec).paddingTop) || 80;
+      const e = k % 2 ? 3 : VW - 3, e2 = k % 2 ? VW - 3 : 3;
+      if (k === 0) pts.push([VW + 30, t + pad * .2], [e, t + pad * .9]);
+      else pts.push([e, t + pad * .75]);
+      pts.push([e, (t + b) / 2], [e, b - pad * .55]);
+      if (k < secs.length - 1) pts.push([(e + e2) / 2, b]);
+      else pts.push([e, b - 20]);
+    });
+    // smooth (Catmull-Rom) and resample evenly
+    const dense = [];
+    for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      for (let q = 0; q < 30; q++) { const u = q / 30, u2 = u * u, u3 = u2 * u;
+        dense.push([0, 1].map(c => .5 * (2 * p1[c] + (-p0[c] + p2[c]) * u + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * u2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * u3))); } }
+    dense.push(pts[pts.length - 1]);
+    const C = [dense[0]]; let acc = 0;
+    for (let i = 1; i < dense.length; i++) { const a = dense[i - 1], b = dense[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]); acc += d;
+      while (acc >= STEP) { acc -= STEP; const f = 1 - acc / d; C.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]); } }
+    const n = C.length, L = (n - 1) * STEP;
+    const N = C.map((c, i) => { const a = C[Math.max(0, i - 3)], b = C[Math.min(n - 1, i + 3)], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; });
+    const E = C.map((c, i) => { const s = i * STEP, sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); return sm(s / 260) * sm((L - s) / 300); });
+    items.forEach(it => it.cv.remove());
+    items = secs.map(sec => {
+      const t = docTop(sec), h = sec.offsetHeight, cv = document.createElement('canvas');
+      cv.className = 'rb2'; cv.setAttribute('aria-hidden', 'true');
+      cv.width = Math.round(VW * DPR); cv.height = Math.round(h * DPR); sec.prepend(cv);
+      const idx = []; C.forEach((c, i) => { if (c[1] > t - 60 && c[1] < t + h + 60) idx.push(i); });
+      return { sec, cv, ctx: cv.getContext('2d'), t, idx, on: false };
+    });
+    items.forEach(it => io.observe(it.sec));
+    path = { C, N, E };
+    items.forEach(it => draw(it, still ? 3 : (performance.now() - t0) / 1000));
+  };
+  let path = null; const t0 = performance.now();
+  const dark = () => { const m = getComputedStyle(document.body).backgroundColor.match(/\d+/g); return m && (.2126 * m[0] + .7152 * m[1] + .0722 * m[2]) < 110; };
+  const draw = (it, T) => {
+    const { ctx, t, idx } = it; if (!path || !idx.length) return;
+    const { C, N, E } = path, dk = dark();
+    ctx.setTransform(DPR, 0, 0, DPR, 0, -t * DPR);
+    ctx.clearRect(0, t - 100, it.cv.width / DPR, it.cv.height / DPR + 200);
+    ctx.globalCompositeOperation = dk ? 'lighter' : 'source-over';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const off = (s, u, sh) => { const x = s / LAM, ph = sh * Math.PI;
+      const wave = Math.sin(x * 2.2 + T * .9 + ph + u * 1.4) * (.55 + .45 * u) + .45 * Math.sin(x * 3.7 - T * .62 - ph * .6 + u * 2.3);
+      return W * (.55 * wave + (u - .5) * (.85 + .4 * Math.sin(x * 1.7 + T * .5 + sh * 2))); };
+    const line = (u, sh, width, color, alpha) => {
+      ctx.beginPath(); let first = true;
+      for (const i of idx) { const o = off(i * STEP, u, sh) * E[i]; const x = C[i][0] + N[i][0] * o, y = C[i][1] + N[i][1] * o;
+        if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y); }
+      ctx.lineWidth = width; ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.stroke();
+    };
+    // soft glow, then the fine strands (the outer strands of each sheet brightest)
+    for (let sh = 0; sh < 2; sh++) line(.5, sh, W * 2.2, dk ? '#0b5e66' : '#afdde5', dk ? .35 : .35);
+    for (let sh = 0; sh < 2; sh++) for (let j = 0; j < NS; j++) {
+      const u = j / (NS - 1), rim = Math.pow(Math.abs(u - .5) * 2, 4);
+      line(u, sh, rim > .5 ? 1.2 : .8, dk ? (rim > .5 ? '#bff6fa' : '#1fb5bf') : (rim > .5 ? '#0a8a94' : '#2aa7b0'), (dk ? .25 : .22) + rim * .55);
+    }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  };
+  // animate only the sections on screen, about 30 frames a second
+  const io = new IntersectionObserver(es => es.forEach(e => { const it = items.find(i => i.sec === e.target); if (it) it.on = e.isIntersecting; }), { rootMargin: '100px 0px' });
+  let last = 0;
+  const loop = now => { requestAnimationFrame(loop); if (still || now - last < 33) return; last = now;
+    const T = (now - t0) / 1000; items.forEach(it => { if (it.on) draw(it, T); }); };
+  const rebuild = () => { built = ''; build(); };
+  addEventListener('load', build); if (document.fonts) document.fonts.ready.then(build);
+  addEventListener('resize', () => { if (document.documentElement.clientWidth + ':' !== built.split(':')[0] + ':') rebuild(); });
+  new ResizeObserver(() => build()).observe(document.body);
+  build(); requestAnimationFrame(loop);
+}
+</script>
+
 
 
 <script>
@@ -682,6 +773,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   if (!gl) return;
   const coarse = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (coarse) { gl.getExtension('WEBGL_lose_context')?.loseContext(); cv.remove(); phoneRibbon(still); return; }
   const NS = coarse ? 14 : 34, STEP = coarse ? 18 : 10, NP = coarse ? 36 : 160, W0 = coarse ? 22 : 60, LAM = coarse ? 320 : 520;
   const mk = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
   const prog = (v, f) => { const p = gl.createProgram(); gl.attachShader(p, mk(gl.VERTEX_SHADER, v)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
@@ -889,9 +981,6 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   new ResizeObserver(() => { build(); kick(); }).observe(document.body);
   document.addEventListener('click', () => setTimeout(() => { build(); kick(); }, 80));
   relayout();
-})();
-</script>
- relayout();
 })();
 </script>
 <footer class="site-footer" id="iletisim">
