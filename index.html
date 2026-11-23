@@ -105,7 +105,8 @@ p { margin: 0; }
 .story { position: relative; height: 820vh; }
 .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate;
   background: var(--stage-bg); }
-#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; transition: opacity .6s ease; }
+#gl:not(.ready) { opacity: 0; }  /* fades in once the 3D scene has drawn its first frame */
 .stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(var(--ground-rgb), .82) 0%, rgba(var(--ground-rgb), .35) 32%, rgba(var(--ground-rgb), 0) 50%),
               linear-gradient(0deg, rgba(var(--ground-rgb), .55) 0%, rgba(var(--ground-rgb), 0) 22%); }
@@ -447,10 +448,13 @@ function phoneRibbon(still) {
   const loop = now => { requestAnimationFrame(loop); if (still || now - last < 33) return; last = now;
     const T = (now - t0) / 1000; items.forEach(it => { if (it.on) draw(it, T); }); };
   const rebuild = () => { built = ''; build(); };
-  addEventListener('load', build); if (document.fonts) document.fonts.ready.then(build);
-  addEventListener('resize', () => { if (document.documentElement.clientWidth + ':' !== built.split(':')[0] + ':') rebuild(); });
-  new ResizeObserver(() => build()).observe(document.body);
-  build(); requestAnimationFrame(loop);
+  // nothing is built until the reader gets near the projects; layout changes are batched
+  let near = false, tm = 0;
+  const later = () => { if (!near) return; clearTimeout(tm); tm = setTimeout(build, 250); };
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); near = true; build(); requestAnimationFrame(loop); } }, { rootMargin: '1200px 0px' }).observe(secs[0]);
+  addEventListener('load', later); if (document.fonts) document.fonts.ready.then(later);
+  addEventListener('resize', () => { if (near && document.documentElement.clientWidth + ':' !== built.split(':')[0] + ':') { built = ''; later(); } });
+  new ResizeObserver(later).observe(document.body);
 }
 </script>
 
@@ -973,14 +977,17 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
     if (!still) raf = requestAnimationFrame(frame);
   };
   const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
-  const relayout = () => { size(); build(); kick(); };
-  addEventListener('scroll', kick, { passive: true });
+  // Built only once the reader gets near the projects (it is heavy); layout changes are batched.
+  let near = false, tm = 0;
+  const relayout = () => { if (!near) return; clearTimeout(tm); tm = setTimeout(() => { size(); build(); kick(); }, 200); };
+  const first = document.getElementById('projeler');
+  if (first) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); near = true; size(); build(); kick(); } }, { rootMargin: '1500px 0px' }).observe(first);
+  addEventListener('scroll', () => { if (near) kick(); }, { passive: true });
   addEventListener('resize', relayout);
   addEventListener('load', relayout);
   if (document.fonts) document.fonts.ready.then(relayout);
-  new ResizeObserver(() => { build(); kick(); }).observe(document.body);
-  document.addEventListener('click', () => setTimeout(() => { build(); kick(); }, 80));
-  relayout();
+  new ResizeObserver(relayout).observe(document.body);
+  document.addEventListener('click', relayout);
 })();
 </script>
 <footer class="site-footer" id="iletisim">
@@ -1352,14 +1359,19 @@ import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUnifo
 
 const canvas = document.getElementById('gl');
 const PHONE = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
-// Build the 3D scene only once the page has loaded and the browser is idle, or as soon as the story comes near.
-// Building it is heavy (textures, geometry, shaders); doing it during load froze the opening on phones.
+// Building the 3D scene is heavy (textures, geometry, shader compilation) and freezes the page for a moment.
+// So nothing is built while the visitor is looking at the opening: it starts at the first sign of scrolling
+// (or when the story is already on screen, e.g. after a reload halfway down), once the page has loaded.
 await new Promise(go => {
-  let done = false; const run = () => { if (!done) { done = true; go(); } };
+  let done = false;
+  const run = () => { if (done) return; done = true; ['scroll', 'wheel', 'touchstart', 'keydown'].forEach(e => removeEventListener(e, intent));
+    const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 400 }) : setTimeout(go, 50));
+    if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true }); };
+  const intent = () => run();
+  ['scroll', 'wheel', 'touchstart', 'keydown'].forEach(e => addEventListener(e, intent, { passive: true }));
   const story = document.getElementById('story');
-  if (story) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); run(); } }, { rootMargin: '60% 0px' }).observe(story);
-  const idle = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 2500 }) : setTimeout(run, 600));
-  if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+  if (story) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); run(); } }, { rootMargin: '0px 0px -80px 0px' }).observe(story);
+  if (scrollY > innerHeight * .5) run();
 });
 let renderer;
 try {
@@ -2007,11 +2019,12 @@ if (mobile) scene.traverse(o => { const ms = o.material ? (Array.isArray(o.mater
 // The opening scene first; the other two before the story gets to them.
 setScene(true, false, false);
 try { renderer.compile(scene, camera); } catch (e) {}
+// Where the browser can compile shaders in the background (compileAsync), the page does not stall at all.
 [[0, 1, 0], [0, 0, 1]].forEach((st, i) => setTimeout(() => {
   const v = [macro.visible, micro.visible, duo.visible];
-  try { setScene(...st.map(Boolean)); renderer.compile(scene, camera); } catch (e) {}
+  try { setScene(...st.map(Boolean)); (renderer.compileAsync ? renderer.compileAsync(scene, camera) : renderer.compile(scene, camera))?.catch?.(() => {}); } catch (e) {}
   setScene(...v);
-}, 400 + i * 450));
+}, 700 + i * 700));
 let skipOdd = false, lastDraw = 0;
 window.__glFrame = (p, t, dtF = .016, settled = false) => {
   // Phones: while the page is not being scrolled only the slow idle motion plays, so draw every other frame.
@@ -2152,6 +2165,7 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   // A scene cut moves the shadow frustum: re-render the map this frame, or stale shadows flash dark.
   if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; lastShadowP = p; }
   if (mobile) renderer.render(scene, camera); else composer.render();
+  if (!canvas.classList.contains('ready')) requestAnimationFrame(() => canvas.classList.add('ready'));
 
   // Pin project labels under the two droplets
   const lab = smoothLab(p);
