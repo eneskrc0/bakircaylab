@@ -1459,7 +1459,7 @@ let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 21474836
 const DEV = devicePixelRatio || 1;
 // Never render more pixels than the screen has (no supersampling): that alone made big monitors stutter.
 const DPR_MAX = mobile ? Math.min(DEV, 1.25) : Math.min(DEV, 1.5);
-const DPR_MIN = Math.min(DPR_MAX, mobile ? .85 : 1);
+const DPR_MIN = Math.min(DPR_MAX, mobile ? .85 : .85);
 let dpr = DPR_MAX, dprDrops = 0;
 renderer.setPixelRatio(dpr);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1594,7 +1594,7 @@ const chip = new THREE.Group(); macro.add(chip);
 const T = .14, SURF = T + .03, EZ = -1.6;
 const subGeo = new THREE.ExtrudeGeometry(roundedRect(3.4, 7.2, .07), { depth: T, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3, curveSegments: 8 });
 subGeo.rotateX(-Math.PI / 2);
-const LITE = mobile;  // phones: transparency instead of refraction
+const LITE = true;   // refraction (transmission) re-renders the scene every frame; plain transparency looks nearly the same  // phones: transparency instead of refraction
 const tr = (v) => LITE ? { transparent: true, opacity: v, depthWrite: false } : { transmission: 1 };
 const glassSub = new THREE.MeshPhysicalMaterial({ color: 0xf4fbfa, roughness: .03, ...tr(.82), thickness: .2, ior: 1.52,
   attenuationColor: new THREE.Color(0x8fd6cc), attenuationDistance: .7, clearcoat: 1, clearcoatRoughness: .02, specularIntensity: 1, envMapIntensity: 1.5 });
