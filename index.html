@@ -426,8 +426,9 @@ p { margin: 0; }
   const t0 = performance.now(); let closed = false;
   let close = () => { if (closed) return; closed = true; root.classList.add('intro-out');
     setTimeout(() => { root.classList.remove('intro-on', 'intro-out'); document.getElementById('intro').remove(); }, 850); };
-  // The welcome stays for 5 seconds while the 3D scene is prepared behind it.
+  // The welcome closes as soon as the 3D scene is ready (shown at least 2.5 s, at most 5 s).
   setTimeout(close, 5000);
+  addEventListener('gl-built', () => setTimeout(close, Math.max(0, 2500 - (performance.now() - t0))), { once: true });
 })();
 </script>
 <canvas id="ribbon" aria-hidden="true"></canvas>
@@ -1446,7 +1447,7 @@ let renderer;
 try {
   // Phones draw straight to the screen with the browser's own antialiasing (no post-processing chain);
   // desktops get antialiasing from the multisampled composer target.
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: PHONE, alpha: true, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
 } catch (e) { document.documentElement.classList.add('no-gl'); dispatchEvent(new Event('gl-built')); }
 
 if (renderer) {
@@ -1457,6 +1458,9 @@ const easeIn = t => t * t * t;
 const lerp = (a, b, t) => a + (b - a) * t;
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const mobile = PHONE;
+// Smoothness first on every device: no shadow maps, no post effects (bloom, grading passes) and simpler
+// materials. The scene is drawn straight to the screen in one pass, the same light path phones always used.
+const LIGHT = true;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 // Build in small steps with short pauses in between, so the browser can keep the welcome video and the page
@@ -1467,13 +1471,13 @@ const breathe = () => new Promise(r => setTimeout(r, 16));
 // adaptive drops may go down to 1x on slow phones. Desktops stay at least 1.5x for supersampled edges.
 const DEV = devicePixelRatio || 1;
 // Never render more pixels than the screen has (no supersampling): that alone made big monitors stutter.
-const DPR_MAX = mobile ? Math.min(DEV, 1.25) : Math.min(DEV, 1.5);
-const DPR_MIN = Math.min(DPR_MAX, mobile ? .85 : .85);
+const DPR_MAX = mobile ? Math.min(DEV, 1.1) : Math.min(DEV, 1.25);
+const DPR_MIN = Math.min(DPR_MAX, .75);
 let dpr = DPR_MAX, dprDrops = 0;
 renderer.setPixelRatio(dpr);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = .95;
-renderer.shadowMap.enabled = !mobile;  // phones: no shadow maps (a full extra render pass)
+renderer.shadowMap.enabled = !(mobile || LIGHT);  // phones: no shadow maps (a full extra render pass)
 renderer.shadowMap.type = mobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;  // refreshed every other frame below
 renderer.setClearColor(0x000000, 0);
@@ -1516,7 +1520,7 @@ scene.add(new THREE.AmbientLight(0x9fb4ff, .04));
 const hemi = new THREE.HemisphereLight(0xffffff, 0x9ab9bc, .45); scene.add(hemi);
 // Physically based area lights for the macro shot: soft overhead box, a thin back strip for rim light, a warm side card.
 RectAreaLightUniformsLib.init();
-const area = (color, intensity, w, h, pos, at, essential = true) => { const l = new THREE.RectAreaLight(color, intensity, w, h); l.position.copy(pos); l.lookAt(at); if (essential || !mobile) scene.add(l); return l; };
+const area = (color, intensity, w, h, pos, at, essential = true) => { const l = new THREE.RectAreaLight(color, intensity, w, h); l.position.copy(pos); l.lookAt(at); if (!LIGHT && (essential || !mobile)) scene.add(l); return l; };  // area lights cost the most per pixel: left out in light mode
 const areaLights = [
   area(0xf3fbff, 4.2, 5, 3, V(0, 5.6, -1.1), V(0, 0, -1.6)),       // softbox above the sensor
   area(0xd2f8ff, 14, 1.2, 6, V(-1.4, 4.2, -5.6), V(0, 2.2, -1.6)), // tall rim strip behind the pipette
@@ -2033,7 +2037,7 @@ const resize = () => {
   // so nothing really changed: skip it, because reallocating every render target is a visible hitch.
   if (W === sizedW && H === sizedH && dpr === sizedD) return; sizedW = W; sizedH = H; sizedD = dpr;
   renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
-  if (typeof composer !== 'undefined' && !mobile) { composer.setPixelRatio(dpr); composer.setSize(W, H); bokeh.uniforms.aspect.value = W / H; bloom.resolution.set(W / 2, H / 2); }
+  if (typeof composer !== 'undefined' && !(mobile || LIGHT)) { composer.setPixelRatio(dpr); composer.setSize(W, H); bokeh.uniforms.aspect.value = W / H; bloom.resolution.set(W / 2, H / 2); }
 };
 await breathe();
 const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: mobile ? 2 : 4 });
@@ -2106,7 +2110,7 @@ const setScene = (a, b, c) => {
 };
 // Phones: drop the costly layers of the physical materials (clearcoat, sheen, iridescence, refraction).
 // Shaders become much smaller, so they compile fast and draw fast; the look stays close.
-if (mobile) scene.traverse(o => { const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+if (mobile || LIGHT) scene.traverse(o => { const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
   ms.forEach(m => { if (m.isMeshPhysicalMaterial) { m.clearcoat = 0; m.sheen = 0; m.iridescence = 0;
     if (m.transmission) { m.transmission = 0; m.transparent = true; m.opacity = Math.min(m.opacity, .6); } } }); });
 // Compile the three scenes one at a time with pauses in between, so the page never freezes for long.
@@ -2129,7 +2133,7 @@ if (behindIntro) {
   for (const st of [[0, 1, 0], [0, 0, 1]]) { setScene(...st.map(Boolean)); await compileStep(); }
   setScene(true, false, false);
   // One full frame with shadows and the post effects, so their shaders are also ready before the intro ends.
-  try { if (!mobile) { renderer.shadowMap.needsUpdate = true; composer.render(); } else renderer.render(scene, camera); } catch (e) {}
+  try { if (!(mobile || LIGHT)) { renderer.shadowMap.needsUpdate = true; composer.render(); } else renderer.render(scene, camera); } catch (e) {}
   await breathe();
   dispatchEvent(new Event('gl-built'));
 } else [[0, 1, 0], [0, 0, 1]].forEach((st, i) => setTimeout(() => {
@@ -2278,7 +2282,7 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   grade.uniforms.uTime.value = (t % 10);
   // A scene cut moves the shadow frustum: re-render the map this frame, or stale shadows flash dark.
   if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; lastShadowP = p; }
-  if (mobile) renderer.render(scene, camera); else composer.render();
+  if (mobile || LIGHT) renderer.render(scene, camera); else composer.render();
   if (!canvas.classList.contains('ready')) requestAnimationFrame(() => canvas.classList.add('ready'));
 
   // Pin project labels under the two droplets
