@@ -1000,7 +1000,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   let parts = [];
   const qbuf = new Float32Array(NP * 3);
   let dpr = 1;
-  const size = () => { dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 2);
+  const size = () => { dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 1.25);
     const w = Math.max(1, innerWidth * dpr | 0), h = Math.max(1, innerHeight * dpr | 0);
     if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); } };
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -1135,7 +1135,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches, t0 = performance.now();
   let on = true, raf = 0;
   const draw = now => { gl.uniform1f(U('T'), still ? 12 : (now - t0) / 1000 + 12); gl.drawArrays(gl.TRIANGLES, 0, 3); };
-  const loop = now => { draw(now); raf = on && !still ? requestAnimationFrame(loop) : 0; };
+  const loop = now => { if (!document.documentElement.classList.contains('intro-on')) draw(now); raf = on && !still ? requestAnimationFrame(loop) : 0; };
   new IntersectionObserver(es => { on = es[0].isIntersecting; if (on && !raf && !still) raf = requestAnimationFrame(loop); }).observe(cv);
   addEventListener('resize', size); size();
   if (!still) raf = requestAnimationFrame(loop);
@@ -1457,8 +1457,9 @@ let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 21474836
 // Phones: smoothness first. 1.5x with 2x MSAA looks sharp on a 3x screen at less than half the pixels of 2x;
 // adaptive drops may go down to 1x on slow phones. Desktops stay at least 1.5x for supersampled edges.
 const DEV = devicePixelRatio || 1;
-const DPR_MAX = mobile ? Math.min(DEV, 1.5) : Math.min(Math.max(DEV, 1.5), 2);
-const DPR_MIN = Math.min(DPR_MAX, mobile ? 1 : 1.5);
+// Never render more pixels than the screen has (no supersampling): that alone made big monitors stutter.
+const DPR_MAX = mobile ? Math.min(DEV, 1.25) : Math.min(DEV, 1.5);
+const DPR_MIN = Math.min(DPR_MAX, mobile ? .85 : 1);
 let dpr = DPR_MAX, dprDrops = 0;
 renderer.setPixelRatio(dpr);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -2021,7 +2022,8 @@ if (!mobile) composer.addPass(sanitize);
 const bokeh = new BokehPass(scene, camera, { focus: 8, aperture: .002, maxblur: .013 });
 bokeh.setSize = function (w, h) { this.materialBokeh.uniforms.aspect.value = w / h; this.renderTargetDepth.setSize(w, h); };
 const bloom = new UnrealBloomPass(new THREE.Vector2(128, 128), .3, .45, .8);
-if (!mobile) { composer.addPass(bokeh); composer.addPass(bloom); }
+// Depth of field (BokehPass) is left out: it renders the whole scene a second time every frame.
+if (!mobile) composer.addPass(bloom);
 composer.addPass(new OutputPass());
 const grade = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uGrain: { value: mobile ? .006 : .008 }, uDark: { value: 0 } },
@@ -2107,7 +2109,7 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   const ft = lastT ? t - lastT : 1 / 60; lastT = t; frameN++;
   if (ft > 1 / 30) { slow++; fast = 0; } else if (ft < 1 / 55) { fast++; slow = 0; }
   // Resizing render targets is itself a hitch, so change resolution rarely and never ping-pong.
-  if (slow > (mobile ? 30 : 120) && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
+  if (slow > (mobile ? 30 : 45) && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
   if (fast > 900 && dpr < DPR_MAX && dprDrops < 2) { dpr = Math.min(DPR_MAX, dpr + .25); renderer.setPixelRatio(dpr); resize(); fast = 0; }
   if (!visible) return;
   const portrait = W / H < .9;
