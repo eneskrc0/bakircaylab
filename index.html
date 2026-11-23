@@ -363,7 +363,6 @@ p { margin: 0; }
 </style>
 <link rel="preload" href="aspekta.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/intro-dna.mp4" as="video" type="video/mp4">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
 <style>
 /* ---------- Welcome intro: the DNA animation, shown once per visit for 5 s while the 3D scene is prepared behind it.
    As a video it keeps playing smoothly even while the page itself is busy. ---------- */
@@ -379,8 +378,8 @@ p { margin: 0; }
 }
 #intro::after { content: ""; position: absolute; inset: auto 0 0 0; height: 46%; z-index: 1; pointer-events: none; background: linear-gradient(transparent, rgba(5,22,28,.82)); }
 #intro .in-copy { position: absolute; z-index: 2; left: 0; right: 0; bottom: 13vh; text-align: center; padding: 0 16px; text-shadow: 0 2px 18px rgba(0,0,0,.6); }
-#intro .in-copy b { display: block; font: 400 clamp(44px, 7.4vw, 92px)/.98 "Instrument Serif", Georgia, serif; letter-spacing: -.01em; color: #f4fdfd; }
-#intro .in-copy b em { font-style: italic; color: #AFDDE5; }
+#intro .in-copy b { display: block; font: 450 clamp(40px, 7vw, 88px)/.98 "Aspekta", system-ui, sans-serif; letter-spacing: -.045em; color: #fff; }  /* same type as the opening headline */
+#intro .in-copy b em { font-style: normal; color: #AFDDE5; }
 #intro #in-go { display: inline-block; margin-top: 16px; font: 500 13px/1 "Aspekta", system-ui, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #8fdfe5; }
 #intro #in-go i { font-style: normal; display: inline-block; width: 1.6em; text-align: left; overflow: hidden; vertical-align: bottom; animation: in-dot 1.4s steps(4) infinite; }
 @keyframes in-dot { from { width: 0; } to { width: 1.6em; } }
@@ -416,9 +415,9 @@ p { margin: 0; }
       [...nd.textContent].forEach(c => { const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = c === ' ' ? '\u00a0' : c; sp.style.animationDelay = (.15 + i++ * .035) + 's'; f.appendChild(sp); });
       nd.replaceWith(f); } else if (nd.nodeType === 1 && nd.tagName !== 'BR') walk(nd); });
     walk(b); b.setAttribute('aria-label', b.textContent);
-    // start the reveal once the serif font is in, so the letters never switch font mid-way
+    // start the reveal once the headline font is in, so the letters never switch font mid-way
     const go = () => b.classList.add('go');
-    (document.fonts && document.fonts.load ? Promise.race([document.fonts.load('1em "Instrument Serif"'), new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(go, go); })();
+    (document.fonts && document.fonts.load ? Promise.race([document.fonts.load('450 1em "Aspekta"'), new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(go, go); })();
   const t0 = performance.now(); let closed = false;
   let close = () => { if (closed) return; closed = true; root.classList.add('intro-out');
     setTimeout(() => { root.classList.remove('intro-on', 'intro-out'); document.getElementById('intro').remove(); }, 850); };
