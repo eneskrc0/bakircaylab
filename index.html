@@ -362,7 +362,6 @@ p { margin: 0; }
 @media (max-width: 760px) { .hero-mark { width: 44px; margin-bottom: 16px; } }
 </style>
 <link rel="preload" href="aspekta.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="media/intro-dna.mp4" as="video" type="video/mp4">
 <style>
 /* ---------- Welcome intro: the DNA animation, shown once per visit for 5 s while the 3D scene is prepared behind it.
    As a video it keeps playing smoothly even while the page itself is busy. ---------- */
@@ -401,7 +400,7 @@ p { margin: 0; }
 </head>
 <body>
 <div id="intro" aria-live="polite">
-  <video src="media/intro-dna.mp4" poster="media/intro-dna.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <video src="media/intro-dna.mp4" fetchpriority="high" poster="media/intro-dna.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div class="in-copy"><b id="in-hi">Bakırçay Lab’a<br><em>hoş geldiniz</em></b><span id="in-go">Yönlendiriliyorsunuz<i>...</i></span></div>
 </div>
 <script>
@@ -418,6 +417,12 @@ p { margin: 0; }
     // start the reveal once the headline font is in, so the letters never switch font mid-way
     const go = () => b.classList.add('go');
     (document.fonts && document.fonts.load ? Promise.race([document.fonts.load('450 1em "Aspekta"'), new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(go, go); })();
+  // The 3D scene is only prepared once the video has started and run for a moment (or after 3 s at the latest),
+  // so the start of the video never has to share the browser with that work.
+  window.__introReady = new Promise(ok => { const v = document.querySelector('#intro video'); let d = false;
+    const fire = (ms) => { if (d) return; d = true; setTimeout(ok, ms); };
+    if (v) { v.addEventListener('playing', () => fire(900), { once: true }); v.addEventListener('error', () => fire(0), { once: true }); }
+    setTimeout(() => fire(0), 3000); });
   const t0 = performance.now(); let closed = false;
   let close = () => { if (closed) return; closed = true; root.classList.add('intro-out');
     setTimeout(() => { root.classList.remove('intro-on', 'intro-out'); document.getElementById('intro').remove(); }, 850); };
@@ -1425,7 +1430,8 @@ const PHONE = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: 
 // So nothing is built while the visitor is looking at the opening: it starts at the first sign of scrolling
 // (or when the story is already on screen, e.g. after a reload halfway down), once the page has loaded.
 await new Promise(go => {
-  if (document.documentElement.classList.contains('intro-on')) { setTimeout(go, 60); return; }   // build behind the welcome intro
+  // Behind the welcome intro: wait until the video is actually playing smoothly, then build in small steps.
+  if (document.documentElement.classList.contains('intro-on')) { (window.__introReady || Promise.resolve()).then(() => setTimeout(go, 0)); return; }
   let done = false;
   const run = () => { if (done) return; done = true; ['scroll', 'wheel', 'touchstart', 'keydown'].forEach(e => removeEventListener(e, intent));
     const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 400 }) : setTimeout(go, 50));
@@ -1453,6 +1459,9 @@ const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const mobile = PHONE;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+// Build in small steps with short pauses in between, so the browser can keep the welcome video and the page
+// moving while the 3D scene is prepared (one long block of work is what made the video freeze).
+const breathe = () => new Promise(r => setTimeout(r, 16));
 
 // Phones: smoothness first. 1.5x with 2x MSAA looks sharp on a 3x screen at less than half the pixels of 2x;
 // adaptive drops may go down to 1x on slow phones. Desktops stay at least 1.5x for supersampled edges.
@@ -1480,6 +1489,7 @@ const makeBg = (stops, glow) => {
 const bgLight = makeBg([[0, '#7fc1ca'], [.45, '#c6e6eb'], [.75, '#e5f3f5'], [1, '#f2f9fa']], 'rgba(255,255,255,.35)');
 const bgDark = makeBg([[0, '#0d3d43'], [.45, '#072d31'], [.75, '#04221f'], [1, '#021b1e']], 'rgba(120,220,230,.08)');
 scene.background = bgLight;
+await breathe();
 const pmrem = new THREE.PMREMGenerator(renderer);
 // Product-photography studio: dark room, overhead softbox, two strip lights and a cool rim panel.
 // Reflection environment: a lab room seen as light sources (ceiling softbox, window strips, a warm desk lamp).
@@ -1496,6 +1506,7 @@ const makeEnv = (room, dark) => {
   panel(10, 3, 0xffffff, dark ? .5 : 1, 0, 2, 14);            // low front fill
   return pmrem.fromScene(s, .02).texture;
 };
+await breathe();
 const envLight = makeEnv(0x9cb9bd, false);
 let envDark = null;
 scene.environment = envLight;
@@ -1526,6 +1537,7 @@ const rim = new THREE.DirectionalLight(0xbfe8ec, .35); rim.position.set(-6, 3, -
 const warm = new THREE.PointLight(0xffd6a0, 1.2, 14, 1.6); warm.position.set(2.4, 2.2, 1.2); scene.add(warm);
 
 /* ---------- Shared helpers ---------- */
+await breathe();
 const glowTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 128;
   const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
@@ -1559,6 +1571,7 @@ function ribbon(points, width, y) {
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
   return g;
 }
+await breathe();
 const inkTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), d = g.createImageData(256, 256);
   for (let i = 0; i < d.data.length; i += 4) { const v = 118 + (rnd() - .5) * 70; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
@@ -1570,6 +1583,7 @@ const goldMatte = new THREE.MeshPhysicalMaterial({ color: 0xb4762a, metalness: 1
 const silver = new THREE.MeshPhysicalMaterial({ color: 0xc8ced8, metalness: 1, roughness: .3, envMapIntensity: 1, side: THREE.DoubleSide });
 
 /* ---------- Macro: floor ---------- */
+await breathe();
 const macro = new THREE.Group(); scene.add(macro);
 const floorTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 1024; const g = c.getContext('2d');
@@ -1600,6 +1614,7 @@ const glassSub = new THREE.MeshPhysicalMaterial({ color: 0xf4fbfa, roughness: .0
   attenuationColor: new THREE.Color(0x8fd6cc), attenuationDistance: .7, clearcoat: 1, clearcoatRoughness: .02, specularIntensity: 1, envMapIntensity: 1.5 });
 chip.add(new THREE.Mesh(subGeo, glassSub));
 // Drop-cast graphene/P3HT film: dark, slightly violet, uneven edge with a coffee ring where the solvent dried last.
+await breathe();
 const filmTex = (() => {
   // Drop-cast film over the whole slide: dark, slightly violet, thickness varies gently, darker rim where it dried last.
   const c = document.createElement('canvas'); c.width = 384; c.height = 800; const g = c.getContext('2d');
@@ -1636,6 +1651,7 @@ const copper = new THREE.MeshPhysicalMaterial({ color: 0xd08a5a, metalness: 1, r
 chip.traverse(o => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = o.material !== glassSub; } });
 
 /* ---------- Droplet ---------- */
+await breathe();
 const dropMat = new THREE.MeshPhysicalMaterial({
   color: 0xe6f6f8, metalness: 0, roughness: .03, transparent: true, opacity: .42, depthWrite: false, clearcoat: 1, clearcoatRoughness: .03,
   specularIntensity: 1, envMapIntensity: 1.8
@@ -1687,6 +1703,7 @@ function contents(n, mat, spread = .78) {
   im.userData.data = data; return im;
 }
 // Pipette tip: clear polypropylene with a refracting wall, a column of milk inside, and printed graduation rings.
+await breathe();
 const pipette = (() => {
   const g = new THREE.Group();
   const out = [[.034, 0], [.046, .08], [.08, .7], [.14, 1.9], [.2, 3.0], [.225, 3.8], [.262, 3.86], [.262, 4.8]];
@@ -1719,6 +1736,7 @@ const dust = (n, spread) => {
 const macroDust = dust(mobile ? 50 : 110, 14); macroDust.visible = false;
 
 /* ---------- Micro: electrode surface at molecular scale ---------- */
+await breathe();
 const micro = new THREE.Group(); scene.add(micro);
 const grainTex = (() => {
   const c = document.createElement('canvas'); c.width = c.height = 512; const g = c.getContext('2d');
@@ -1728,6 +1746,7 @@ const grainTex = (() => {
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(5, 5); return t;
 })();
 // P3HT matrix: a dense mat of short, curved nanofibrils (reddish violet on near-black), used as colour and relief.
+await breathe();
 const fibrilTex = (() => {
   const N = mobile ? 512 : 1024, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
   g.fillStyle = '#16111a'; g.fillRect(0, 0, N, N); g.lineCap = 'round';
@@ -1748,6 +1767,7 @@ const surfMat = new THREE.MeshPhysicalMaterial({ map: fibrilTex, bumpMap: fibril
 const surface = new THREE.Mesh(new THREE.PlaneGeometry(60, 60, 1, 1), surfMat); surface.rotation.x = -Math.PI / 2; surface.receiveShadow = true; micro.add(surface);
 const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), e4 = new THREE.Euler(), s4 = new THREE.Vector3(1, 1, 1);
 // Graphene: few-layer sheets with ragged edges, gentle wrinkles and a faint honeycomb; four silhouettes in a 2×2 atlas.
+await breathe();
 const flakeTex = (() => {
   const N = mobile ? 512 : 1024, h = N / 2, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
   g.clearRect(0, 0, N, N);
@@ -1772,6 +1792,7 @@ const flakeTex = (() => {
 })();
 const flakeMat = new THREE.MeshPhysicalMaterial({ map: flakeTex, alphaTest: .5, metalness: .75, roughness: .3, clearcoat: .4, clearcoatRoughness: .2, envMapIntensity: .75, side: THREE.DoubleSide });
 const NFL = mobile ? 40 : 90;
+await breathe();
 for (let cell = 0; cell < 4; cell++) {
   const g = new THREE.PlaneGeometry(2.4, 2.4, 22, 22), p = g.attributes.position, uv = g.attributes.uv, ph = rnd() * 6;
   for (let i = 0; i < p.count; i++) {
@@ -1802,6 +1823,7 @@ const chains = new THREE.Mesh(chainGeo, new THREE.MeshPhysicalMaterial({ color: 
 chains.receiveShadow = true; micro.add(chains);
 
 // Tetracycline (schematic): four linearly fused six-membered rings with oxygen and nitrogen substituents.
+await breathe();
 const tetraGeo = (() => {
   const parts = [], S = .2, rings = [];
   for (let k = 0; k < 4; k++) { const cx = (k - 1.5) * Math.sqrt(3), r = []; for (let i = 0; i < 6; i++) { const t = Math.PI / 6 + i * Math.PI / 3; r.push([cx + Math.cos(t), Math.sin(t)]); } rings.push(r); }
@@ -1849,6 +1871,7 @@ halo.geometry.setAttribute('position', new THREE.Float32BufferAttribute(cortData
 halo.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(NC * 3), 3));
 micro.add(halo);
 // Charge carriers drifting through the film from one contact towards the other (the current in an I–V sweep).
+await breathe();
 const NCAR = mobile ? 260 : 620;
 const carData = new Float32Array(NCAR * 4);
 for (let i = 0; i < NCAR; i++) { carData[i * 4] = (rnd() - .5) * 28; carData[i * 4 + 1] = .1 + rnd() * .12; carData[i * 4 + 2] = (rnd() - .5) * 22; carData[i * 4 + 3] = .7 + rnd() * .6; }
@@ -1861,6 +1884,7 @@ const brown = (t, ph, out) => out.set(
   Math.sin(t * .71 + ph) * .6 + Math.sin(t * 1.93 + ph * 2.1) * .25 + Math.sin(t * 4.1 + ph * 3.7) * .08,
   Math.sin(t * .53 + ph * 1.3) * .4 + Math.sin(t * 2.37 + ph * .7) * .18 + Math.sin(t * 5.3 + ph) * .06,
   Math.sin(t * .67 + ph * 2.7) * .6 + Math.sin(t * 1.71 + ph * 1.1) * .25 + Math.sin(t * 3.9 + ph * .3) * .08);
+await breathe();
 const NFAT = mobile ? 7 : 13, NCAS = mobile ? 12 : 26;
 const fat = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 40, 28), new THREE.MeshPhysicalMaterial({ color: 0xfff4df, roughness: .28, clearcoat: .8, clearcoatRoughness: .2, sheen: .6, sheenColor: new THREE.Color(0xfffaf0), envMapIntensity: .9 }), NFAT);
 const caseinGeo = (() => { const g = new THREE.SphereGeometry(.32, 36, 26), p = g.attributes.position;
@@ -1875,6 +1899,7 @@ micro.add(fat, casein);
 
 
 /* ---------- Lab room: what a macro lens sees behind the sensor, softened by depth of field ---------- */
+await breathe();
 const labRoom = new THREE.Group(); scene.add(labRoom);
 const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .04, ...tr(.16), thickness: .08, ior: 1.5, clearcoat: 1, specularIntensity: 1, envMapIntensity: 1.8, side: THREE.DoubleSide });
 const liquid = (c, dist = .7) => new THREE.MeshPhysicalMaterial({ color: LITE ? c : 0xffffff, roughness: .06, ...tr(.55), thickness: 1.2, ior: 1.34, attenuationColor: new THREE.Color(c), attenuationDistance: dist, clearcoat: 1, envMapIntensity: 1.2 });
@@ -1909,6 +1934,7 @@ const shelfMat = new THREE.MeshStandardMaterial({ color: 0xe9f1f2, roughness: .4
 const amber = new THREE.MeshPhysicalMaterial({ color: 0x8a4a28, roughness: .08, ...(LITE ? { transparent: true, opacity: .85 } : { transmission: .6 }), thickness: .4, attenuationColor: new THREE.Color(0x6a2f12), attenuationDistance: .5, clearcoat: 1, envMapIntensity: 1.3 });
 const bottle = (x, y, z, s) => { const m = new THREE.Mesh(lathe(P.bottle), amber); m.position.set(x, y, z); m.scale.setScalar(s); labRoom.add(m); };
 // shelves
+await breathe();
 vessel('flask', -8.6, 2.65, -12.6, .55, liquid(0x0fa4af, .5), .35); bottle(-7.2, 2.65, -12.5, .6); vessel('beaker', -5.8, 2.65, -12.7, .6, liquid(0x5ecbd3), .5);
 vessel('cylinder', -4.4, 2.65, -12.6, .65, liquid(0xafdde5), .55); bottle(-3, 2.65, -12.5, .55); vessel('flask', -1.2, 2.65, -12.6, .6);
 bottle(1.4, 2.65, -12.6, .62); vessel('beaker', 3.2, 2.65, -12.6, .55, liquid(0x0fa4af, .5), .45); vessel('flask', 5.4, 2.65, -12.6, .5, liquid(0x0fa4af, .6), .3);
@@ -1932,6 +1958,7 @@ for (let r = 0; r < 2; r++) for (let i = 0; i < 7; i++) {
 }
 
 /* ---------- Duo: saliva (cortisol project) and cow's milk (tetracycline project) ---------- */
+await breathe();
 const duo = new THREE.Group(); scene.add(duo);
 const duoBenchMat = new THREE.MeshPhysicalMaterial({ color: 0xe6f0f1, roughness: .32, clearcoat: .9, clearcoatRoughness: .18, envMapIntensity: .45 });
 const duoBench = new THREE.Mesh(bench.geometry, duoBenchMat); duoBench.rotation.x = -Math.PI / 2; duoBench.position.y = -.035; duoBench.receiveShadow = true; duo.add(duoBench);
@@ -1947,6 +1974,7 @@ const aCyan = contents(12, cyanMat, .7), aGrey = contents(26, greyMat, .78);
 const fatMat = new THREE.MeshStandardMaterial({ color: 0xfffaf0, roughness: .6, emissive: 0x2a241a });
 const bFat = contents(46, fatMat, .8), bCyan = contents(9, cyanMat, .62);
 duo.add(aCyan, aGrey, bFat, bCyan);
+await breathe();
 const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(0,49,53,.26)'); gr.addColorStop(1, 'rgba(0,49,53,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
 const pools = [0, 1].map(() => { const m = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.2), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.y = .005; duo.add(m); return m; });
 
@@ -2007,6 +2035,7 @@ const resize = () => {
   renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
   if (typeof composer !== 'undefined' && !mobile) { composer.setPixelRatio(dpr); composer.setSize(W, H); bokeh.uniforms.aspect.value = W / H; bloom.resolution.set(W / 2, H / 2); }
 };
+await breathe();
 const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: mobile ? 2 : 4 });
 const composer = new EffectComposer(renderer, rt);
 composer.addPass(new RenderPass(scene, camera));
@@ -2083,15 +2112,25 @@ if (mobile) scene.traverse(o => { const ms = o.material ? (Array.isArray(o.mater
 // Compile the three scenes one at a time with pauses in between, so the page never freezes for long.
 // The opening scene first; the other two before the story gets to them.
 setScene(true, false, false);
-try { renderer.compile(scene, camera); } catch (e) {}
+// Upload the textures to the GPU one by one, then compile the shaders (in the background where the browser can).
+{ const texs = new Set(); scene.traverse(o => { const ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+    ms.forEach(m => Object.values(m).forEach(v => { if (v && v.isTexture) texs.add(v); })); });
+  [scene.background, bgDark].forEach(t => t && t.isTexture && texs.add(t));
+  for (const t of texs) { try { renderer.initTexture(t); } catch (e) {} await breathe(); } }
+const compileStep = async () => { try { if (renderer.compileAsync) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera); } catch (e) {} await breathe(); };
+await compileStep();
 // Draw one frame of the opening shot now, so the first real frame later is instant, then let the intro go.
 try { renderer.render(scene, camera); } catch (e) {}
+await breathe();
 const behindIntro = document.documentElement.classList.contains('intro-on');
 // Where the browser can compile shaders in the background (compileAsync), the page does not stall at all.
 // Behind the welcome intro there is time: compile the other two scenes right away, then let the intro go.
 if (behindIntro) {
-  for (const st of [[0, 1, 0], [0, 0, 1]]) { try { setScene(...st.map(Boolean)); renderer.compile(scene, camera); } catch (e) {} }
+  for (const st of [[0, 1, 0], [0, 0, 1]]) { setScene(...st.map(Boolean)); await compileStep(); }
   setScene(true, false, false);
+  // One full frame with shadows and the post effects, so their shaders are also ready before the intro ends.
+  try { if (!mobile) { renderer.shadowMap.needsUpdate = true; composer.render(); } else renderer.render(scene, camera); } catch (e) {}
+  await breathe();
   dispatchEvent(new Event('gl-built'));
 } else [[0, 1, 0], [0, 0, 1]].forEach((st, i) => setTimeout(() => {
   const v = [macro.visible, micro.visible, duo.visible];
@@ -2112,6 +2151,8 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   if (slow > (mobile ? 30 : 45) && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
   if (fast > 900 && dpr < DPR_MAX && dprDrops < 2) { dpr = Math.min(DPR_MAX, dpr + .25); renderer.setPixelRatio(dpr); resize(); fast = 0; }
   if (!visible) return;
+  // Nothing to draw while the welcome intro covers the page: the video gets the whole device.
+  if (document.documentElement.classList.contains('intro-on')) return;
   const portrait = W / H < .9;
   const showMacro = p < .345, showMicro = p >= .345 && p < .8, showDuo = p >= .8;
   setScene(showMacro, showMicro, showDuo);
