@@ -363,31 +363,14 @@ p { margin: 0; }
 </style>
 <link rel="preload" href="aspekta.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* ---------- Welcome intro: the DNA animation, shown once per visit for 5 s while the 3D scene is prepared behind it.
-   As a video it keeps playing smoothly even while the page itself is busy. ---------- */
+/* ---------- Welcome intro: the raw light-tunnel video, full screen and with nothing on top, shown once per visit
+   while the 3D scene is prepared behind it. As a video it keeps playing smoothly even while the page is busy. ---------- */
 #intro { display: none; }
-.intro-on #intro { display: grid; position: fixed; inset: 0; z-index: 1000; place-items: center; overflow: hidden;
-  background: #082129; color: #e9fbfb; transition: opacity .8s ease, visibility .8s; }
+.intro-on #intro { display: block; position: fixed; inset: 0; z-index: 1000; overflow: hidden;
+  background: #001e47; transition: opacity .8s ease, visibility .8s; }
 .intro-on body { overflow: hidden; }
 .intro-out #intro { opacity: 0; visibility: hidden; }
-#intro video { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); }
-@media (orientation: portrait) {   /* tall screens: show the whole helix across the width, blended into the background */
-  #intro video { width: 175vw; height: auto; top: 42%; left: 47%; object-fit: contain;
-    -webkit-mask-image: linear-gradient(transparent, #000 13%, #000 87%, transparent); mask-image: linear-gradient(transparent, #000 13%, #000 87%, transparent); }
-}
-#intro::after { content: ""; position: absolute; inset: auto 0 0 0; height: 46%; z-index: 1; pointer-events: none; background: linear-gradient(transparent, rgba(5,22,28,.82)); }
-#intro .in-copy { position: absolute; z-index: 2; left: 0; right: 0; bottom: 13vh; text-align: center; padding: 0 16px; text-shadow: 0 2px 18px rgba(0,0,0,.6); }
-#intro .in-copy b { display: block; font: 450 clamp(40px, 7vw, 88px)/.98 "Aspekta", system-ui, sans-serif; letter-spacing: -.045em; color: #fff; }  /* same type as the opening headline */
-#intro .in-copy b em { font-style: normal; color: #AFDDE5; }
-#intro #in-go { display: inline-block; margin-top: 16px; font: 500 13px/1 "Aspekta", system-ui, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #8fdfe5; }
-#intro #in-go i { font-style: normal; display: inline-block; width: 1.6em; text-align: left; overflow: hidden; vertical-align: bottom; animation: in-dot 1.4s steps(4) infinite; }
-@keyframes in-dot { from { width: 0; } to { width: 1.6em; } }
-#intro .in-copy b .ch { display: inline-block; opacity: 0; filter: blur(10px); transform: translateY(.18em); }
-#intro .in-copy b.go .ch { animation: in-ch 1s cubic-bezier(.2,.7,.2,1) forwards; }
-@keyframes in-ch { to { opacity: 1; filter: blur(0); transform: none; } }
-#intro #in-go { opacity: 0; animation: in-sub .9s 1.6s ease forwards; }
-@keyframes in-sub { to { opacity: 1; } }
-  border: 1px solid rgba(255,255,255,.16); border-radius: 999px; padding: 9px 14px; font: 500 12px/1 var(--font-mono, ui-monospace), monospace; letter-spacing: .08em; cursor: pointer; }
+#intro video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 </style>
 <script>
 // Show the intro once per browser session (not on every reload), and never to people who asked for less motion.
@@ -399,24 +382,12 @@ p { margin: 0; }
 </script>
 </head>
 <body>
-<div id="intro" aria-live="polite">
-  <video src="media/intro-dna.mp4" fetchpriority="high" poster="media/intro-dna.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-  <div class="in-copy"><b id="in-hi">Bakırçay Lab’a<br><em>hoş geldiniz</em></b><span id="in-go">Yönlendiriliyorsunuz<i>...</i></span></div>
+<div id="intro" aria-hidden="true">
+  <video src="media/intro-warp.mp4" fetchpriority="high" poster="media/intro-warp.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 </div>
 <script>
 (() => {
   const root = document.documentElement; if (!root.classList.contains('intro-on')) return;
-  let en = false; try { en = localStorage.getItem('bakircay-language') === 'en'; } catch (e) {}
-  if (en) { document.getElementById('in-hi').innerHTML = 'Welcome to<br><em>Bakırçay Lab</em>'; document.getElementById('in-go').firstChild.textContent = 'Taking you in'; }
-  // split the welcome into letters for a soft, staggered reveal
-  (() => { const b = document.getElementById('in-hi'); let i = 0;
-    const walk = el => [...el.childNodes].forEach(nd => { if (nd.nodeType === 3) { const f = document.createDocumentFragment();
-      [...nd.textContent].forEach(c => { const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = c === ' ' ? '\u00a0' : c; sp.style.animationDelay = (.15 + i++ * .035) + 's'; f.appendChild(sp); });
-      nd.replaceWith(f); } else if (nd.nodeType === 1 && nd.tagName !== 'BR') walk(nd); });
-    walk(b); b.setAttribute('aria-label', b.textContent);
-    // start the reveal once the headline font is in, so the letters never switch font mid-way
-    const go = () => b.classList.add('go');
-    (document.fonts && document.fonts.load ? Promise.race([document.fonts.load('450 1em "Aspekta"'), new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(go, go); })();
   // The 3D scene is only prepared once the video has started and run for a moment (or after 3 s at the latest),
   // so the start of the video never has to share the browser with that work.
   window.__introReady = new Promise(ok => { const v = document.querySelector('#intro video'); let d = false;
@@ -426,9 +397,9 @@ p { margin: 0; }
   const t0 = performance.now(); let closed = false;
   let close = () => { if (closed) return; closed = true; root.classList.add('intro-out');
     setTimeout(() => { root.classList.remove('intro-on', 'intro-out'); document.getElementById('intro').remove(); }, 850); };
-  // The welcome closes as soon as the 3D scene is ready (shown at least 2.5 s, at most 5 s).
+  // The intro closes as soon as the 3D scene is ready (shown at least one full loop of the video, at most 5 s).
   setTimeout(close, 5000);
-  addEventListener('gl-built', () => setTimeout(close, Math.max(0, 2500 - (performance.now() - t0))), { once: true });
+  addEventListener('gl-built', () => setTimeout(close, Math.max(0, 2750 - (performance.now() - t0))), { once: true });
 })();
 </script>
 <canvas id="ribbon" aria-hidden="true"></canvas>
