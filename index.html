@@ -363,45 +363,9 @@ p { margin: 0; }
 </style>
 <link rel="preload" href="aspekta.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* ---------- Welcome intro: the raw light-tunnel video, full screen and with nothing on top, shown once per visit
-   while the 3D scene is prepared behind it. As a video it keeps playing smoothly even while the page is busy. ---------- */
-#intro { display: none; }
-.intro-on #intro { display: block; position: fixed; inset: 0; z-index: 1000; overflow: hidden;
-  background: #001e47; transition: opacity .8s ease, visibility .8s; }
-.intro-on body { overflow: hidden; }
-.intro-out #intro { opacity: 0; visibility: hidden; }
-#intro video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 </style>
-<script>
-// Show the intro once per browser session (not on every reload), and never to people who asked for less motion.
-(() => { try {
-  if (sessionStorage.getItem('bl-intro') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  sessionStorage.setItem('bl-intro', '1');
-  document.documentElement.classList.add('intro-on');
-} catch (e) {} })();
-</script>
 </head>
 <body>
-<div id="intro" aria-hidden="true">
-  <video src="media/intro-warp.mp4" fetchpriority="high" poster="media/intro-warp.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-</div>
-<script>
-(() => {
-  const root = document.documentElement; if (!root.classList.contains('intro-on')) return;
-  // The 3D scene is only prepared once the video has started and run for a moment (or after 3 s at the latest),
-  // so the start of the video never has to share the browser with that work.
-  window.__introReady = new Promise(ok => { const v = document.querySelector('#intro video'); let d = false;
-    const fire = (ms) => { if (d) return; d = true; setTimeout(ok, ms); };
-    if (v) { v.addEventListener('playing', () => fire(900), { once: true }); v.addEventListener('error', () => fire(0), { once: true }); }
-    setTimeout(() => fire(0), 3000); });
-  const t0 = performance.now(); let closed = false;
-  let close = () => { if (closed) return; closed = true; root.classList.add('intro-out');
-    setTimeout(() => { root.classList.remove('intro-on', 'intro-out'); document.getElementById('intro').remove(); }, 850); };
-  // The intro closes as soon as the 3D scene is ready (shown at least one full loop of the video, at most 5 s).
-  setTimeout(close, 5000);
-  addEventListener('gl-built', () => setTimeout(close, Math.max(0, 2750 - (performance.now() - t0))), { once: true });
-})();
-</script>
 <canvas id="ribbon" aria-hidden="true"></canvas>
 <script>
 /* Phones: the ribbon is drawn into plain 2D canvases that sit inside each section, so it scrolls with the page
@@ -1112,7 +1076,7 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches, t0 = performance.now();
   let on = true, raf = 0;
   const draw = now => { gl.uniform1f(U('T'), still ? 12 : (now - t0) / 1000 + 12); gl.drawArrays(gl.TRIANGLES, 0, 3); };
-  const loop = now => { if (!document.documentElement.classList.contains('intro-on')) draw(now); raf = on && !still ? requestAnimationFrame(loop) : 0; };
+  const loop = now => { draw(now); raf = on && !still ? requestAnimationFrame(loop) : 0; };
   new IntersectionObserver(es => { on = es[0].isIntersecting; if (on && !raf && !still) raf = requestAnimationFrame(loop); }).observe(cv);
   addEventListener('resize', size); size();
   if (!still) raf = requestAnimationFrame(loop);
@@ -1402,8 +1366,6 @@ const PHONE = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: 
 // So nothing is built while the visitor is looking at the opening: it starts at the first sign of scrolling
 // (or when the story is already on screen, e.g. after a reload halfway down), once the page has loaded.
 await new Promise(go => {
-  // Behind the welcome intro: wait until the video is actually playing smoothly, then build in small steps.
-  if (document.documentElement.classList.contains('intro-on')) { (window.__introReady || Promise.resolve()).then(() => setTimeout(go, 0)); return; }
   let done = false;
   const run = () => { if (done) return; done = true; ['scroll', 'wheel', 'touchstart', 'keydown'].forEach(e => removeEventListener(e, intent));
     const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 400 }) : setTimeout(go, 50));
@@ -2126,8 +2088,6 @@ window.__glFrame = (p, t, dtF = .016, settled = false) => {
   if (slow > (mobile ? 30 : 45) && dpr > DPR_MIN) { dpr = Math.max(DPR_MIN, dpr - .25); dprDrops++; renderer.setPixelRatio(dpr); resize(); slow = 0; }
   if (fast > 900 && dpr < DPR_MAX && dprDrops < 2) { dpr = Math.min(DPR_MAX, dpr + .25); renderer.setPixelRatio(dpr); resize(); fast = 0; }
   if (!visible) return;
-  // Nothing to draw while the welcome intro covers the page: the video gets the whole device.
-  if (document.documentElement.classList.contains('intro-on')) return;
   const portrait = W / H < .9;
   const showMacro = p < .345, showMicro = p >= .345 && p < .8, showDuo = p >= .8;
   setScene(showMacro, showMicro, showDuo);
