@@ -303,10 +303,27 @@ p { margin: 0; }
 @media (max-width: 560px) { .ft-grid { grid-template-columns: 1fr; gap: 36px; } .ft-lead { padding-right: 60px; } .ft-legal { flex-direction: column; } }
 
 /* No WebGL: the story still reads over a quiet gradient */
-/* Ribbon: a turquoise strand ribbon that winds down past the project texts after the animation.
-   Fixed canvas behind the content; sections it crosses are transparent so it shows, cards and text stay on top. */
-#ribbon { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
-#ribbon.on { opacity: 1; }
+/* Signal trace: one thin turquoise line, like a sensor's measurement trace, that runs down the page margins beside
+   the sections. It draws itself as you scroll, with a glowing pen tip; at every section label the trace makes a small
+   sensor response peak and a point lights up. It is a plain SVG inside the page, so it scrolls natively with the text. */
+#trace { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; overflow: visible; display: block;
+  --tr-track: rgba(10,138,148,.16); --tr-a: #0a8a94; --tr-b: #27b8c2; --tr-glow: rgba(39,184,194,.16); --tr-node: #f4fbfb; }
+html.dark #trace { --tr-track: rgba(120,220,228,.14); --tr-a: #3fd0da; --tr-b: #b4f3f7; --tr-glow: rgba(80,220,230,.22); --tr-node: #062a30; }
+#trace .tr-track { stroke: var(--tr-track); stroke-width: 1.2; fill: none; }
+#trace .tr-glow { stroke: var(--tr-glow); stroke-width: 9; fill: none; stroke-linecap: round; }
+#trace .tr-line { stroke: url(#tr-grad); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#trace .tr-node circle { transition: fill .5s ease, stroke .5s ease, r .5s ease; }
+#trace .tr-node .n-dot { fill: var(--tr-node); stroke: var(--tr-track); stroke-width: 1.5; }
+#trace .tr-node .n-ring { fill: none; stroke: var(--tr-b); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+#trace .tr-node.lit .n-dot { fill: var(--tr-a); stroke: var(--tr-b); }
+#trace .tr-node.lit .n-ring { animation: tr-ping 1.6s ease-out 1; }
+@keyframes tr-ping { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(3.2); } }
+#trace-tip { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; z-index: 0; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 22%, var(--tip, #3fd0da) 38%, rgba(63,208,218,0) 70%); opacity: 0; transition: opacity .3s ease; will-change: transform; }
+#trace-tip::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid rgba(63,208,218,.55); animation: tr-tip 1.8s ease-out infinite; }
+#trace-tip.on { opacity: 1; }
+@keyframes tr-tip { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #trace-tip { display: none; } #trace .tr-node.lit .n-ring { animation: none; } }
 #projeler, #biz-kimiz, #cerceve, #durum, #yayinlar { background: transparent; }
 .no-gl #gl { display: none; }
 .no-gl .stage { background: radial-gradient(70% 60% at 68% 45%, #ffffff 0%, #e2f2f4 45%, #c9e6ea 80%); }
@@ -366,100 +383,7 @@ p { margin: 0; }
 </style>
 </head>
 <body>
-<canvas id="ribbon" aria-hidden="true"></canvas>
-<script>
-/* Phones: the ribbon is drawn into plain 2D canvases that sit inside each section, so it scrolls with the page
-   natively. (A fixed canvas redrawn on every scroll frame lags behind the page on phones and seems to jump.)
-   It runs down one screen edge beside the text and crosses over only in the empty padding between sections. */
-function phoneRibbon(still) {
-  const secs = [...document.querySelectorAll('#projeler, #biz-kimiz, #cerceve, #durum, #yayinlar')];
-  if (!secs.length) return;
-  const css = document.createElement('style');
-  css.textContent = '.rb2{position:absolute;left:0;top:0;width:100%;height:100%;z-index:-1;pointer-events:none}#projeler,#biz-kimiz,#cerceve,#durum,#yayinlar{isolation:isolate}';
-  document.head.appendChild(css);
-  const NS = 12, STEP = 6, W = 20, LAM = 300, DPR = Math.min(devicePixelRatio || 1, 1.5);
-  let items = [], built = '';
-  const docTop = el => el.getBoundingClientRect().top + scrollY;
-  const build = () => {
-    const VW = document.documentElement.clientWidth;
-    const key = VW + ':' + secs.map(s => Math.round(s.offsetHeight)).join(',');
-    if (key === built) return; built = key;
-    // one continuous path in page coordinates: edge → cross in the gap → other edge …
-    const pts = [];
-    secs.forEach((sec, k) => {
-      const t = docTop(sec), b = t + sec.offsetHeight, pad = parseFloat(getComputedStyle(sec).paddingTop) || 80;
-      const e = k % 2 ? 3 : VW - 3, e2 = k % 2 ? VW - 3 : 3;
-      if (k === 0) pts.push([VW + 30, t + pad * .2], [e, t + pad * .9]);
-      else pts.push([e, t + pad * .75]);
-      pts.push([e, (t + b) / 2], [e, b - pad * .55]);
-      if (k < secs.length - 1) pts.push([(e + e2) / 2, b]);
-      else pts.push([e, b - 20]);
-    });
-    // smooth (Catmull-Rom) and resample evenly
-    const dense = [];
-    for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
-      for (let q = 0; q < 30; q++) { const u = q / 30, u2 = u * u, u3 = u2 * u;
-        dense.push([0, 1].map(c => .5 * (2 * p1[c] + (-p0[c] + p2[c]) * u + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * u2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * u3))); } }
-    dense.push(pts[pts.length - 1]);
-    const C = [dense[0]]; let acc = 0;
-    for (let i = 1; i < dense.length; i++) { const a = dense[i - 1], b = dense[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]); acc += d;
-      while (acc >= STEP) { acc -= STEP; const f = 1 - acc / d; C.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]); } }
-    const n = C.length, L = (n - 1) * STEP;
-    const N = C.map((c, i) => { const a = C[Math.max(0, i - 3)], b = C[Math.min(n - 1, i + 3)], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; });
-    const E = C.map((c, i) => { const s = i * STEP, sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); return sm(s / 260) * sm((L - s) / 300); });
-    items.forEach(it => it.cv.remove());
-    items = secs.map(sec => {
-      const t = docTop(sec), h = sec.offsetHeight, cv = document.createElement('canvas');
-      cv.className = 'rb2'; cv.setAttribute('aria-hidden', 'true');
-      cv.width = Math.round(VW * DPR); cv.height = Math.round(h * DPR); sec.prepend(cv);
-      const idx = []; C.forEach((c, i) => { if (c[1] > t - 60 && c[1] < t + h + 60) idx.push(i); });
-      return { sec, cv, ctx: cv.getContext('2d'), t, idx, on: false };
-    });
-    items.forEach(it => io.observe(it.sec));
-    path = { C, N, E };
-    items.forEach(it => draw(it, still ? 3 : (performance.now() - t0) / 1000));
-  };
-  let path = null; const t0 = performance.now();
-  const dark = () => { const m = getComputedStyle(document.body).backgroundColor.match(/\d+/g); return m && (.2126 * m[0] + .7152 * m[1] + .0722 * m[2]) < 110; };
-  const draw = (it, T) => {
-    const { ctx, t, idx } = it; if (!path || !idx.length) return;
-    const { C, N, E } = path, dk = dark();
-    ctx.setTransform(DPR, 0, 0, DPR, 0, -t * DPR);
-    ctx.clearRect(0, t - 100, it.cv.width / DPR, it.cv.height / DPR + 200);
-    ctx.globalCompositeOperation = dk ? 'lighter' : 'source-over';
-    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-    const off = (s, u, sh) => { const x = s / LAM, ph = sh * Math.PI;
-      const wave = Math.sin(x * 2.2 + T * .9 + ph + u * 1.4) * (.55 + .45 * u) + .45 * Math.sin(x * 3.7 - T * .62 - ph * .6 + u * 2.3);
-      return W * (.55 * wave + (u - .5) * (.85 + .4 * Math.sin(x * 1.7 + T * .5 + sh * 2))); };
-    const line = (u, sh, width, color, alpha) => {
-      ctx.beginPath(); let first = true;
-      for (const i of idx) { const o = off(i * STEP, u, sh) * E[i]; const x = C[i][0] + N[i][0] * o, y = C[i][1] + N[i][1] * o;
-        if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y); }
-      ctx.lineWidth = width; ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.stroke();
-    };
-    // soft glow, then the fine strands (the outer strands of each sheet brightest)
-    for (let sh = 0; sh < 2; sh++) line(.5, sh, W * 2.2, dk ? '#0b5e66' : '#afdde5', dk ? .35 : .35);
-    for (let sh = 0; sh < 2; sh++) for (let j = 0; j < NS; j++) {
-      const u = j / (NS - 1), rim = Math.pow(Math.abs(u - .5) * 2, 4);
-      line(u, sh, rim > .5 ? 1.2 : .8, dk ? (rim > .5 ? '#bff6fa' : '#1fb5bf') : (rim > .5 ? '#0a8a94' : '#2aa7b0'), (dk ? .25 : .22) + rim * .55);
-    }
-    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-  };
-  // animate only the sections on screen, about 30 frames a second
-  const io = new IntersectionObserver(es => es.forEach(e => { const it = items.find(i => i.sec === e.target); if (it) it.on = e.isIntersecting; }), { rootMargin: '100px 0px' });
-  let last = 0;
-  const loop = now => { requestAnimationFrame(loop); if (still || now - last < 33) return; last = now;
-    const T = (now - t0) / 1000; items.forEach(it => { if (it.on) draw(it, T); }); };
-  const rebuild = () => { built = ''; build(); };
-  // nothing is built until the reader gets near the projects; layout changes are batched
-  let near = false, tm = 0;
-  const later = () => { if (!near) return; clearTimeout(tm); tm = setTimeout(build, 250); };
-  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); near = true; build(); requestAnimationFrame(loop); } }, { rootMargin: '1200px 0px' }).observe(secs[0]);
-  addEventListener('load', later); if (document.fonts) document.fonts.ready.then(later);
-  addEventListener('resize', () => { if (near && document.documentElement.clientWidth + ':' !== built.split(':')[0] + ':') { built = ''; later(); } });
-  new ResizeObserver(later).observe(document.body);
-}
-</script>
+
 
 
 
@@ -774,224 +698,108 @@ try { if (localStorage.getItem('bakircay-language') === 'en') document.documentE
 </main>
 
 <script>
-(() => {
-  const cv = document.getElementById('ribbon'); if (!cv) return;
-  const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, depth: false, stencil: false, powerPreference: 'low-power' });
-  if (!gl) return;
-  const coarse = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (coarse) { gl.getExtension('WEBGL_lose_context')?.loseContext(); cv.remove(); phoneRibbon(still); return; }
-  const NS = coarse ? 14 : 34, STEP = coarse ? 18 : 10, NP = coarse ? 36 : 160, W0 = coarse ? 22 : 60, LAM = coarse ? 320 : 520;
-  const mk = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
-  const prog = (v, f) => { const p = gl.createProgram(); gl.attachShader(p, mk(gl.VERTEX_SHADER, v)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
-  // ---- strands: two crossing sheets of fine lines plus a soft glow, offset sideways from the path
-  const pr = prog(`precision highp float;
-    attribute vec2 aP, aN; attribute vec3 aS; attribute float aSide, aEnv;
-    uniform float T, Y, REV, W, LAM, V; uniform vec2 R;
-    varying float vA, vK, vG, vPulse;
-    float off(float s, float u, float sh){
-      float x = s / LAM, ph = sh * 3.14159;
-      float wave = sin(x * 2.2 + T * .9 + ph + u * 1.4) * (.55 + .45 * u) + .45 * sin(x * 3.7 - T * .62 - ph * .6 + u * 2.3) + .18 * sin(x * 7.0 + T * 1.6 + u * 5.0);
-      float fan = (u - .5) * (.85 + .4 * sin(x * 1.7 + T * .5 + sh * 2.0));
-      return W * (1.0 + .7 * V) * (.55 * wave + (u < 0.0 ? 0.0 : fan));
-    }
-    void main(){
-      float s = aS.x, u = aS.y, sh = aS.z, glow = step(u, -.5), uu = glow > .5 ? .5 : u;
-      float o = off(s, uu, sh) * aEnv;
-      float d = (off(s + 4.0, uu, sh) - off(s - 4.0, uu, sh)) / 8.0 * aEnv;
-      vec2 dir = normalize(vec2(aN.y, -aN.x) + aN * d), nrm = vec2(-dir.y, dir.x);
-      float w = glow > .5 ? W * 1.7 * aEnv : 1.15;
-      vec2 p = aP + aN * o + nrm * aSide * w;
-      gl_Position = vec4(p.x / R.x * 2.0 - 1.0, 1.0 - (p.y - Y) / R.y * 2.0, 0.0, 1.0);
-      float rim = pow(abs(u - .5) * 2.0, 5.0);
-      float shimmer = .72 + .28 * sin(T * 2.3 + u * 47.0 + s / 70.0);
-      vPulse = pow(.5 + .5 * sin(s / 170.0 - T * 2.4), 14.0) + .6 * pow(.5 + .5 * sin(s / 410.0 - T * 1.3 + 1.7), 20.0);  // light running down the ribbon
-      vA = (glow > .5 ? 1.0 : (.13 + .87 * rim) * shimmer) * aEnv * smoothstep(REV, REV - 320.0, aP.y);
-      vK = aSide; vG = glow;
-    }`, `precision mediump float;
-    varying float vA, vK, vG, vPulse; uniform float DARK;
-    void main(){
-      float k = exp(-vK * vK * (vG > .5 ? 2.2 : 3.0));
-      float boost = 1.0 + vPulse * (vG > .5 ? 1.6 : 2.4);
-      vec3 cl = vG > .5 ? vec3(.56, .86, .90) : mix(vec3(.0, .42, .47), vec3(.03, .62, .68), min(1.0, vA + vPulse));
-      vec3 cd = vG > .5 ? vec3(.03, .38, .42) : mix(vec3(.02, .55, .62), vec3(.72, .98, 1.0), min(1.0, vA + vPulse * .8));
-      float a = min(1.0, vA * k * boost * (vG > .5 ? mix(.26, .32, DARK) : mix(.72, .9, DARK)));
-      gl_FragColor = vec4(mix(cl, cd, DARK) * a, a * (1.0 - DARK * .85));
-    }`);
-  // ---- sparkles: small glints drifting down along the ribbon
-  const pp = prog(`precision highp float;
-    attribute vec3 aQ; uniform float Y, DPR; uniform vec2 R; varying float vB;
-    void main(){ gl_Position = vec4(aQ.x / R.x * 2.0 - 1.0, 1.0 - (aQ.y - Y) / R.y * 2.0, 0.0, 1.0); gl_PointSize = (2.0 + 5.0 * aQ.z) * DPR; vB = aQ.z; }`,
-    `precision mediump float; varying float vB; uniform float DARK;
-    void main(){ vec2 c = gl_PointCoord - .5; float r = length(c); float a = smoothstep(.5, .0, r); a = a * a * vB;
-      vec3 col = mix(vec3(.0, .55, .6), vec3(.85, 1.0, 1.0), DARK);
-      gl_FragColor = vec4(col * a, a * (1.0 - DARK * .8)); }`);
-  if (!pr || !pp) return;
-  const U = (p, n) => gl.getUniformLocation(p, n);
-  const bufs = {};
-  const bind = (p, name, size) => { const l = gl.getAttribLocation(p, name); gl.bindBuffer(gl.ARRAY_BUFFER, bufs[name]); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); return l; };
-  const fill = (name, data, usage) => { if (!bufs[name]) bufs[name] = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bufs[name]); gl.bufferData(gl.ARRAY_BUFFER, data, usage || gl.STATIC_DRAW); };
-  // ---- layout → paths (document px). Desktop: trunk → split around "Bilimsel çerçeve" → merge → down to the end.
-  const docRect = el => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + scrollY, b: r.bottom + scrollY, w: r.width, h: r.height, cx: r.left + r.width / 2, cy: r.top + scrollY + r.height / 2 }; };
+// runs once the whole page (including the footer below) has been read
+document.addEventListener('DOMContentLoaded', () => {
   const q = sel => document.querySelector(sel);
-  const layoutPaths = () => {
-    const head = q('#projeler .section-head h2'), wrap = q('#projeler .wrap'), foot = q('.site-footer');
-    if (!head || !wrap) return null;
-    const Hd = docRect(head), Wr = docRect(wrap), VW = document.documentElement.clientWidth;
-    const mL = Math.max(14, Wr.l * .5), mR = Math.min(VW - 14, Wr.r + (VW - Wr.r) * .5);    // the page margins
-    const endY = foot ? docRect(foot).t - 40 : document.body.scrollHeight - 200;
-    const blocks = [...document.querySelectorAll('#projeler .project'), q('#biz-kimiz .about')].filter(Boolean);
-    const trunk = [[Wr.r + 40, Hd.t - 60], [Math.min(Wr.r - 20, Hd.r + 60), Hd.cy]];
-    const two = blocks.every(b => { const m = b.querySelector('.device, .about-media'), t = b.querySelector('.project-body, .about-copy'); return m && t && Math.abs(docRect(m).cx - docRect(t).cx) > 120; });
-    if (!two) {                                    // phones: hug a screen edge beside the text, cross only in the gaps
-      const pts = [], els = [...document.querySelectorAll('#projeler .project'), q('#biz-kimiz'), q('#cerceve'), q('#durum'), q('#yayinlar')].filter(Boolean);
-      els.forEach((el, k) => { const B = docRect(el), e = k % 2 ? 2 : VW - 2; pts.push([e, B.t + 40], [e, B.cy], [e, B.b - 40]);
-        const nx = els[k + 1]; if (nx) pts.push([VW / 2, (B.b + docRect(nx).t) / 2]); });
-      pts.push([pts[pts.length - 1][0], endY]);
-      return [{ pts: [trunk[0], ...pts], rin: 360, rout: 420 }];
-    }
-    blocks.forEach(b => {
-      const M = docRect(b.querySelector('.device, .about-media')), X = docRect(b.querySelector('.project-body, .about-copy')), B = docRect(b);
-      const side = Math.sign(M.cx - X.cx), gut = side < 0 ? (M.r + X.l) / 2 : (X.r + M.l) / 2;
-      trunk.push([gut - side * X.w * .12, B.t + B.h * .08], [M.cx - side * M.w * .12, M.cy], [M.cx + side * M.w * .1, Math.max(B.b, M.b) + 70]);
-    });
-    const cf = q('#cerceve'), cfh = q('#cerceve .section-head'), fr = q('#cerceve .frame'), du = q('#durum'), duh = q('#durum .section-head h2'), st = q('#durum .steps'), yh = q('#yayinlar .section-head'), pubs = q('#yayinlar .pubs');
-    const paths = [];
-    if (cf && cfh && fr && du && duh) {
-      const C = docRect(cf), CH = docRect(cfh), F = docRect(fr), D = docRect(du), DH = docRect(duh);
-      // The ribbon's two sheets part at the split (one per side) and meet again at the merge. Both junctions are
-      // approached and left vertically, with shared tangents, so the sheets run on without a seam.
-      const last = trunk[trunk.length - 1], split = [last[0], Math.max(last[1] + 120, C.t + 10)];
-      const preS = [split[0], split[1] - 150], postS = [split[0], split[1] + 150];
-      trunk.push(preS, split);
-      const merge = [Wr.l + Wr.w * .72, DH.t + DH.h * .2], preM = [merge[0], merge[1] - 170], postM = [merge[0], merge[1] + 150];
-      const prevT = trunk[trunk.length - 3];
-      const left = [preS, split, postS, [mL + (split[0] - mL) * .35, CH.t + CH.h * .3], [mL, CH.b + 40], [mL, F.cy], [mL + 70, F.b + 20], [Wr.l + Wr.w * .42, D.t + 40], preM, merge, postM];
-      const right = [preS, split, postS, [Wr.l + Wr.w * .58, CH.t + CH.h * .25], [Wr.r - 40, CH.b - 10], [mR, F.t + 40], [mR, F.cy], [mR - 60, F.b + 10], [Wr.l + Wr.w * .9, D.t + 50], preM, merge, postM];
-      const down = [merge, postM];
-      if (st) { const S = docRect(st); down.push([merge[0] + 30, (postM[1] + S.t) / 2 + 20], [(merge[0] + mR) / 2 + 30, S.t + 10], [mR, S.t + S.h * .7], [mR - 40, S.b + 90], [Wr.l + Wr.w * .76, S.b + 230]); }
-      else down.push([merge[0] + 70, DH.b + 50]);
-      if (yh && pubs) { const Y = docRect(yh), Pb = docRect(pubs); down.push([Wr.l + Wr.w * .55, Y.t - 40], [mL, Y.b + 10], [mL, Pb.cy], [mL + 60, Pb.b + 30], [Wr.l + Wr.w * .5, endY]); }
-      else down.push([merge[0], endY]);
-      // Junctions cross-fade: the trunk fades out over preS→split while each branch fades in over the same stretch
-      // (identical curve there), and the branches fade out over merge→postM while the lower trunk fades in.
-      const X1 = segLen(prevT, preS, split, postS), X2 = segLen(preM, merge, postM, down[2]);
-      paths.push({ pts: trunk, gEnd: postS, sheets: [0, 1], rin: 360, rout: X1, X1 });
-      paths.push({ pts: left, gStart: prevT, gEnd: down[2], sheets: [0], branch: 1, rin: X1, rout: X2, X2 });
-      paths.push({ pts: right, gStart: prevT, gEnd: down[2], sheets: [1], branch: 1, rin: X1, rout: X2, X2 });
-      paths.push({ pts: down, gStart: preM, sheets: [0, 1], rin: X2, rout: 420, lower: 1 });
-    } else { trunk.push([trunk[trunk.length - 1][0], endY]); paths.push({ pts: trunk, rin: 360, rout: 420 }); }
-    return paths;
-  };
-  const segLen = (p0, p1, p2, p3) => { let l = 0, prev = p1; for (let k = 1; k <= 60; k++) { const t = k / 60, t2 = t * t, t3 = t2 * t;
-      const c = [0, 1].map(i => .5 * (2 * p1[i] + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t2 + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t3));
-      l += Math.hypot(c[0] - prev[0], c[1] - prev[1]); prev = c; } return l; };
-  const catmull = (P, step, g0, g1) => {
-    const dense = [], n = P.length;
-    for (let i = 0; i < n - 1; i++) { const p0 = i ? P[i - 1] : (g0 || P[0]), p1 = P[i], p2 = P[i + 1], p3 = i + 2 < n ? P[i + 2] : (g1 || P[n - 1]);
-      for (let k = 0; k < 40; k++) { const t = k / 40, t2 = t * t, t3 = t2 * t;
-        dense.push([0, 1].map(c => .5 * (2 * p1[c] + (-p0[c] + p2[c]) * t + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * t2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * t3))); } }
-    dense.push(P[n - 1]);
-    const out = [dense[0]]; let acc = 0;
-    for (let i = 1; i < dense.length; i++) { const a = dense[i - 1], b = dense[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]); acc += d;
-      while (acc >= step) { acc -= step; const f = 1 - acc / d; out.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]); } }
-    return out;
-  };
-  let lastKey = '', count = 0, yTop = 0, yBot = 0, lines = [];
+  const first = q('#projeler'), foot = q('.site-footer');
+  if (!first || !foot) return;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NS = 'http://www.w3.org/2000/svg', mk = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const svg = mk('svg', { id: 'trace', 'aria-hidden': 'true' });
+  const defs = mk('defs', {}), grad = mk('linearGradient', { id: 'tr-grad', gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: 1 });
+  defs.appendChild(grad); svg.appendChild(defs);
+  const track = mk('path', { class: 'tr-track' }), glow = mk('path', { class: 'tr-glow' }), line = mk('path', { class: 'tr-line' }), nodesG = mk('g', {});
+  svg.append(track, glow, line, nodesG);
+  const tip = document.createElement('div'); tip.id = 'trace-tip'; tip.setAttribute('aria-hidden', 'true');
+  document.body.prepend(svg, tip);
+  const docRect = el => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + scrollY, b: r.bottom + scrollY, cy: r.top + scrollY + r.height / 2 }; };
+  // A sensor's response: quick rise, slow decay (u in units of the peak's length).
+  const resp = u => u <= 0 ? 0 : (1 - Math.exp(-u * 7)) * Math.exp(-u * 2.2) / .62;
+  const smoother = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * x * (x * (x * 6 - 15) + 10);
+  let top = 0, Ys = [], Ls = [], Xs = [], total = 0, nodes = [], built = '';
   const build = () => {
-    const paths = layoutPaths(); if (!paths) return;
-    const key = JSON.stringify(paths.map(p => p.pts.map(v => v.map(Math.round)))) + innerWidth; if (key === lastKey) return; lastKey = key;
-    // arc-length offsets keep the wave phase continuous across the split and the merge
-    const curves = paths.map(p => catmull(p.pts, STEP, p.gStart, p.gEnd));
-    const lens = curves.map(c => (c.length - 1) * STEP);
-    // Branches of different lengths are given the same wave length, so both sheets arrive at the merge in phase.
-    const bl = paths.map((p, i) => p.branch ? lens[i] - p.X2 : 0).filter(Boolean), Lb = bl.length ? bl.reduce((a, b) => a + b) / bl.length : 0;
-    const sc = paths.map((p, i) => p.branch ? Lb / (lens[i] - p.X2) : 1);
-    const sB = paths[0].X1 ? lens[0] - paths[0].X1 : 0;
-    const s0 = paths.map(p => p.branch ? sB : p.lower ? sB + Lb : 0);
-    const all = [[-1, 0], [-1, 1]]; for (let sh = 0; sh < 2; sh++) for (let j = 0; j < NS; j++) all.push([j / (NS - 1), sh]);
-    const strandsOf = p => all.filter(st => !p.sheets || p.sheets.includes(st[1]));
-    let tot = 0; curves.forEach((c, i) => tot += strandsOf(paths[i]).length * (c.length * 2 + 2));
-    const aP = new Float32Array(tot * 2), aN = new Float32Array(tot * 2), aS = new Float32Array(tot * 3), aSide = new Float32Array(tot), aEnv = new Float32Array(tot);
-    let v = 0; lines = []; yTop = 1e9; yBot = -1e9;
-    curves.forEach((C, pi) => {
-      const n = C.length, L = lens[pi], P = paths[pi];
-      // normals from a wide window so tight corners do not flip them
-      const N = C.map((c, i) => { const a = C[Math.max(0, i - 3)], b = C[Math.min(n - 1, i + 3)], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; });
-      // On bends tighter than the ribbon is wide, the outer strands would fold into knots: narrow the ribbon there.
-      const ang = C.map((c, i) => { const b = C[Math.min(n - 1, i + 1)], a = C[Math.max(0, i - 1)]; return Math.atan2(b[1] - a[1], b[0] - a[0]); });
-      let kap = ang.map((a, i) => { if (!i || i === n - 1) return 0; let d = ang[i + 1] - ang[i - 1]; d = Math.atan2(Math.sin(d), Math.cos(d)); return Math.abs(d) / (2 * STEP); });
-      const smooth = (arr, r) => arr.map((_, i) => { let s = 0, c = 0; for (let k = -r; k <= r; k++) { const j = i + k; if (j >= 0 && j < n) { s += arr[j]; c++; } } return s / c; });
-      kap = smooth(kap, 6);
-      const reach = W0 * 1.9;
-      const fit = smooth(kap.map(k => Math.min(1, Math.max(.18, 1 / (k * reach * 2.2 + 1e-6)))), 10);
-      const E = C.map((c, i) => { const s = i * STEP, sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-        return sm(s / P.rin) * sm((L - s) / P.rout) * fit[i]; });
-      C.forEach(c => { yTop = Math.min(yTop, c[1]); yBot = Math.max(yBot, c[1]); });
-      lines.push({ C, N, E, s0: s0[pi], L });
-      const put = (i, side, st) => { aP[v * 2] = C[i][0]; aP[v * 2 + 1] = C[i][1]; aN[v * 2] = N[i][0]; aN[v * 2 + 1] = N[i][1];
-        aS[v * 3] = s0[pi] + i * STEP * sc[pi]; aS[v * 3 + 1] = st[0]; aS[v * 3 + 2] = st[1]; aSide[v] = side; aEnv[v] = E[i]; v++; };
-      strandsOf(P).forEach(st => { put(0, -1, st); for (let i = 0; i < n; i++) { put(i, -1, st); put(i, 1, st); } put(n - 1, 1, st); });
-    });
-    yTop -= 200; yBot += 200; count = v;
-    fill('aP', aP); fill('aN', aN); fill('aS', aS); fill('aSide', aSide); fill('aEnv', aEnv);
-    // sparkles: each rides one path at its own speed and lane
-    parts = Array.from({ length: NP }, () => { const li = Math.floor(Math.random() * lines.length); return { li, s: Math.random() * lines[li].L, sp: 40 + Math.random() * 110, lane: (Math.random() - .5) * 2, tw: Math.random() * 6.28 }; });
-  };
-  let parts = [];
-  const qbuf = new Float32Array(NP * 3);
-  let dpr = 1;
-  const size = () => { dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 1.25);
-    const w = Math.max(1, innerWidth * dpr | 0), h = Math.max(1, innerHeight * dpr | 0);
-    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); } };
-  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-  const darkMQ = matchMedia('(prefers-color-scheme: dark)');
-  const isDark = () => { const m = getComputedStyle(document.body).backgroundColor.match(/\d+(\.\d+)?/g); if (!m) return darkMQ.matches;
-    return (.2126 * m[0] + .7152 * m[1] + .0722 * m[2]) < 110; };
-  let rev = 0, raf = 0, t0 = performance.now(), last = t0, dark = isDark() ? 1 : 0, darkT = dark, fn = 0, vel = 0, lastY = scrollY;
-  const frame = now => {
-    raf = 0;
-    const y = scrollY, vh = innerHeight, dt = Math.min(.05, (now - last) / 1000); last = now;
-    const inRange = count && y + vh > yTop && y < yBot;
-    cv.classList.toggle('on', !!inRange);
-    if (!inRange) return;
-    vel += (Math.min(1, Math.abs(y - lastY) / 60) - vel) * .08; lastY = y;     // scrolling stirs the ribbon a little
-    rev = Math.max(rev, y + vh * .85);
-    if (!(fn++ % 30)) darkT = isDark() ? 1 : 0; dark += (darkT - dark) * .2;
-    const T = still ? 3 : (now - t0) / 1000;
-    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.useProgram(pr);
-    gl.uniform1f(U(pr, 'T'), T); gl.uniform1f(U(pr, 'Y'), y); gl.uniform1f(U(pr, 'REV'), still ? 1e9 : rev); gl.uniform1f(U(pr, 'DARK'), dark);
-    gl.uniform1f(U(pr, 'W'), W0); gl.uniform1f(U(pr, 'LAM'), LAM); gl.uniform1f(U(pr, 'V'), still ? 0 : vel); gl.uniform2f(U(pr, 'R'), innerWidth, vh);
-    const ls = ['aP', 'aN', 'aS', 'aSide', 'aEnv'].map((n, i) => bind(pr, n, [2, 2, 3, 1, 1][i]));
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, count);
-    ls.forEach(l => gl.disableVertexAttribArray(l));
-    if (!still && parts.length) {
-      let k = 0;
-      parts.forEach(p => { const ln = lines[p.li]; p.s += p.sp * dt; if (p.s > ln.L) { p.s = 0; p.li = Math.floor(Math.random() * lines.length); }
-        const i = Math.min(ln.C.length - 1, Math.round(p.s / STEP)), c = ln.C[i], nn = ln.N[i];
-        const yy = c[1] + nn[1] * p.lane * W0 * .8, vis = ln.E[i] * (yy < rev - 200 ? 1 : 0);
-        qbuf[k++] = c[0] + nn[0] * p.lane * W0 * .8; qbuf[k++] = yy; qbuf[k++] = vis * (.35 + .65 * Math.pow(.5 + .5 * Math.sin(T * 3 + p.tw), 3)); });
-      fill('aQ', qbuf, gl.DYNAMIC_DRAW);
-      gl.useProgram(pp);
-      gl.uniform1f(U(pp, 'Y'), y); gl.uniform1f(U(pp, 'DPR'), dpr); gl.uniform1f(U(pp, 'DARK'), dark); gl.uniform2f(U(pp, 'R'), innerWidth, vh);
-      const l = bind(pp, 'aQ', 3); gl.drawArrays(gl.POINTS, 0, NP); gl.disableVertexAttribArray(l);
+    const VW = document.documentElement.clientWidth, wrap = q('#projeler .wrap'); if (!wrap) return;
+    const W = docRect(wrap), cs = getComputedStyle(wrap);
+    const contentL = W.l + (parseFloat(cs.paddingLeft) || 0), contentR = W.r - (parseFloat(cs.paddingRight) || 0);
+    // the rails sit in the middle of the empty page margins
+    const xL = Math.max(8, contentL / 2), xR = Math.min(VW - 8, (contentR + VW) / 2);
+    const projects = [...document.querySelectorAll('#projeler .project')];
+    const zones = [
+      { el: [q('#projeler .section-head'), projects[0]], marks: ['#projeler .section-head .mono', projects[0] && projects[0].querySelector('.meta .mono')] },
+      { el: [projects[1]], marks: [projects[1] && projects[1].querySelector('.meta .mono')] },
+      { el: [q('#biz-kimiz .wrap')], marks: ['#biz-kimiz .about-copy .mono'] },
+      { el: [q('#cerceve .wrap')], marks: ['#cerceve .section-head .mono'] },
+      { el: [q('#durum .wrap')], marks: ['#durum .section-head .mono'] },
+      { el: [q('#yayinlar .wrap')], marks: ['#yayinlar .section-head .mono'] },
+    ].filter(z => z.el.every(Boolean));
+    zones.forEach((z, k) => { const rs = z.el.map(docRect); z.t = Math.min(...rs.map(r => r.t)); z.b = Math.max(...rs.map(r => r.b));
+      z.x = k % 2 ? xR : xL; z.out = k % 2 ? 1 : -1;
+      z.ys = z.marks.map(m => typeof m === 'string' ? q(m) : m).filter(Boolean).map(e => docRect(e).cy); });
+    if (!zones.length) return;
+    const F = docRect(foot);
+    const key = [VW, ...zones.map(z => Math.round(z.t) + ',' + Math.round(z.b)), Math.round(F.t)].join('|');
+    if (key === built) return; built = key;
+    top = docRect(first).t; const startY = top + 24, endY = F.t - 30;
+    const amp = Math.min(30, xL - 4), PK = 150;          // peak height (px sideways) and length (px down)
+    // walk down the page in 4 px steps: rails beside each zone, smooth S-crossings in the gaps between zones
+    const pts = []; nodes = [];
+    for (let y = startY; y <= endY; y += 4) {
+      let k = zones.findIndex(z => y < z.b + 1); let x;
+      if (k === -1) {                                      // after the last zone: glide to the page centre above the footer
+        const z = zones[zones.length - 1], u = smoother((y - z.b) / Math.max(1, endY - z.b)); x = z.x + (VW / 2 - z.x) * u;
+      } else {
+        const z = zones[k], prev = zones[k - 1];
+        if (prev && y < z.t) {                             // in the gap between two zones
+          const g0 = prev.b + 10, g1 = z.t - 10; x = prev.x + (z.x - prev.x) * smoother((y - g0) / Math.max(1, g1 - g0));
+        } else x = z.x;
+        const zz = (prev && y < z.t) ? null : z;
+        if (zz) zz.ys.forEach(yn => { x += zz.out * amp * resp((y - yn) / PK); });
+      }
+      pts.push([x, y]);
     }
-    if (!still) raf = requestAnimationFrame(frame);
+    zones.forEach(z => z.ys.forEach(yn => nodes.push({ y: yn, x: z.x })));
+    // cumulative length along the trace, for the draw-as-you-scroll effect
+    Ys = []; Ls = []; Xs = []; let L = 0;
+    pts.forEach((p, i) => { if (i) L += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]); Ys.push(p[1]); Xs.push(p[0]); Ls.push(L); });
+    total = L;
+    const H = endY - top + 60;
+    svg.setAttribute('width', VW); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${VW} ${H}`);
+    svg.style.top = top + 'px';
+    const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + (p[1] - top).toFixed(1)).join('L');
+    [track, glow, line].forEach(e => e.setAttribute('d', d));
+    // the colour slowly shifts along the length of the trace
+    grad.setAttribute('y2', H); grad.textContent = '';
+    for (let i = 0; i <= 8; i++) grad.appendChild(mk('stop', { offset: i / 8, 'stop-color': i % 2 ? 'var(--tr-b)' : 'var(--tr-a)' }));
+    nodesG.textContent = '';
+    nodes.forEach(n => { n.g = mk('g', { class: 'tr-node' }); n.g.append(mk('circle', { class: 'n-ring', cx: n.x, cy: n.y - top, r: 5 }), mk('circle', { class: 'n-dot', cx: n.x, cy: n.y - top, r: VW < 700 ? 3.5 : 4.5 }));
+      nodesG.appendChild(n.g); n.len = lenAt(n.y); });
+    update();
   };
-  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
-  // Built only once the reader gets near the projects (it is heavy); layout changes are batched.
+  const idxAt = y => { let lo = 0, hi = Ys.length - 1; if (y <= Ys[0]) return 0; if (y >= Ys[hi]) return hi;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (Ys[m] <= y) lo = m; else hi = m; } return lo; };
+  const lenAt = y => Ls[idxAt(y)] || 0;
+  let raf = 0;
+  const update = () => {
+    raf = 0; if (!total) return;
+    const head = still ? 1e9 : scrollY + innerHeight * .62;
+    const i = idxAt(head), len = head >= Ys[Ys.length - 1] ? total : Ls[i];
+    const da = `${len.toFixed(1)} ${(total + 10).toFixed(0)}`;
+    line.style.strokeDasharray = da; glow.style.strokeDasharray = da;
+    const showTip = !still && head > Ys[0] && head < Ys[Ys.length - 1];
+    tip.classList.toggle('on', showTip);
+    if (showTip) tip.style.transform = `translate3d(${Xs[i].toFixed(1)}px, ${Ys[i].toFixed(1)}px, 0)`;
+    nodes.forEach(n => n.g.classList.toggle('lit', n.len <= len + .5));
+  };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(update); };
+  // built once the reader gets near the projects; layout changes are batched
   let near = false, tm = 0;
-  const relayout = () => { if (!near) return; clearTimeout(tm); tm = setTimeout(() => { size(); build(); kick(); }, 200); };
-  const first = document.getElementById('projeler');
-  if (first) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); near = true; size(); build(); kick(); } }, { rootMargin: '1500px 0px' }).observe(first);
+  const later = () => { if (!near) return; clearTimeout(tm); tm = setTimeout(build, 200); };
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); near = true; build(); } }, { rootMargin: '1500px 0px' }).observe(first);
   addEventListener('scroll', () => { if (near) kick(); }, { passive: true });
-  addEventListener('resize', relayout);
-  addEventListener('load', relayout);
-  if (document.fonts) document.fonts.ready.then(relayout);
-  new ResizeObserver(relayout).observe(document.body);
-  document.addEventListener('click', relayout);
-})();
+  addEventListener('resize', later); addEventListener('load', later);
+  if (document.fonts) document.fonts.ready.then(later);
+  new ResizeObserver(later).observe(document.body);
+});
 </script>
 <footer class="site-footer" id="iletisim">
   <div class="ft-bg" aria-hidden="true"></div>
