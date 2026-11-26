@@ -307,20 +307,23 @@ p { margin: 0; }
    the sections. It draws itself as you scroll, with a glowing pen tip; at every section label the trace makes a small
    sensor response peak and a point lights up. It is a plain SVG inside the page, so it scrolls natively with the text. */
 #trace { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; overflow: visible; display: block;
-  --tr-track: rgba(10,138,148,.16); --tr-a: #0a8a94; --tr-b: #27b8c2; --tr-glow: rgba(39,184,194,.16); --tr-node: #f4fbfb; }
+  --tr-track: rgba(10,138,148,.14); --tr-a: #0a8a94; --tr-b: #2cc3cc; --tr-glow: rgba(39,184,194,.14); --tr-node: #f4fbfb; }
 html.dark #trace { --tr-track: rgba(120,220,228,.14); --tr-a: #3fd0da; --tr-b: #b4f3f7; --tr-glow: rgba(80,220,230,.22); --tr-node: #062a30; }
-#trace .tr-track { stroke: var(--tr-track); stroke-width: 1.2; fill: none; }
-#trace .tr-glow { stroke: var(--tr-glow); stroke-width: 9; fill: none; stroke-linecap: round; }
-#trace .tr-line { stroke: url(#tr-grad); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#trace .tr-track { stroke: var(--tr-track); stroke-width: 3; fill: none; stroke-linecap: round; }
+#trace .tr-glow { stroke: var(--tr-glow); stroke-width: 26; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#trace .tr-glow2 { stroke: var(--tr-glow); stroke-width: 13; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#trace .tr-line { stroke: url(#tr-grad); stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#trace .tr-core { stroke: rgba(255,255,255,.55); stroke-width: 1.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 700px) { #trace .tr-line { stroke-width: 3.5; } #trace .tr-glow { stroke-width: 14; } #trace .tr-glow2 { stroke-width: 8; } #trace .tr-track { stroke-width: 2; } #trace .tr-core { stroke-width: 1; } }
 #trace .tr-node circle { transition: fill .5s ease, stroke .5s ease, r .5s ease; }
-#trace .tr-node .n-dot { fill: var(--tr-node); stroke: var(--tr-track); stroke-width: 1.5; }
-#trace .tr-node .n-ring { fill: none; stroke: var(--tr-b); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
-#trace .tr-node.lit .n-dot { fill: var(--tr-a); stroke: var(--tr-b); }
+#trace .tr-node .n-dot { fill: var(--tr-node); stroke: var(--tr-a); stroke-opacity: .35; stroke-width: 2.5; }
+#trace .tr-node .n-ring { fill: none; stroke: var(--tr-b); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+#trace .tr-node.lit .n-dot { fill: #fff; stroke: var(--tr-a); stroke-opacity: 1; stroke-width: 4; }
 #trace .tr-node.lit .n-ring { animation: tr-ping 1.6s ease-out 1; }
 @keyframes tr-ping { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(3.2); } }
-#trace-tip { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; z-index: 0; pointer-events: none; border-radius: 50%;
+#trace-tip { position: absolute; left: 0; top: 0; width: 30px; height: 30px; margin: -15px 0 0 -15px; z-index: 0; pointer-events: none; border-radius: 50%;
   background: radial-gradient(circle, #fff 0 22%, var(--tip, #3fd0da) 38%, rgba(63,208,218,0) 70%); opacity: 0; transition: opacity .3s ease; will-change: transform; }
-#trace-tip::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid rgba(63,208,218,.55); animation: tr-tip 1.8s ease-out infinite; }
+#trace-tip::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; border: 2px solid rgba(63,208,218,.6); animation: tr-tip 1.8s ease-out infinite; }
 #trace-tip.on { opacity: 1; }
 @keyframes tr-tip { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { #trace-tip { display: none; } #trace .tr-node.lit .n-ring { animation: none; } }
@@ -708,8 +711,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const svg = mk('svg', { id: 'trace', 'aria-hidden': 'true' });
   const defs = mk('defs', {}), grad = mk('linearGradient', { id: 'tr-grad', gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: 1 });
   defs.appendChild(grad); svg.appendChild(defs);
-  const track = mk('path', { class: 'tr-track' }), glow = mk('path', { class: 'tr-glow' }), line = mk('path', { class: 'tr-line' }), nodesG = mk('g', {});
-  svg.append(track, glow, line, nodesG);
+  const track = mk('path', { class: 'tr-track' }), glow = mk('path', { class: 'tr-glow' }), glow2 = mk('path', { class: 'tr-glow2' }), line = mk('path', { class: 'tr-line' }), core = mk('path', { class: 'tr-core' }), nodesG = mk('g', {});
+  svg.append(track, glow, glow2, line, core, nodesG);
   const tip = document.createElement('div'); tip.id = 'trace-tip'; tip.setAttribute('aria-hidden', 'true');
   document.body.prepend(svg, tip);
   const docRect = el => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + scrollY, b: r.bottom + scrollY, cy: r.top + scrollY + r.height / 2 }; };
@@ -740,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const key = [VW, ...zones.map(z => Math.round(z.t) + ',' + Math.round(z.b)), Math.round(F.t)].join('|');
     if (key === built) return; built = key;
     top = docRect(first).t; const startY = top + 24, endY = F.t - 30;
-    const amp = Math.min(30, xL - 4), PK = 150;          // peak height (px sideways) and length (px down)
+    const amp = Math.min(46, xL - 6), PK = 170;          // peak height (px sideways) and length (px down)
     // walk down the page in 4 px steps: rails beside each zone, smooth S-crossings in the gaps between zones
     const pts = []; nodes = [];
     for (let y = startY; y <= endY; y += 4) {
@@ -766,12 +769,12 @@ document.addEventListener('DOMContentLoaded', () => {
     svg.setAttribute('width', VW); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${VW} ${H}`);
     svg.style.top = top + 'px';
     const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + (p[1] - top).toFixed(1)).join('L');
-    [track, glow, line].forEach(e => e.setAttribute('d', d));
+    [track, glow, glow2, line, core].forEach(e => e.setAttribute('d', d));
     // the colour slowly shifts along the length of the trace
     grad.setAttribute('y2', H); grad.textContent = '';
     for (let i = 0; i <= 8; i++) grad.appendChild(mk('stop', { offset: i / 8, 'stop-color': i % 2 ? 'var(--tr-b)' : 'var(--tr-a)' }));
     nodesG.textContent = '';
-    nodes.forEach(n => { n.g = mk('g', { class: 'tr-node' }); n.g.append(mk('circle', { class: 'n-ring', cx: n.x, cy: n.y - top, r: 5 }), mk('circle', { class: 'n-dot', cx: n.x, cy: n.y - top, r: VW < 700 ? 3.5 : 4.5 }));
+    nodes.forEach(n => { n.g = mk('g', { class: 'tr-node' }); n.g.append(mk('circle', { class: 'n-ring', cx: n.x, cy: n.y - top, r: 8 }), mk('circle', { class: 'n-dot', cx: n.x, cy: n.y - top, r: VW < 700 ? 5 : 7.5 }));
       nodesG.appendChild(n.g); n.len = lenAt(n.y); });
     update();
   };
@@ -784,7 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const head = still ? 1e9 : scrollY + innerHeight * .62;
     const i = idxAt(head), len = head >= Ys[Ys.length - 1] ? total : Ls[i];
     const da = `${len.toFixed(1)} ${(total + 10).toFixed(0)}`;
-    line.style.strokeDasharray = da; glow.style.strokeDasharray = da;
+    [line, glow, glow2, core].forEach(e => e.style.strokeDasharray = da);
     const showTip = !still && head > Ys[0] && head < Ys[Ys.length - 1];
     tip.classList.toggle('on', showTip);
     if (showTip) tip.style.transform = `translate3d(${Xs[i].toFixed(1)}px, ${Ys[i].toFixed(1)}px, 0)`;
